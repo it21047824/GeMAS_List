@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:title="@string/app_name">
+        <menu>
+            <item
+                android:id="@+id/navDashboard"
+                android:title="@string/dashboard"
+                android:icon="@drawable/ic_baseline_dashboard_24"/>
+            <item
+                android:id="@+id/navGames"
+                android:title="@string/games"
+                android:icon="@drawable/ic_baseline_sports_esports_24"/>
+            <item
+                android:id="@+id/navMovies"
+                android:title="@string/movies"
+                android:icon="@drawable/ic_baseline_local_movies_24"/>
+            <item
+                android:id="@+id/navSeries"
+                android:title="@string/series"
+                android:icon="@drawable/ic_baseline_ondemand_video_24"/>
+            <item
+                android:id="@+id/navAnime"
+                android:title="@string/anime"
+                android:icon="@drawable/ic_baseline_stars_24"/>
+
+        </menu>
+    </item>
+    <item android:title="@string/app">
+        <menu>
+            <item
+                android:id="@+id/navProfile"
+                android:title="@string/profile"
+                android:icon="@drawable/ic_baseline_account_circle_24"/>
+            <item
+                android:id="@+id/navLogout"
+                android:title="@string/logout"
+                android:icon="@drawable/ic_baseline_login_24"/>
+        </menu>
+    </item>
+</menu>

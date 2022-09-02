@@ -1,3 +1,23 @@
 <resources>
     <string name="app_name">GeMAS List</string>
+    <string name="login">Login</string>
+    <string name="username">Username</string>
+    <string name="password">Password</string>
+    <string name="logo">App Logo</string>
+    <string name="signUp">Sign Up</string>
+    <string name="forgotPassword">Forgot Password?</string>
+    <string name="animeList">Anime List</string>
+    <string name="menu">Menu</string>
+    <string name="dashboard">Dashboard</string>
+    <string name="games">Games</string>
+    <string name="movies">Movies</string>
+    <string name="series">Series</string>
+    <string name="anime">Anime</string>
+    <string name="profile">Profile</string>
+    <string name="logout">Logout</string>
+    <string name="openNavDrawer">Navigation Drawer Open</string>
+    <string name="closeNavDrawer">Navigation Drawer Close</string>
+    <string name="navigation_drawer_profile_banner">Navigation Drawer Profile Banner</string>
+    <string name="navigation_drawer_profile_picture">Navigation Drawer Profile Picture</string>
+    <string name="app">App</string>
 </resources>
