@@ -20,4 +20,6 @@
     <string name="navigation_drawer_profile_banner">Navigation Drawer Profile Banner</string>
     <string name="navigation_drawer_profile_picture">Navigation Drawer Profile Picture</string>
     <string name="app">App</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

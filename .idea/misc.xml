@@ -5,9 +5,13 @@
       <map>
         <entry key="..\:/SLIIT/Y2S2/MAD/GeMAS List/app/src/main/res/drawable/ic_baseline_menu_24.xml" value="0.186" />
         <entry key="..\:/SLIIT/Y2S2/MAD/GeMAS List/app/src/main/res/layout/activity_anime_list.xml" value="0.264" />
-        <entry key="..\:/SLIIT/Y2S2/MAD/GeMAS List/app/src/main/res/layout/activity_anime_select.xml" value="0.20364583333333333" />
+        <entry key="..\:/SLIIT/Y2S2/MAD/GeMAS List/app/src/main/res/layout/activity_anime_select.xml" value="0.264" />
         <entry key="..\:/SLIIT/Y2S2/MAD/GeMAS List/app/src/main/res/layout/activity_main.xml" value="0.264" />
         <entry key="..\:/SLIIT/Y2S2/MAD/GeMAS List/app/src/main/res/layout/app_bar_icons.xml" value="0.2604166666666667" />
+        <entry key="..\:/SLIIT/Y2S2/MAD/GeMAS List/app/src/main/res/layout/fragment_anime_list.xml" value="0.27447916666666666" />
+        <entry key="..\:/SLIIT/Y2S2/MAD/GeMAS List/app/src/main/res/layout/fragment_anime_select.xml" value="0.27447916666666666" />
+        <entry key="..\:/SLIIT/Y2S2/MAD/GeMAS List/app/src/main/res/layout/fragment_anime_stats.xml" value="0.27447916666666666" />
+        <entry key="..\:/SLIIT/Y2S2/MAD/GeMAS List/app/src/main/res/layout/fragment_dashboard.xml" value="0.27447916666666666" />
         <entry key="..\:/SLIIT/Y2S2/MAD/GeMAS List/app/src/main/res/layout/navigation_header.xml" value="0.4" />
         <entry key="..\:/SLIIT/Y2S2/MAD/GeMAS List/app/src/main/res/menu/app_bar_icons.xml" value="0.27447916666666666" />
         <entry key="..\:/SLIIT/Y2S2/MAD/GeMAS List/app/src/main/res/menu/appbar_logo.xml" value="0.2734375" />
