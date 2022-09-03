@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/dashboard">
+
+    <fragment
+        android:id="@+id/dashboard"
+        android:name="com.example.gemaslist.Dashboard"
+        android:label="fragment_dashboard"
+        tools:layout="@layout/fragment_dashboard" />
+    <fragment
+        android:id="@+id/animeList"
+        android:name="com.example.gemaslist.AnimeList"
+        android:label="fragment_anime_list"
+        tools:layout="@layout/fragment_anime_list" >
+        <action
+            android:id="@+id/action_animeList_to_animeSelect"
+            app:destination="@id/animeSelect" />
+        <action
+            android:id="@+id/action_animeList_to_animeStats"
+            app:destination="@id/animeStats" />
+    </fragment>
+    <fragment
+        android:id="@+id/animeSelect"
+        android:name="com.example.gemaslist.AnimeSelect"
+        android:label="fragment_anime_select"
+        tools:layout="@layout/fragment_anime_select" />
+    <fragment
+        android:id="@+id/animeStats"
+        android:name="com.example.gemaslist.AnimeStats"
+        android:label="fragment_anime_stats"
+        tools:layout="@layout/fragment_anime_stats" />
+    <action
+        android:id="@+id/action_global_dashboard"
+        app:destination="@id/dashboard"
+        app:enterAnim="@anim/slide_in"
+        app:exitAnim="@anim/fade_out"
+        app:popEnterAnim="@anim/fade_in"
+        app:popExitAnim="@anim/slide_out" />
+    <action
+        android:id="@+id/action_global_animeList"
+        app:destination="@id/animeList"
+        app:enterAnim="@anim/slide_in"
+        app:exitAnim="@anim/fade_out"
+        app:popEnterAnim="@anim/fade_in"
+        app:popExitAnim="@anim/slide_out" />
+</navigation>
