@@ -22,4 +22,9 @@
     <string name="app">App</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="completed">Completed</string>
+    <string name="planning">Planning</string>
+    <string name="watching">Watching</string>
+    <string name="progress">Progress :</string>
+    <string name="rating">Rating :</string>
 </resources>

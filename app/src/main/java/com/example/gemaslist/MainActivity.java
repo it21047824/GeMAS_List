@@ -6,6 +6,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.navigation.Navigation;
 
 import android.os.Bundle;
 import android.view.MenuItem;
@@ -55,16 +56,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             }
         });
 
-        if(savedInstanceState == null){
-            //pass into fragment as argument
-            Bundle bundle = new Bundle();
-            bundle.putString("Username", "John Doe");
-
-            getSupportFragmentManager().beginTransaction()
-                    .setReorderingAllowed(true)
-                    .add(R.id.view_fragment, Dashboard.class, bundle)
-                    .commit();
-        }
     }
 
     @Override
@@ -72,29 +63,15 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         //nav drawer click events
         switch (item.getItemId()){
             case R.id.navDashboard: {
-                getSupportFragmentManager().beginTransaction()
-                        .setCustomAnimations(
-                                R.anim.slide_in,  // enter
-                                R.anim.fade_out,  // exit
-                                R.anim.fade_in,   // popEnter
-                                R.anim.slide_out  // popExit
-                        )
-                        .setReorderingAllowed(true)
-                        .replace(R.id.view_fragment, Dashboard.class, null)
-                        .commit();
+                MainActivity.this.getSupportActionBar().setSubtitle(R.string.dashboard);
+                Navigation.findNavController(this, R.id.nav_host_fragment)
+                        .navigate(R.id.action_global_dashboard);
                 break;
             }
             case R.id.navAnime: {
-                getSupportFragmentManager().beginTransaction()
-                        .setCustomAnimations(
-                                R.anim.slide_in,  // enter
-                                R.anim.fade_out,  // exit
-                                R.anim.fade_in,   // popEnter
-                                R.anim.slide_out  // popExit
-                        )
-                        .setReorderingAllowed(true)
-                        .replace(R.id.view_fragment, AnimeList.class, null)
-                        .commit();
+                MainActivity.this.getSupportActionBar().setSubtitle(R.string.animeList);
+                Navigation.findNavController(this, R.id.nav_host_fragment)
+                        .navigate(R.id.action_global_animeList);
                 break;
             }
         }

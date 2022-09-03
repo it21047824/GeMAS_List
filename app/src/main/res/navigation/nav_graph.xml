@@ -46,4 +46,24 @@
         app:exitAnim="@anim/fade_out"
         app:popEnterAnim="@anim/fade_in"
         app:popExitAnim="@anim/slide_out" />
+    <fragment android:id="@+id/games" />
+    <fragment android:id="@+id/movies" />
+    <fragment android:id="@+id/series" />
+    <fragment android:id="@+id/profile" />
+    <fragment android:id="@+id/logout" />
+    <action
+        android:id="@+id/action_global_games"
+        app:destination="@id/games" />
+    <action
+        android:id="@+id/action_global_movies"
+        app:destination="@id/movies" />
+    <action
+        android:id="@+id/action_global_profile"
+        app:destination="@id/profile" />
+    <action
+        android:id="@+id/action_global_series"
+        app:destination="@id/series" />
+    <action
+        android:id="@+id/action_global_logout"
+        app:destination="@id/logout" />
 </navigation>
