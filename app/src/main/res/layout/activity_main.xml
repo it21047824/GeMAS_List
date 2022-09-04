@@ -35,14 +35,12 @@
                     android:layout_marginEnd="20dp"
                     app:cardCornerRadius="25dp"
                     app:cardElevation="5dp"
-                    android:outlineAmbientShadowColor="@color/black"
                     android:layout_gravity="end" >
                     <androidx.appcompat.widget.AppCompatImageView
                         android:layout_width="50dp"
                         android:layout_height="50dp"
                         app:srcCompat="@mipmap/ic_launcher_round" />
                 </com.google.android.material.card.MaterialCardView>
-
 
             </com.google.android.material.appbar.MaterialToolbar>
 
@@ -64,6 +62,25 @@
                 tools:layout="@layout/fragment_anime_list" />
 
         </androidx.core.widget.NestedScrollView>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:layout_alignParentEnd="true"
+                android:layout_margin="16dp"
+                android:layout_gravity="end"
+                android:backgroundTint="@color/purple_500"
+                android:textColor="@color/white"
+                app:iconTint="@color/white"
+                app:icon="@drawable/ic_baseline_info_24"
+                android:text="@string/statistics"/>
+
+        </RelativeLayout>
 
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
 

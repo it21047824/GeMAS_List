@@ -17,7 +17,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:fontFamily="sans-serif-light"
-            android:text="Static Anime Title"
             android:textColor="@color/black"
             android:textSize="18sp" />
 
@@ -33,9 +32,9 @@
             android:layout_marginTop="8dp">
 
             <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/anime_select_image"
                 android:layout_width="150dp"
                 android:layout_height="200dp"
-                app:srcCompat="@drawable/placeholder_image"
                 android:scaleType="centerCrop"/>
 
             <androidx.appcompat.widget.LinearLayoutCompat
@@ -49,6 +48,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:hint="@string/status"
+                    android:labelFor="@+id/anime_select_status"
                     android:textColorHint="#616161"
                     android:paddingStart="8dp"
                     android:paddingEnd="8dp"
@@ -58,7 +58,7 @@
                     <AutoCompleteTextView
                         android:id="@+id/anime_select_status"
                         android:layout_width="wrap_content"
-                        android:layout_height="50dp"
+                        android:layout_height="wrap_content"
                         android:inputType="none"/>
 
                 </com.google.android.material.textfield.TextInputLayout>
@@ -77,7 +77,7 @@
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/anime_select_progress"
                         android:layout_width="match_parent"
-                        android:layout_height="50dp"
+                        android:layout_height="wrap_content"
                         android:inputType="number"/>
 
                 </com.google.android.material.textfield.TextInputLayout>
@@ -96,7 +96,7 @@
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/anime_select_rating"
                         android:layout_width="match_parent"
-                        android:layout_height="50dp"
+                        android:layout_height="wrap_content"
                         android:inputType="number"/>
 
                 </com.google.android.material.textfield.TextInputLayout>
@@ -126,12 +126,14 @@
                 android:gravity="end">
 
                 <CheckBox
-                    android:layout_marginTop="8dp"
-                    android:layout_marginBottom="8dp"
-                    android:layout_marginStart="30dp"
-                    android:layout_marginEnd="30dp"
+                    android:id="@+id/anime_select_favourite"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginStart="30dp"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginEnd="30dp"
+                    android:layout_marginBottom="8dp"
+                    android:theme="@style/custom_checkbox"
                     android:text="@string/favourite" />
 
             </RelativeLayout>
@@ -147,12 +149,13 @@
             android:id="@+id/anime_select_description"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textSize="14sp"
-            android:text="@string/lorem"/>
+            android:layout_marginTop="8dp"
+            android:textSize="14sp"/>
 
         <View
             android:layout_width="match_parent"
             android:layout_height="1dp"
+            android:layout_marginTop="8dp"
             android:background="?android:attr/listDivider" />
 
         <RelativeLayout
@@ -163,15 +166,17 @@
             <androidx.appcompat.widget.LinearLayoutCompat
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:gravity="center">
+                android:gravity="center"
+                android:orientation="vertical">
 
                 <com.google.android.material.textview.MaterialTextView
+                    android:id="@+id/anime_select_average_rating"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginEnd="8dp"
                     android:fontFamily="sans-serif-light"
-                    android:text="8.8"
                     android:textSize="28sp" />
 
                 <com.google.android.material.textview.MaterialTextView
