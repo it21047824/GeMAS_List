@@ -123,7 +123,8 @@ public class AnimeList extends Fragment {
             String title,
             String progress,
             String rating,
-            int color
+            int color,
+            int textColor
     ) {
         //create card
         LayoutParams cardLayoutParams =
@@ -151,6 +152,7 @@ public class AnimeList extends Fragment {
         TextView titleTextView = new TextView(context);
         titleTextView.setLayoutParams(textLayoutParams);
         titleTextView.setText(title);
+        titleTextView.setTextColor(textColor);
         titleTextView.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 16);
         titleTextView.setGravity(Gravity.CENTER);
         titleTextView.setPadding(20,10,5,20);
@@ -159,6 +161,7 @@ public class AnimeList extends Fragment {
         TextView progressTextView = new TextView(context);
         progressTextView.setLayoutParams(textLayoutParams);
         progressTextView.setText(progress);
+        progressTextView.setTextColor(textColor);
         progressTextView.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 12);
         progressTextView.setGravity(Gravity.CENTER);
         progressTextView.setPadding(20,5,5,10);
@@ -167,6 +170,7 @@ public class AnimeList extends Fragment {
         TextView ratingTextView = new TextView(context);
         ratingTextView.setLayoutParams(textLayoutParams);
         ratingTextView.setText(rating);
+        ratingTextView.setTextColor(textColor);
         ratingTextView.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 12);
         ratingTextView.setGravity(Gravity.CENTER);
         ratingTextView.setPadding(20,5,5,10);

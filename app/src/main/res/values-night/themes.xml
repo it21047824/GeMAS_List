@@ -13,4 +13,11 @@
         <item name="android:statusBarColor" tools:targetApi="l">?attr/colorPrimaryVariant</item>
         <!-- Customize your theme here. -->
     </style>
+    <style name="custom_checkbox">
+        <item name="colorAccent">@color/teal_200</item>
+    </style>
+    <style name="custom_button">
+        <item name="colorOnPrimary">@color/black</item>
+        <item name="colorPrimary">@color/white</item>
+    </style>
 </resources>

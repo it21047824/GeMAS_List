@@ -62,7 +62,8 @@ public class AnimeCompleted extends Fragment {
                     "Static Title "+(i+1),
                     "Progress : ",
                     "Rating : ",
-                    getResources().getColor(R.color.completed)
+                    getResources().getColor(R.color.completed),
+                    getResources().getColor(R.color.black)
             );
         }
 

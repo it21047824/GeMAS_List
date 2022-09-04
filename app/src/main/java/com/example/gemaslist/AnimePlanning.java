@@ -65,7 +65,8 @@ public class AnimePlanning extends Fragment {
                     "Static Title "+(i+1),
                     "Progress : ",
                     "Rating : ",
-                    getResources().getColor(R.color.planning)
+                    getResources().getColor(R.color.planning),
+                    getResources().getColor(R.color.black)
             );
         }
 

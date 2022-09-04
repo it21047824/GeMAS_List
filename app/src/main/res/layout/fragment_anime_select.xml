@@ -17,7 +17,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:fontFamily="sans-serif-light"
-            android:textColor="@color/black"
             android:textSize="18sp" />
 
         <View
@@ -193,7 +192,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
             android:text="@string/remove"
-            android:backgroundTint="@color/black"
+            android:theme="@style/custom_button"
             app:icon="@drawable/ic_baseline_delete_24" />
 
     </androidx.appcompat.widget.LinearLayoutCompat>
