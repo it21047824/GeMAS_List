@@ -25,6 +25,12 @@
     <string name="completed">Completed</string>
     <string name="planning">Planning</string>
     <string name="watching">Watching</string>
-    <string name="progress">Progress :</string>
-    <string name="rating">Rating :</string>
+    <string name="progress">Progress</string>
+    <string name="rating">Rating</string>
+    <string name="status">Status</string>
+    <string name="save">Save</string>
+    <string name="favourite">Favourite</string>
+    <string name="lorem">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed sed erat pharetra, scelerisque lacus vel, aliquam sem. Quisque nunc mauris, cursus vel erat sit amet, volutpat pulvinar libero. In venenatis molestie dolor, ut rhoncus lacus dignissim sed. Donec nibh est, placerat vel ex vel, convallis efficitur lorem. Nullam ornare tristique est, vitae auctor purus molestie nec. Vestibulum eleifend aliquet ultricies. Curabitur neque odio, vehicula non posuere ut, elementum id ante. Vestibulum condimentum nisl nec lorem tristique, sed pharetra dolor varius. Proin eget risus in velit convallis venenatis. Quisque tincidunt ligula non velit condimentum congue. Vestibulum nunc augue, tincidunt vitae nisi eu, hendrerit condimentum lacus. Mauris lacus tortor, pretium euismod diam in, dignissim laoreet enim. Proin malesuada justo sed ultrices posuere. Aenean convallis risus mi, at laoreet augue tristique non.</string>
+    <string name="average_rating">Average Rating</string>
+    <string name="remove">Remove</string>
 </resources>

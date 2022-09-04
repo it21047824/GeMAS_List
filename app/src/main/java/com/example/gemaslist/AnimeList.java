@@ -1,5 +1,6 @@
 package com.example.gemaslist;
 
+import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
 
@@ -7,6 +8,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.widget.LinearLayoutCompat;
 import androidx.appcompat.widget.LinearLayoutCompat.LayoutParams;
 import androidx.fragment.app.Fragment;
+import androidx.navigation.Navigation;
 import androidx.viewpager2.adapter.FragmentStateAdapter;
 import androidx.viewpager2.widget.ViewPager2;
 
@@ -24,20 +26,14 @@ import com.google.android.material.tabs.TabLayoutMediator;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
-/**
- * A simple {@link Fragment} subclass.
- * Use the {@link AnimeList#newInstance} factory method to
- * create an instance of this fragment.
- */
 public class AnimeList extends Fragment {
 
-    // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
 
-    // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
     private TabLayout tabLayout;
@@ -46,15 +42,6 @@ public class AnimeList extends Fragment {
         // Required empty public constructor
     }
 
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment AnimeList.
-     */
-    // TODO: Rename and change types and number of parameters
     public static AnimeList newInstance(String param1, String param2) {
         AnimeList fragment = new AnimeList();
         Bundle args = new Bundle();
@@ -92,9 +79,9 @@ public class AnimeList extends Fragment {
         new TabLayoutMediator(tabLayout, viewPager,
                 ((tab, position) -> tab.setText(viewPagerAdapter.getTitle(position)))).attach();
 
-        tabLayout.getTabAt(0).setIcon(R.drawable.ic_baseline_play_arrow_24);
-        tabLayout.getTabAt(1).setIcon(R.drawable.ic_baseline_event_available_24);
-        tabLayout.getTabAt(2).setIcon(R.drawable.ic_baseline_check_24);
+        Objects.requireNonNull(tabLayout.getTabAt(0)).setIcon(R.drawable.ic_baseline_play_arrow_24);
+        Objects.requireNonNull(tabLayout.getTabAt(1)).setIcon(R.drawable.ic_baseline_event_available_24);
+        Objects.requireNonNull(tabLayout.getTabAt(2)).setIcon(R.drawable.ic_baseline_check_24);
         // Inflate the layout for this fragment
         return view;
     }
@@ -130,6 +117,7 @@ public class AnimeList extends Fragment {
     }
 
     public static void createAnimeCard(
+            Activity activity,
             LinearLayoutCompat linearLayoutCompat,
             Context context,
             String title,
@@ -149,6 +137,12 @@ public class AnimeList extends Fragment {
         cardView.setClickable(true);
         cardView.setFocusable(true);
         cardView.setCardBackgroundColor(color);
+
+        //card view on click listener
+        cardView.setOnClickListener((View view) -> {
+            Navigation.findNavController(activity, R.id.nav_host_fragment)
+                    .navigate(R.id.action_animeList_to_animeSelect);
+        });
 
         //create title
         LayoutParams textLayoutParams =

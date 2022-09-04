@@ -1,5 +1,6 @@
 package com.example.gemaslist;
 
+import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
 
@@ -57,13 +58,15 @@ public class AnimeWatching extends Fragment {
         context = getContext();
         linearLayoutCompat = view.findViewById(R.id.watching_card_container);
 
+        Activity activity = (Activity) context;
         for(int i=0; i<10; i++) {
             AnimeList.createAnimeCard(
+                    activity,
                     linearLayoutCompat,
                     context,
                     "Static Title "+(i+1),
-                    getString(R.string.progress),
-                    getString(R.string.rating),
+                    "Progress : ",
+                    "Rating : ",
                     getResources().getColor(R.color.teal_200)
             );
         }

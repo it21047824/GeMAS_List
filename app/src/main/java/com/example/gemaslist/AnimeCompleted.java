@@ -1,5 +1,6 @@
 package com.example.gemaslist;
 
+import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
 
@@ -12,12 +13,10 @@ import android.view.ViewGroup;
 
 public class AnimeCompleted extends Fragment {
 
-    // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
 
-    // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
     private Context context;
@@ -27,7 +26,6 @@ public class AnimeCompleted extends Fragment {
         // Required empty public constructor
     }
 
-    // TODO: Rename and change types and number of parameters
     public static AnimeCompleted newInstance(String param1, String param2) {
         AnimeCompleted fragment = new AnimeCompleted();
         Bundle args = new Bundle();
@@ -55,13 +53,15 @@ public class AnimeCompleted extends Fragment {
         context = getContext();
         linearLayoutCompat = view.findViewById(R.id.completed_card_container);
 
+        Activity activity = (Activity) context;
         for(int i=0; i<10; i++) {
             AnimeList.createAnimeCard(
+                    activity,
                     linearLayoutCompat,
                     context,
                     "Static Title "+(i+1),
-                    getString(R.string.progress),
-                    getString(R.string.rating),
+                    "Progress : ",
+                    "Rating : ",
                     getResources().getColor(R.color.completed)
             );
         }

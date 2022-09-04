@@ -29,12 +29,20 @@
                 app:subtitle="@string/dashboard"
                 app:title="@string/app_name">
 
-                <androidx.appcompat.widget.AppCompatImageView
+                <com.google.android.material.card.MaterialCardView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="end"
                     android:layout_marginEnd="20dp"
-                    app:srcCompat="@mipmap/ic_launcher_round" />
+                    app:cardCornerRadius="25dp"
+                    app:cardElevation="5dp"
+                    android:outlineAmbientShadowColor="@color/black"
+                    android:layout_gravity="end" >
+                    <androidx.appcompat.widget.AppCompatImageView
+                        android:layout_width="50dp"
+                        android:layout_height="50dp"
+                        app:srcCompat="@mipmap/ic_launcher_round" />
+                </com.google.android.material.card.MaterialCardView>
+
 
             </com.google.android.material.appbar.MaterialToolbar>
 

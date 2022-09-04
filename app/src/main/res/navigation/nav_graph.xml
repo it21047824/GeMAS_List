@@ -17,10 +17,18 @@
         tools:layout="@layout/fragment_anime_list" >
         <action
             android:id="@+id/action_animeList_to_animeSelect"
-            app:destination="@id/animeSelect" />
+            app:destination="@id/animeSelect"
+            app:enterAnim="@anim/slide_in"
+            app:exitAnim="@anim/fade_out"
+            app:popEnterAnim="@anim/fade_in"
+            app:popExitAnim="@anim/slide_out" />
         <action
             android:id="@+id/action_animeList_to_animeStats"
-            app:destination="@id/animeStats" />
+            app:destination="@id/animeStats"
+            app:enterAnim="@anim/slide_in"
+            app:exitAnim="@anim/fade_out"
+            app:popEnterAnim="@anim/fade_in"
+            app:popExitAnim="@anim/slide_out" />
     </fragment>
     <fragment
         android:id="@+id/animeSelect"
