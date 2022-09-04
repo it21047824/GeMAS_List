@@ -98,7 +98,7 @@ public class AnimeStats extends Fragment {
         public PieChartDrawable() {
             paintPrimary = new Paint();
             paintPrimary.setAntiAlias(true);
-            paintPrimary.setColor(getResources().getColor(R.color.teal_200));
+            paintPrimary.setColor(getResources().getColor(R.color.watching));
             paintPrimary.setStrokeCap(Paint.Cap.ROUND);
 
             paintSecondary = new Paint();

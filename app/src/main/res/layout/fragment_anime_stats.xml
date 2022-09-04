@@ -140,7 +140,7 @@
                             android:layout_width="20dp"
                             android:layout_height="20dp"
                             android:layout_marginTop="8dp"
-                            app:srcCompat="@color/teal_200" />
+                            app:srcCompat="@color/watching" />
 
                     </androidx.appcompat.widget.LinearLayoutCompat>
 
@@ -218,7 +218,8 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:gravity="center"
-                    android:layout_margin="8dp"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginBottom="16dp"
                     tools:layout_width="200dp"
                     tools:layout_height="200dp"/>
 

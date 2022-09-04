@@ -9,6 +9,7 @@
     <color name="white">#FFFFFFFF</color>
     <color name="background">#F1F9FF</color>
     <color name="main_theme">#FF4F6BFF</color>
-    <color name="planning">#FDD4B0</color>
+    <color name="watching">#8DFF9C</color>
+    <color name="planning">#FDB0B0</color>
     <color name="completed">#52DEF6</color>
 </resources>

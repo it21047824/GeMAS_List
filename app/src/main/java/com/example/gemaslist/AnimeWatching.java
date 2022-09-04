@@ -67,7 +67,7 @@ public class AnimeWatching extends Fragment {
                     "Static Title "+(i+1),
                     "Progress : ",
                     "Rating : ",
-                    getResources().getColor(R.color.teal_200),
+                    getResources().getColor(R.color.watching),
                     getResources().getColor(R.color.black)
             );
         }
