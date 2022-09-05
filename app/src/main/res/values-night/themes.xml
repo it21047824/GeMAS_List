@@ -1,4 +1,11 @@
-<resources xmlns:tools="http://schemas.android.com/tools">
+<resources>
+    <declare-styleable name="passwordGrid">
+        <attr name="animeWatching" format="color|reference" />
+        <attr name="animePlanning" format="color|reference" />
+        <attr name="animeCompleted" format="color|reference" />
+        <attr name="customColor1" format="color|reference" />
+    </declare-styleable>
+
     <!-- Base application theme. -->
     <style name="Theme.GeMASList" parent="Theme.MaterialComponents.DayNight.NoActionBar">
         <!-- Primary brand color. -->
@@ -10,14 +17,23 @@
         <item name="colorSecondaryVariant">@color/teal_200</item>
         <item name="colorOnSecondary">@color/black</item>
         <!-- Status bar color. -->
-        <item name="android:statusBarColor" tools:targetApi="l">?attr/colorPrimaryVariant</item>
+        <item name="android:statusBarColor">?attr/colorPrimaryVariant</item>
         <!-- Customize your theme here. -->
+        <item name="animeWatching">@color/watching_dark</item>
+        <item name="animePlanning">@color/planning_dark</item>
+        <item name="animeCompleted">@color/completed_dark</item>
+        <item name="customColor1">@color/grey_light</item>
     </style>
+
     <style name="custom_checkbox">
         <item name="colorAccent">@color/teal_200</item>
     </style>
+
     <style name="custom_button">
         <item name="colorOnPrimary">@color/black</item>
         <item name="colorPrimary">@color/white</item>
     </style>
+
+
+
 </resources>

@@ -21,33 +21,21 @@ import java.util.Locale;
 
 public class AnimeSelect extends Fragment {
 
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
-
-    private String mParam1;
-    private String mParam2;
+    private boolean favourite;
 
     public AnimeSelect() {
         // Required empty public constructor
     }
 
-    public static AnimeSelect newInstance(String param1, String param2) {
-        AnimeSelect fragment = new AnimeSelect();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
-        return fragment;
+    public static AnimeSelect newInstance() {
+        return new AnimeSelect();
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
+
+        favourite = false;
     }
 
     @Override
@@ -71,7 +59,6 @@ public class AnimeSelect extends Fragment {
         String animeStatus = "Planning";
         String animeProgress = String.format(Locale.US, "%d",0);
         String animeRating = String.format(Locale.US,"%d",0);
-        boolean favourite = false;
         String animeDescription = getString(R.string.lorem);
         String averageRating = String.format(Locale.US,"%.1f", 0.00);
 

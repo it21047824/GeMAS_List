@@ -8,12 +8,13 @@ import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.navigation.Navigation;
 
+import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.view.MenuItem;
-import android.view.View;
 
-import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton;
 import com.google.android.material.navigation.NavigationView;
+
+import java.util.Objects;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
@@ -29,9 +30,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         drawerLayout = findViewById(R.id.drawerLayout);
         NavigationView navigationView = findViewById(R.id.navDrawer);
-        ExtendedFloatingActionButton fab = findViewById(R.id.floating_stats_button);
 
-
+        //set action bar and nav drawer
         ActionBarDrawerToggle actionBarDrawerToggle = new ActionBarDrawerToggle(
                 this,
                 drawerLayout,
@@ -45,39 +45,76 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         navigationView.setNavigationItemSelectedListener(this);
 
-        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
-
-            @Override
-            public void onClick(View v) {
+        toolbar.setNavigationOnClickListener(view -> {
                 if (drawerLayout.isDrawerOpen(GravityCompat.END)) {
                     drawerLayout.closeDrawer(GravityCompat.END);
                 } else {
                     drawerLayout.openDrawer(GravityCompat.END);
                 }
             }
-        });
-
-        fab.setOnClickListener((View view) -> {
-            Navigation.findNavController(this, R.id.nav_host_fragment)
-                    .navigate(R.id.action_global_animeStats);
-        });
+        );
 
     }
 
+    @SuppressLint("NonConstantResourceId")
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         //nav drawer click events
         switch (item.getItemId()){
             case R.id.navDashboard: {
-                MainActivity.this.getSupportActionBar().setSubtitle(R.string.dashboard);
+                Objects.requireNonNull(MainActivity.this.getSupportActionBar())
+                        .setSubtitle(R.string.dashboard);
                 Navigation.findNavController(this, R.id.nav_host_fragment)
                         .navigate(R.id.action_global_dashboard);
                 break;
             }
+            case R.id.navGames: {
+                Objects.requireNonNull(MainActivity.this.getSupportActionBar())
+                        .setSubtitle(R.string.games);
+                Navigation.findNavController(this, R.id.nav_host_fragment)
+                        .navigate(R.id.action_global_games);
+                break;
+            }
+            case R.id.navMovies: {
+                Objects.requireNonNull(MainActivity.this.getSupportActionBar())
+                        .setSubtitle(R.string.movies);
+                Navigation.findNavController(this, R.id.nav_host_fragment)
+                        .navigate(R.id.action_global_movies);
+                break;
+            }
+            case R.id.navSeries: {
+                Objects.requireNonNull(MainActivity.this.getSupportActionBar())
+                        .setSubtitle(R.string.series);
+                Navigation.findNavController(this, R.id.nav_host_fragment)
+                        .navigate(R.id.action_global_series);
+                break;
+            }
             case R.id.navAnime: {
-                MainActivity.this.getSupportActionBar().setSubtitle(R.string.animeList);
+                Objects.requireNonNull(MainActivity.this.getSupportActionBar())
+                        .setSubtitle(R.string.animeList);
                 Navigation.findNavController(this, R.id.nav_host_fragment)
                         .navigate(R.id.action_global_animeList);
+                break;
+            }
+            case R.id.navStats: {
+                Objects.requireNonNull(MainActivity.this.getSupportActionBar())
+                        .setSubtitle(R.string.statistics);
+                Navigation.findNavController(this, R.id.nav_host_fragment)
+                        .navigate(R.id.action_global_Statistics);
+                break;
+            }
+            case R.id.navProfile: {
+                Objects.requireNonNull(MainActivity.this.getSupportActionBar())
+                        .setSubtitle(R.string.profile);
+                Navigation.findNavController(this, R.id.nav_host_fragment)
+                        .navigate(R.id.action_global_profile);
+                break;
+            }
+            case R.id.navLogout: {
+                Objects.requireNonNull(MainActivity.this.getSupportActionBar())
+                        .setSubtitle(R.string.logout);
+                Navigation.findNavController(this, R.id.nav_host_fragment)
+                        .navigate(R.id.action_global_logout);
                 break;
             }
         }

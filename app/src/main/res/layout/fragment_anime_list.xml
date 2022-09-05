@@ -11,7 +11,7 @@
         android:layout_height="match_parent">
 
             <com.google.android.material.tabs.TabLayout
-                android:id="@+id/tabLayout"
+                android:id="@+id/anime_tab_layout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 app:layout_constraintTop_toTopOf="parent"/>
@@ -20,7 +20,7 @@
                 android:id="@+id/anime_view_pager"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                app:layout_constraintTop_toBottomOf="@+id/tabLayout"
+                app:layout_constraintTop_toBottomOf="@+id/anime_tab_layout"
                 tools:layout_editor_absoluteX="0dp"
                 tools:layout="@layout/fragment_anime_watching"/>
 

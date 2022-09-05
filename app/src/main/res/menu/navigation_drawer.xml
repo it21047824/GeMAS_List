@@ -28,6 +28,10 @@
     <item android:title="@string/app">
         <menu>
             <item
+                android:id="@+id/navStats"
+                android:title="@string/statistics"
+                android:icon="@drawable/ic_baseline_info_24"/>
+            <item
                 android:id="@+id/navProfile"
                 android:title="@string/profile"
                 android:icon="@drawable/ic_baseline_account_circle_24"/>

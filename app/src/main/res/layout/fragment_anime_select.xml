@@ -17,7 +17,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:fontFamily="sans-serif-light"
-            android:textSize="18sp" />
+            android:textSize="18sp"
+            tools:text="Anime Title"/>
 
         <View
             android:layout_width="match_parent"
@@ -34,7 +35,8 @@
                 android:id="@+id/anime_select_image"
                 android:layout_width="150dp"
                 android:layout_height="200dp"
-                android:scaleType="centerCrop"/>
+                android:scaleType="centerCrop"
+                tools:src="@color/grey_light"/>
 
             <androidx.appcompat.widget.LinearLayoutCompat
                 android:layout_width="wrap_content"
@@ -58,7 +60,8 @@
                         android:id="@+id/anime_select_status"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:inputType="none"/>
+                        android:inputType="none"
+                        tools:text="Completed"/>
 
                 </com.google.android.material.textfield.TextInputLayout>
 
@@ -149,7 +152,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
-            android:textSize="14sp"/>
+            android:textSize="14sp"
+            tools:text="Anime Description...."/>
 
         <View
             android:layout_width="match_parent"
@@ -176,7 +180,8 @@
                     android:layout_marginStart="8dp"
                     android:layout_marginEnd="8dp"
                     android:fontFamily="sans-serif-light"
-                    android:textSize="28sp" />
+                    android:textSize="28sp"
+                    tools:text="8.4"/>
 
                 <com.google.android.material.textview.MaterialTextView
                     android:layout_width="wrap_content"

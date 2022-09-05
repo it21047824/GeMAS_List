@@ -22,43 +22,50 @@
             app:exitAnim="@anim/fade_out"
             app:popEnterAnim="@anim/fade_in"
             app:popExitAnim="@anim/slide_out" />
-        <action
-            android:id="@+id/action_animeList_to_animeStats"
-            app:destination="@id/animeStats"
-            app:enterAnim="@anim/slide_in"
-            app:exitAnim="@anim/fade_out"
-            app:popEnterAnim="@anim/fade_in"
-            app:popExitAnim="@anim/slide_out" />
     </fragment>
     <fragment
         android:id="@+id/animeSelect"
         android:name="com.example.gemaslist.AnimeSelect"
         android:label="fragment_anime_select"
         tools:layout="@layout/fragment_anime_select" />
-    <fragment
-        android:id="@+id/animeStats"
-        android:name="com.example.gemaslist.AnimeStats"
-        android:label="fragment_anime_stats"
-        tools:layout="@layout/fragment_anime_stats" />
     <action
         android:id="@+id/action_global_dashboard"
         app:destination="@id/dashboard"
         app:enterAnim="@anim/slide_in"
         app:exitAnim="@anim/fade_out"
         app:popEnterAnim="@anim/fade_in"
-        app:popExitAnim="@anim/slide_out" />
+        app:popExitAnim="@anim/slide_out"
+        app:popUpTo="@id/dashboard"
+        app:popUpToInclusive="false" />
     <action
         android:id="@+id/action_global_animeList"
         app:destination="@id/animeList"
         app:enterAnim="@anim/slide_in"
         app:exitAnim="@anim/fade_out"
         app:popEnterAnim="@anim/fade_in"
-        app:popExitAnim="@anim/slide_out" />
-    <fragment android:id="@+id/games" />
-    <fragment android:id="@+id/movies" />
-    <fragment android:id="@+id/series" />
-    <fragment android:id="@+id/profile" />
-    <fragment android:id="@+id/logout" />
+        app:popExitAnim="@anim/slide_out"
+        app:popUpTo="@id/dashboard"
+        app:popUpToInclusive="false" />
+    <fragment
+        android:id="@+id/games"
+        android:name="com.example.gemaslist.GamesList"
+        tools:layout="@layout/fragment_games_list" />
+    <fragment
+        android:id="@+id/movies"
+        android:name="com.example.gemaslist.MoviesList"
+        tools:layout="@layout/fragment_movies_list" />
+    <fragment
+        android:id="@+id/series"
+        android:name="com.example.gemaslist.SeriesList"
+        tools:layout="@layout/fragment_series_list" />
+    <fragment
+        android:id="@+id/profile"
+        android:name="com.example.gemaslist.Profile"
+        tools:layout="@layout/fragment_profile" />
+    <fragment
+        android:id="@+id/logout"
+        android:name="com.example.gemaslist.Logout"
+        tools:layout="@layout/fragment_logout" />
     <action
         android:id="@+id/action_global_games"
         app:destination="@id/games" />
@@ -75,10 +82,17 @@
         android:id="@+id/action_global_logout"
         app:destination="@id/logout" />
     <action
-        android:id="@+id/action_global_animeStats"
-        app:destination="@id/animeStats"
+        android:id="@+id/action_global_Statistics"
+        app:destination="@id/statistics"
         app:enterAnim="@anim/slide_in"
         app:exitAnim="@anim/fade_out"
         app:popEnterAnim="@anim/fade_in"
-        app:popExitAnim="@anim/slide_out" />
+        app:popExitAnim="@anim/slide_out"
+        app:popUpTo="@id/dashboard"
+        app:popUpToInclusive="false" />
+    <fragment
+        android:id="@+id/statistics"
+        android:name="com.example.gemaslist.Statistics"
+        android:label="fragment_statistics"
+        tools:layout="@layout/fragment_statistics" />
 </navigation>

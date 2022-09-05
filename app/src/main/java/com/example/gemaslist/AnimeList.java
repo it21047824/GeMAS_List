@@ -30,40 +30,23 @@ import java.util.Objects;
 
 public class AnimeList extends Fragment {
 
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
-
-    private String mParam1;
-    private String mParam2;
-    private TabLayout tabLayout;
-
     public AnimeList() {
         // Required empty public constructor
     }
 
-    public static AnimeList newInstance(String param1, String param2) {
-        AnimeList fragment = new AnimeList();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
-        return fragment;
+    public static AnimeList newInstance() {
+        return new AnimeList();
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-
+        // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_anime_list, container, false);
 
         ViewPager2 viewPager = (ViewPager2) view.findViewById(R.id.anime_view_pager);
@@ -71,25 +54,25 @@ public class AnimeList extends Fragment {
         ViewPagerAdapter viewPagerAdapter = new ViewPagerAdapter(this);
         viewPager.setAdapter(viewPagerAdapter);
 
-        viewPagerAdapter.addFragment(new AnimeWatching(), "Watching");
-        viewPagerAdapter.addFragment(new AnimePlanning(), "Planning");
-        viewPagerAdapter.addFragment(new AnimeCompleted(), "Completed");
+        viewPagerAdapter.addFragment(AnimeWatching.newInstance(), "Watching");
+        viewPagerAdapter.addFragment(AnimePlanning.newInstance(), "Planning");
+        viewPagerAdapter.addFragment(AnimeCompleted.newInstance(), "Completed");
 
-        tabLayout = view.findViewById(R.id.tabLayout);
+        TabLayout tabLayout = view.findViewById(R.id.anime_tab_layout);
         new TabLayoutMediator(tabLayout, viewPager,
                 ((tab, position) -> tab.setText(viewPagerAdapter.getTitle(position)))).attach();
 
         Objects.requireNonNull(tabLayout.getTabAt(0)).setIcon(R.drawable.ic_baseline_play_arrow_24);
         Objects.requireNonNull(tabLayout.getTabAt(1)).setIcon(R.drawable.ic_baseline_event_available_24);
         Objects.requireNonNull(tabLayout.getTabAt(2)).setIcon(R.drawable.ic_baseline_check_24);
-        // Inflate the layout for this fragment
+
         return view;
     }
 
-    private class ViewPagerAdapter extends FragmentStateAdapter{
+    private static class ViewPagerAdapter extends FragmentStateAdapter{
 
-        private List<Fragment> fragments = new ArrayList<>();
-        private List<String> fragmentTitles = new ArrayList<>();
+        private final List<Fragment> fragments = new ArrayList<>();
+        private final List<String> fragmentTitles = new ArrayList<>();
 
         public ViewPagerAdapter(@NonNull Fragment fragment) {
             super(fragment);
@@ -123,8 +106,7 @@ public class AnimeList extends Fragment {
             String title,
             String progress,
             String rating,
-            int color,
-            int textColor
+            int color
     ) {
         //create card
         LayoutParams cardLayoutParams =
@@ -140,10 +122,9 @@ public class AnimeList extends Fragment {
         cardView.setCardBackgroundColor(color);
 
         //card view on click listener
-        cardView.setOnClickListener((View view) -> {
-            Navigation.findNavController(activity, R.id.nav_host_fragment)
-                    .navigate(R.id.action_animeList_to_animeSelect);
-        });
+        cardView.setOnClickListener((View view) -> Navigation
+                .findNavController(activity, R.id.nav_host_fragment)
+                .navigate(R.id.action_animeList_to_animeSelect));
 
         //create title
         LayoutParams textLayoutParams =
@@ -152,7 +133,6 @@ public class AnimeList extends Fragment {
         TextView titleTextView = new TextView(context);
         titleTextView.setLayoutParams(textLayoutParams);
         titleTextView.setText(title);
-        titleTextView.setTextColor(textColor);
         titleTextView.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 16);
         titleTextView.setGravity(Gravity.CENTER);
         titleTextView.setPadding(20,10,5,20);
@@ -161,7 +141,6 @@ public class AnimeList extends Fragment {
         TextView progressTextView = new TextView(context);
         progressTextView.setLayoutParams(textLayoutParams);
         progressTextView.setText(progress);
-        progressTextView.setTextColor(textColor);
         progressTextView.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 12);
         progressTextView.setGravity(Gravity.CENTER);
         progressTextView.setPadding(20,5,5,10);
@@ -170,7 +149,6 @@ public class AnimeList extends Fragment {
         TextView ratingTextView = new TextView(context);
         ratingTextView.setLayoutParams(textLayoutParams);
         ratingTextView.setText(rating);
-        ratingTextView.setTextColor(textColor);
         ratingTextView.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 12);
         ratingTextView.setGravity(Gravity.CENTER);
         ratingTextView.setPadding(20,5,5,10);

@@ -7,9 +7,14 @@
     <color name="teal_700">#FF018786</color>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+    <color name="grey_light">#A3A3A3</color>
+    <color name="grey_dark">#656565</color>
     <color name="background">#F1F9FF</color>
     <color name="main_theme">#FF4F6BFF</color>
-    <color name="watching">#8DFF9C</color>
-    <color name="planning">#FDB0B0</color>
-    <color name="completed">#52DEF6</color>
+    <color name="watching_light">#8DFFD1</color>
+    <color name="planning_light">#FDB0B0</color>
+    <color name="completed_light">#52DEF6</color>
+    <color name="watching_dark">#008888</color>
+    <color name="planning_dark">#933737</color>
+    <color name="completed_dark">#11357E</color>
 </resources>
