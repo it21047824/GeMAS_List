@@ -37,6 +37,7 @@ public class AnimeStats extends Fragment {
 
     private int watching, planning, completed;
     private float total;
+    private View view;
 
     public AnimeStats() {
         // Required empty public constructor
@@ -60,7 +61,7 @@ public class AnimeStats extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View view = inflater.inflate(R.layout.fragment_anime_stats, container, false);
+        view = inflater.inflate(R.layout.fragment_anime_stats, container, false);
         view.setLayerType(View.LAYER_TYPE_HARDWARE, null);
 
         Context context = getContext();
@@ -112,6 +113,13 @@ public class AnimeStats extends Fragment {
         );
 
         return view;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        //fix variable length in viewpager 2
+        view.requestLayout();
     }
 
     class PieChartDrawable extends Drawable {

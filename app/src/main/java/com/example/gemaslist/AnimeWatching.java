@@ -15,6 +15,8 @@ import android.view.ViewGroup;
 
 public class AnimeWatching extends Fragment {
 
+    private View view;
+
     public AnimeWatching() {
         // Required empty public constructor
     }
@@ -33,7 +35,7 @@ public class AnimeWatching extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View view = inflater.inflate(R.layout.fragment_anime_watching, container, false);
+        view = inflater.inflate(R.layout.fragment_anime_watching, container, false);
 
         Context context = getContext();
         LinearLayoutCompat linearLayoutCompat = view.findViewById(R.id.watching_card_container);
@@ -52,7 +54,7 @@ public class AnimeWatching extends Fragment {
             a.recycle();
         }
 
-        for(int i=0; i<10; i++) {
+        for(int i=0; i<5; i++) {
             AnimeList.createAnimeCard(
                     activity,
                     linearLayoutCompat,
@@ -66,5 +68,13 @@ public class AnimeWatching extends Fragment {
 
         return view;
     }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        //fix variable length in viewpager 2
+        view.requestLayout();
+    }
+
 
 }
