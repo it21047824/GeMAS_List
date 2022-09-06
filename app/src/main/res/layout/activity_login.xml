@@ -67,7 +67,6 @@
                 android:autofillHints=""
                 android:ems="10"
                 android:hint="@string/username"
-                android:inputType="textPersonName"
                 android:minHeight="48dp"
                 android:textColorHint="#616161"
                 app:layout_constraintBottom_toTopOf="@+id/inputPasswordLayout"
@@ -77,9 +76,10 @@
                 app:layout_constraintTop_toBottomOf="@+id/loginTitle">
 
                 <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/inputUsername"
+                    android:id="@+id/input_username"
                     android:layout_width="270dp"
                     android:layout_height="60dp"
+                    android:inputType="textPersonName"
                     android:textColorHint="#546E7A"
                     tools:ignore="TextContrastCheck" />
             </com.google.android.material.textfield.TextInputLayout>
@@ -103,7 +103,7 @@
                 app:passwordToggleEnabled="true">
 
                 <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/inputPassword"
+                    android:id="@+id/input_password"
                     android:layout_width="270dp"
                     android:layout_height="60dp"
                     android:inputType="textPassword"
@@ -111,7 +111,7 @@
                     tools:ignore="TextContrastCheck" />
             </com.google.android.material.textfield.TextInputLayout>
 
-            <Button
+            <com.google.android.material.button.MaterialButton
                 android:id="@+id/login_button"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -137,7 +137,8 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.5"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/login_button" />
+                app:layout_constraintTop_toBottomOf="@+id/login_button"
+                tools:ignore="TextContrastCheck" />
 
             <TextView
                 android:id="@+id/forgotPassLink"
@@ -152,7 +153,8 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.5"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/signUpLink" />
+                app:layout_constraintTop_toBottomOf="@+id/signUpLink"
+                tools:ignore="TextContrastCheck" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 

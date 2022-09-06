@@ -10,6 +10,8 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.navigation.Navigation;
 
 import android.annotation.SuppressLint;
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.MenuItem;
 
@@ -27,6 +29,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        //finish early if not logged in
 
         Toolbar toolbar = findViewById(R.id.mainToolbar);
         setSupportActionBar(toolbar);
@@ -67,7 +71,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     Navigation.findNavController(MainActivity.this, R.id.nav_host_fragment)
                             .navigateUp();
                 } else {
-                    finish();
+                    finishAffinity();
                 }
 
             }
@@ -201,20 +205,29 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 break;
             }
             case R.id.navLogout: {
-                String subtitle = (String) Objects.requireNonNull
-                        (MainActivity.this.getSupportActionBar()).getSubtitle();
-                if(appBarSubtitleHistory.empty()){
-                    appBarSubtitleHistory.push(subtitle);
-                } else {
-                    if(!appBarSubtitleHistory.peek().equals(subtitle)){
-                        appBarSubtitleHistory.push(subtitle);
-                    }
-                }
+//                String subtitle = (String) Objects.requireNonNull
+//                        (MainActivity.this.getSupportActionBar()).getSubtitle();
+//                if(appBarSubtitleHistory.empty()){
+//                    appBarSubtitleHistory.push(subtitle);
+//                } else {
+//                    if(!appBarSubtitleHistory.peek().equals(subtitle)){
+//                        appBarSubtitleHistory.push(subtitle);
+//                    }
+//                }
+//
+//                MainActivity.this.getSupportActionBar()
+//                        .setSubtitle(R.string.logout);
+//                Navigation.findNavController(this, R.id.nav_host_fragment)
+//                        .navigate(R.id.action_global_logout);
 
-                MainActivity.this.getSupportActionBar()
-                        .setSubtitle(R.string.logout);
-                Navigation.findNavController(this, R.id.nav_host_fragment)
-                        .navigate(R.id.action_global_logout);
+                //logout
+                SharedPreferences sp = getSharedPreferences(getString(R.string.login), MODE_PRIVATE);
+                SharedPreferences.Editor editor = sp.edit();
+                editor.putBoolean(getString(R.string.login), false);
+                editor.apply();
+
+                Intent intent = new Intent(MainActivity.this, Login.class);
+                startActivity(intent);
                 break;
             }
         }

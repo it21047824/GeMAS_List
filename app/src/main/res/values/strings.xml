@@ -2,6 +2,7 @@
     <string name="app_name">GeMAS List</string>
     <string name="login">Login</string>
     <string name="username">Username</string>
+    <string name="email">Email</string>
     <string name="password">Password</string>
     <string name="logo">App Logo</string>
     <string name="signUp">Sign Up</string>
