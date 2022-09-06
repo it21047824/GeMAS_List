@@ -40,4 +40,5 @@
     <string name="total_ratings">Total Ratings</string>
     <string name="rating_distribution">Rating Distribution</string>
     <string name="profile_banner">Navigation view profile banner</string>
+    <string name="select">Select</string>
 </resources>

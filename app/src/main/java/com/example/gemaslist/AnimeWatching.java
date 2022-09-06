@@ -1,10 +1,10 @@
 package com.example.gemaslist;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.os.Bundle;
 
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.LinearLayoutCompat;
 import androidx.fragment.app.Fragment;
 
@@ -40,7 +40,7 @@ public class AnimeWatching extends Fragment {
         Context context = getContext();
         LinearLayoutCompat linearLayoutCompat = view.findViewById(R.id.watching_card_container);
 
-        Activity activity = (Activity) context;
+        MainActivity activity = (MainActivity) context;
 
         //get theme color
         TypedValue typedValue = new TypedValue();

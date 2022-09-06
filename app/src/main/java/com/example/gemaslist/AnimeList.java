@@ -1,6 +1,5 @@
 package com.example.gemaslist;
 
-import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
 
@@ -49,7 +48,7 @@ public class AnimeList extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_anime_list, container, false);
 
-        ViewPager2 viewPager = (ViewPager2) view.findViewById(R.id.anime_view_pager);
+        ViewPager2 viewPager = view.findViewById(R.id.anime_view_pager);
 
         ViewPagerAdapter viewPagerAdapter = new ViewPagerAdapter(this);
         viewPager.setAdapter(viewPagerAdapter);
@@ -100,7 +99,7 @@ public class AnimeList extends Fragment {
     }
 
     public static void createAnimeCard(
-            Activity activity,
+            MainActivity activity,
             LinearLayoutCompat linearLayoutCompat,
             Context context,
             String title,
@@ -122,9 +121,15 @@ public class AnimeList extends Fragment {
         cardView.setCardBackgroundColor(color);
 
         //card view on click listener
-        cardView.setOnClickListener((View view) -> Navigation
-                .findNavController(activity, R.id.nav_host_fragment)
-                .navigate(R.id.action_animeList_to_animeSelect));
+        cardView.setOnClickListener((View view) -> {
+            activity.appBarSubtitleHistory.push((String)
+                    Objects.requireNonNull(activity.getSupportActionBar()).getSubtitle());
+
+            Objects.requireNonNull(activity.getSupportActionBar())
+                    .setSubtitle(R.string.select);
+            Navigation.findNavController(activity, R.id.nav_host_fragment)
+                    .navigate(R.id.action_animeList_to_animeSelect);
+        });
 
         //create title
         LayoutParams textLayoutParams =
