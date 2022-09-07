@@ -7,12 +7,15 @@
         <entry key="..\:/SLIIT/Y2S2/MAD/GeMAS List/app/src/main/res/drawable/ic_baseline_event_available_24.xml" value="0.185" />
         <entry key="..\:/SLIIT/Y2S2/MAD/GeMAS List/app/src/main/res/drawable/ic_baseline_info_24.xml" value="0.108" />
         <entry key="..\:/SLIIT/Y2S2/MAD/GeMAS List/app/src/main/res/drawable/ic_baseline_menu_24.xml" value="0.186" />
+        <entry key="..\:/SLIIT/Y2S2/MAD/GeMAS List/app/src/main/res/drawable/ic_baseline_search_24.xml" value="0.185" />
         <entry key="..\:/SLIIT/Y2S2/MAD/GeMAS List/app/src/main/res/layout/activity_anime_list.xml" value="0.264" />
         <entry key="..\:/SLIIT/Y2S2/MAD/GeMAS List/app/src/main/res/layout/activity_anime_select.xml" value="0.264" />
         <entry key="..\:/SLIIT/Y2S2/MAD/GeMAS List/app/src/main/res/layout/activity_login.xml" value="0.264" />
         <entry key="..\:/SLIIT/Y2S2/MAD/GeMAS List/app/src/main/res/layout/activity_main.xml" value="0.264" />
+        <entry key="..\:/SLIIT/Y2S2/MAD/GeMAS List/app/src/main/res/layout/anime_list_linear_card.xml" value="0.264" />
         <entry key="..\:/SLIIT/Y2S2/MAD/GeMAS List/app/src/main/res/layout/app_bar_icons.xml" value="0.2604166666666667" />
         <entry key="..\:/SLIIT/Y2S2/MAD/GeMAS List/app/src/main/res/layout/dropdown_item.xml" value="0.2734375" />
+        <entry key="..\:/SLIIT/Y2S2/MAD/GeMAS List/app/src/main/res/layout/fragment_anime_card_list.xml" value="0.22826086956521738" />
         <entry key="..\:/SLIIT/Y2S2/MAD/GeMAS List/app/src/main/res/layout/fragment_anime_completed.xml" value="0.27447916666666666" />
         <entry key="..\:/SLIIT/Y2S2/MAD/GeMAS List/app/src/main/res/layout/fragment_anime_list.xml" value="0.23508771929824562" />
         <entry key="..\:/SLIIT/Y2S2/MAD/GeMAS List/app/src/main/res/layout/fragment_anime_planning.xml" value="0.27447916666666666" />
@@ -26,6 +29,7 @@
         <entry key="..\:/SLIIT/Y2S2/MAD/GeMAS List/app/src/main/res/layout/fragment_movie_stats.xml" value="0.22826086956521738" />
         <entry key="..\:/SLIIT/Y2S2/MAD/GeMAS List/app/src/main/res/layout/fragment_movies_list.xml" value="0.22826086956521738" />
         <entry key="..\:/SLIIT/Y2S2/MAD/GeMAS List/app/src/main/res/layout/fragment_profile.xml" value="0.22826086956521738" />
+        <entry key="..\:/SLIIT/Y2S2/MAD/GeMAS List/app/src/main/res/layout/fragment_search.xml" value="0.22826086956521738" />
         <entry key="..\:/SLIIT/Y2S2/MAD/GeMAS List/app/src/main/res/layout/fragment_series_list.xml" value="0.18489583333333334" />
         <entry key="..\:/SLIIT/Y2S2/MAD/GeMAS List/app/src/main/res/layout/fragment_series_stats.xml" value="0.22826086956521738" />
         <entry key="..\:/SLIIT/Y2S2/MAD/GeMAS List/app/src/main/res/layout/fragment_statistics.xml" value="0.27447916666666666" />

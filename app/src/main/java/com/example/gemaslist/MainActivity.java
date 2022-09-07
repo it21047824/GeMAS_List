@@ -15,6 +15,7 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.MenuItem;
 
+import com.google.android.material.button.MaterialButton;
 import com.google.android.material.navigation.NavigationView;
 
 import java.util.Objects;
@@ -32,6 +33,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         //finish early if not logged in
 
+        //actionbar and nav drawer setup
         Toolbar toolbar = findViewById(R.id.mainToolbar);
         setSupportActionBar(toolbar);
 
@@ -46,6 +48,24 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 R.string.openNavDrawer,
                 R.string.closeNavDrawer
         );
+
+        MaterialButton searchButton = findViewById(R.id.appbar_search_button);
+        searchButton.setOnClickListener(view -> {
+            String subtitle = (String) Objects.requireNonNull
+                    (MainActivity.this.getSupportActionBar()).getSubtitle();
+            if(appBarSubtitleHistory.empty()){
+                appBarSubtitleHistory.push(subtitle);
+            } else {
+                if(!appBarSubtitleHistory.peek().equals(subtitle)){
+                    appBarSubtitleHistory.push(subtitle);
+                }
+            }
+
+            MainActivity.this.getSupportActionBar()
+                    .setSubtitle(R.string.search);
+            Navigation.findNavController(this, R.id.nav_host_fragment)
+                    .navigate(R.id.action_global_search);
+        });
 
         drawerLayout.addDrawerListener(actionBarDrawerToggle);
         actionBarDrawerToggle.syncState();
@@ -73,7 +93,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 } else {
                     finishAffinity();
                 }
-
             }
         };
         this.getOnBackPressedDispatcher().addCallback(this, backPressedCallback);

@@ -1,25 +1,18 @@
 package com.example.gemaslist;
 
-import android.content.Context;
+import android.content.res.TypedArray;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.widget.LinearLayoutCompat;
-import androidx.appcompat.widget.LinearLayoutCompat.LayoutParams;
 import androidx.fragment.app.Fragment;
-import androidx.navigation.Navigation;
 import androidx.viewpager2.adapter.FragmentStateAdapter;
 import androidx.viewpager2.widget.ViewPager2;
 
 import android.util.TypedValue;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
-import android.widget.TextView;
 
-import com.google.android.material.card.MaterialCardView;
 import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.tabs.TabLayoutMediator;
 
@@ -53,9 +46,32 @@ public class AnimeList extends Fragment {
         ViewPagerAdapter viewPagerAdapter = new ViewPagerAdapter(this);
         viewPager.setAdapter(viewPagerAdapter);
 
-        viewPagerAdapter.addFragment(AnimeWatching.newInstance(), "Watching");
-        viewPagerAdapter.addFragment(AnimePlanning.newInstance(), "Planning");
-        viewPagerAdapter.addFragment(AnimeCompleted.newInstance(), "Completed");
+        //get colors for cards
+        TypedValue typedValue = new TypedValue();
+        int watchingColor = 0;
+        int planningColor = 0;
+        int completedColor = 0;
+
+        if (getContext() != null){
+            TypedArray a = getContext().obtainStyledAttributes(typedValue.data, new int[]{
+                    R.attr.animeWatching,
+                    R.attr.animePlanning,
+                    R.attr.animeCompleted
+            });
+
+            watchingColor = a.getColor(0,0);
+            planningColor = a.getColor(1,0);
+            completedColor = a.getColor(2,0);
+
+            a.recycle();
+        }
+
+        viewPagerAdapter.addFragment(AnimeCardList.newInstance
+                (watchingColor,createArrayList(5)), "Watching");
+        viewPagerAdapter.addFragment(AnimeCardList.newInstance
+                (planningColor, createArrayList(10)), "Planning");
+        viewPagerAdapter.addFragment(AnimeCardList.newInstance
+                (completedColor,createArrayList(20)), "Completed");
 
         TabLayout tabLayout = view.findViewById(R.id.anime_tab_layout);
         new TabLayoutMediator(tabLayout, viewPager,
@@ -98,95 +114,12 @@ public class AnimeList extends Fragment {
         }
     }
 
-    public static void createAnimeCard(
-            MainActivity activity,
-            LinearLayoutCompat linearLayoutCompat,
-            Context context,
-            String title,
-            String progress,
-            String rating,
-            int color
-    ) {
-        //create card
-        LayoutParams cardLayoutParams =
-                new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT);
-        cardLayoutParams.setMargins(8,16,16,8);
-
-        MaterialCardView cardView = new MaterialCardView(context);
-        cardView.setLayoutParams(cardLayoutParams);
-        cardView.setPadding(8,8,8,8);
-        cardView.setElevation(5);
-        cardView.setClickable(true);
-        cardView.setFocusable(true);
-        cardView.setCardBackgroundColor(color);
-
-        //card view on click listener
-        cardView.setOnClickListener((View view) -> {
-            activity.appBarSubtitleHistory.push((String)
-                    Objects.requireNonNull(activity.getSupportActionBar()).getSubtitle());
-
-            Objects.requireNonNull(activity.getSupportActionBar())
-                    .setSubtitle(R.string.select);
-            Navigation.findNavController(activity, R.id.nav_host_fragment)
-                    .navigate(R.id.action_animeList_to_animeSelect);
-        });
-
-        //create title
-        LayoutParams textLayoutParams =
-                new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
-
-        TextView titleTextView = new TextView(context);
-        titleTextView.setLayoutParams(textLayoutParams);
-        titleTextView.setText(title);
-        titleTextView.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 16);
-        titleTextView.setGravity(Gravity.CENTER);
-        titleTextView.setPadding(20,10,5,20);
-
-        //create progress text
-        TextView progressTextView = new TextView(context);
-        progressTextView.setLayoutParams(textLayoutParams);
-        progressTextView.setText(progress);
-        progressTextView.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 12);
-        progressTextView.setGravity(Gravity.CENTER);
-        progressTextView.setPadding(20,5,5,10);
-
-        //create rating text
-        TextView ratingTextView = new TextView(context);
-        ratingTextView.setLayoutParams(textLayoutParams);
-        ratingTextView.setText(rating);
-        ratingTextView.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 12);
-        ratingTextView.setGravity(Gravity.CENTER);
-        ratingTextView.setPadding(20,5,5,10);
-
-        //create image
-        LayoutParams imageParams = new LayoutParams(250, 300);
-
-        ImageView imageView = new ImageView(context);
-        imageView.setImageResource(R.drawable.placeholder_image);
-        imageView.setLayoutParams(imageParams);
-        imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
-
-        //create text layout
-        LinearLayoutCompat textLayout = new LinearLayoutCompat(context);
-        textLayout.setLayoutParams(textLayoutParams);
-        textLayout.setOrientation(LinearLayoutCompat.VERTICAL);
-        textLayout.addView(titleTextView);
-        textLayout.addView(progressTextView);
-        textLayout.addView(ratingTextView);
-
-        //create card layout
-        LayoutParams cardContentParams =
-                new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
-
-        LinearLayoutCompat cardContent = new LinearLayoutCompat(context);
-        cardContent.setLayoutParams(cardContentParams);
-
-        cardContent.addView(imageView);
-        cardContent.addView(textLayout);
-
-        cardView.addView(cardContent);
-
-        linearLayoutCompat.addView(cardView);
+    public ArrayList<Integer> createArrayList(int count) {
+        ArrayList<Integer> arr = new ArrayList<>();
+        for(int i=1; i<=count; i++){
+            arr.add(i);
+        }
+        return arr;
     }
 
 }

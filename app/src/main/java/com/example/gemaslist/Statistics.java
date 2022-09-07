@@ -38,7 +38,7 @@ public class Statistics extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_statistics, container, false);
 
-        ViewPager2 viewPager = (ViewPager2) view.findViewById(R.id.statistics_view_pager);
+        ViewPager2 viewPager = view.findViewById(R.id.statistics_view_pager);
         ViewPagerAdapter adapter = new ViewPagerAdapter(this);
         viewPager.setAdapter(adapter);
 

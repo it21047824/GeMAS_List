@@ -29,18 +29,41 @@
                 app:subtitle="@string/dashboard"
                 app:title="@string/app_name">
 
-                <com.google.android.material.card.MaterialCardView
+                <androidx.appcompat.widget.LinearLayoutCompat
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginEnd="20dp"
-                    app:cardCornerRadius="25dp"
-                    app:cardElevation="5dp"
-                    android:layout_gravity="end" >
-                    <androidx.appcompat.widget.AppCompatImageView
-                        android:layout_width="50dp"
-                        android:layout_height="50dp"
-                        app:srcCompat="@mipmap/ic_launcher_round" />
-                </com.google.android.material.card.MaterialCardView>
+                    android:gravity="center"
+                    android:layout_gravity="end">
+
+                    <com.google.android.material.card.MaterialCardView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginEnd="20dp"
+                        app:cardCornerRadius="25dp"
+                        app:cardElevation="5dp"
+                        android:layout_gravity="end" >
+
+                        <androidx.appcompat.widget.AppCompatImageView
+                            android:layout_width="50dp"
+                            android:layout_height="50dp"
+                            app:srcCompat="@mipmap/ic_launcher_round" />
+
+                    </com.google.android.material.card.MaterialCardView>
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/appbar_search_button"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:minWidth="0dp"
+                        android:backgroundTint="@color/main_theme"
+                        app:icon="@drawable/ic_baseline_search_24"
+                        app:iconTint="?attr/colorControlNormal"
+                        app:iconPadding="0dp"
+                        app:iconSize="30dp"/>
+
+
+                </androidx.appcompat.widget.LinearLayoutCompat>
+
 
             </com.google.android.material.appbar.MaterialToolbar>
 

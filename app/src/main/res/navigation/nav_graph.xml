@@ -95,4 +95,26 @@
         android:name="com.example.gemaslist.Statistics"
         android:label="fragment_statistics"
         tools:layout="@layout/fragment_statistics" />
+    <fragment
+        android:id="@+id/search"
+        android:name="com.example.gemaslist.Search"
+        android:label="fragment_search"
+        tools:layout="@layout/fragment_search" >
+        <action
+            android:id="@+id/action_search_to_animeSelect"
+            app:destination="@id/animeSelect"
+            app:enterAnim="@anim/slide_in"
+            app:exitAnim="@anim/fade_out"
+            app:popEnterAnim="@anim/fade_in"
+            app:popExitAnim="@anim/slide_out" />
+    </fragment>
+    <action
+        android:id="@+id/action_global_search"
+        app:destination="@id/search"
+        app:enterAnim="@anim/slide_up_in"
+        app:exitAnim="@anim/fade_out"
+        app:popEnterAnim="@anim/fade_in"
+        app:popExitAnim="@anim/slide_up_out"
+        app:popUpTo="@id/dashboard"
+        app:popUpToInclusive="false" />
 </navigation>

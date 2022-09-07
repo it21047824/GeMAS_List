@@ -42,4 +42,7 @@
     <string name="rating_distribution">Rating Distribution</string>
     <string name="profile_banner">Navigation view profile banner</string>
     <string name="select">Select</string>
+    <string name="search">Search</string>
+    <string name="list">List</string>
+    <string name="grid">Grid</string>
 </resources>
