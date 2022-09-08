@@ -19,8 +19,7 @@
                 android:id="@+id/anime_view_pager"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                tools:layout_editor_absoluteX="0dp"
-                tools:layout="@layout/fragment_anime_card_list"/>
+                tools:layout_editor_absoluteX="0dp"/>
 
     </androidx.appcompat.widget.LinearLayoutCompat>
 

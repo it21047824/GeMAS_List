@@ -22,6 +22,10 @@ import java.util.Objects;
 
 public class AnimeList extends Fragment {
 
+    private AnimeCardList watchingList;
+    private AnimeCardList planningList;
+    private AnimeCardList completedList;
+
     public AnimeList() {
         // Required empty public constructor
     }
@@ -33,6 +37,27 @@ public class AnimeList extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        //get colors for cards
+        TypedValue typedValue = new TypedValue();
+        int watchingColor = 0;
+        int planningColor = 0;
+        int completedColor = 0;
+
+        if (getContext() != null){
+            TypedArray a = getContext().obtainStyledAttributes(typedValue.data, new int[]{
+                    R.attr.animeWatching,
+                    R.attr.animePlanning,
+                    R.attr.animeCompleted
+            });
+            watchingColor = a.getColor(0,0);
+            planningColor = a.getColor(1,0);
+            completedColor = a.getColor(2,0);
+            a.recycle();
+        }
+
+        watchingList = AnimeCardList.newInstance(watchingColor, createArrayList(5));
+        planningList = AnimeCardList.newInstance(planningColor, createArrayList(10));
+        completedList = AnimeCardList.newInstance(completedColor, createArrayList(20));
     }
 
     @Override
@@ -46,32 +71,9 @@ public class AnimeList extends Fragment {
         ViewPagerAdapter viewPagerAdapter = new ViewPagerAdapter(this);
         viewPager.setAdapter(viewPagerAdapter);
 
-        //get colors for cards
-        TypedValue typedValue = new TypedValue();
-        int watchingColor = 0;
-        int planningColor = 0;
-        int completedColor = 0;
-
-        if (getContext() != null){
-            TypedArray a = getContext().obtainStyledAttributes(typedValue.data, new int[]{
-                    R.attr.animeWatching,
-                    R.attr.animePlanning,
-                    R.attr.animeCompleted
-            });
-
-            watchingColor = a.getColor(0,0);
-            planningColor = a.getColor(1,0);
-            completedColor = a.getColor(2,0);
-
-            a.recycle();
-        }
-
-        viewPagerAdapter.addFragment(AnimeCardList.newInstance
-                (watchingColor,createArrayList(5)), "Watching");
-        viewPagerAdapter.addFragment(AnimeCardList.newInstance
-                (planningColor, createArrayList(10)), "Planning");
-        viewPagerAdapter.addFragment(AnimeCardList.newInstance
-                (completedColor,createArrayList(20)), "Completed");
+        viewPagerAdapter.addFragment(watchingList, "Watching");
+        viewPagerAdapter.addFragment(planningList, "Planning");
+        viewPagerAdapter.addFragment(completedList, "Completed");
 
         TabLayout tabLayout = view.findViewById(R.id.anime_tab_layout);
         new TabLayoutMediator(tabLayout, viewPager,

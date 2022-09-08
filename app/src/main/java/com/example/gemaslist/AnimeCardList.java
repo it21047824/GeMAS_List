@@ -1,11 +1,11 @@
 package com.example.gemaslist;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.content.res.TypedArray;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.appcompat.widget.LinearLayoutCompat;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -25,6 +25,7 @@ public class AnimeCardList extends Fragment {
     private static final String ARG_CARD_COLOR = "cardColor";
     private static final String ARG_ITEMS = "listItems";
     private static final String KEY_LAYOUT_MANAGER = "layoutManager";
+    private static final String KEY_LAYOUT = "layoutBoolean";
     private static final int SPAN_COUNT = 3;
 
     public enum LayoutManagerType {
@@ -36,12 +37,12 @@ public class AnimeCardList extends Fragment {
     protected RecyclerView recyclerView;
     protected RecyclerView.LayoutManager layoutManager;
     protected AnimeRecyclerAdapter adapter;
-    protected LinearLayoutCompat switchLayout;
     protected int cardColor;
     protected ArrayList<Integer> items;
+    protected SwitchMaterial switchMaterial;
 
     private View view;
-    private SwitchMaterial switchMaterial;
+    private SharedPreferences sp;
 
     public AnimeCardList() {
         // Required empty public constructor
@@ -59,25 +60,13 @@ public class AnimeCardList extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-    }
-
-    @Override
-    public void onViewStateRestored(@Nullable Bundle savedInstanceState) {
-        super.onViewStateRestored(savedInstanceState);
-        if(savedInstanceState != null){
-            //get layout type from saved state
-            currentLayoutManagerType = (LayoutManagerType)
-                    savedInstanceState.get(KEY_LAYOUT_MANAGER);
-            switchMaterial.setChecked(currentLayoutManagerType ==
-                    LayoutManagerType.GRID_LAYOUT_MANAGER);
-            setRecyclerViewLayoutManager(currentLayoutManagerType);
-        }
+        sp = requireActivity().getSharedPreferences(KEY_LAYOUT_MANAGER, Context.MODE_PRIVATE);
     }
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-
+        //get arguments
         if (getArguments() != null) {
             cardColor = getArguments().getInt(ARG_CARD_COLOR);
             items = getArguments().getIntegerArrayList(ARG_ITEMS);
@@ -91,38 +80,39 @@ public class AnimeCardList extends Fragment {
             }
         }
 
+        if(sp.getBoolean(KEY_LAYOUT, false)){
+            currentLayoutManagerType = LayoutManagerType.GRID_LAYOUT_MANAGER;
+        } else {
+            currentLayoutManagerType = LayoutManagerType.LINEAR_LAYOUT_MANAGER;
+        }
+
         // Inflate the layout for this fragment
         view = inflater.inflate(R.layout.fragment_anime_card_list, container, false);
         MainActivity context = (MainActivity) getContext();
 
+        //get views
         recyclerView = view.findViewById(R.id.anime_card_container);
         layoutManager = new LinearLayoutManager(getActivity());
-        currentLayoutManagerType = LayoutManagerType.LINEAR_LAYOUT_MANAGER;
-        switchLayout = view.findViewById(R.id.anime_list_layout_switch);
+        switchMaterial = view.findViewById(R.id.anime_list_layout_switch);
 
-        switchMaterial = new SwitchMaterial(requireContext());
-        switchMaterial.setChecked(true);
-        switchLayout.addView(switchMaterial);
-
-        if(savedInstanceState != null){
-            //get layout type from saved state
-            currentLayoutManagerType = (LayoutManagerType)
-                    savedInstanceState.get(KEY_LAYOUT_MANAGER);
-        }
+        //set view values
         switchMaterial.setChecked(currentLayoutManagerType ==
                 LayoutManagerType.GRID_LAYOUT_MANAGER);
         setRecyclerViewLayoutManager(currentLayoutManagerType);
-
 
         adapter = new AnimeRecyclerAdapter(context, items, cardColor);
         recyclerView.setAdapter(adapter);
 
         switchMaterial.setOnCheckedChangeListener((compoundButton, isChecked) -> {
+            SharedPreferences.Editor editor = sp.edit();
             if(isChecked){
                 setRecyclerViewLayoutManager(LayoutManagerType.GRID_LAYOUT_MANAGER);
+                editor.putBoolean(KEY_LAYOUT, true);
             } else {
                 setRecyclerViewLayoutManager(LayoutManagerType.LINEAR_LAYOUT_MANAGER);
+                editor.putBoolean(KEY_LAYOUT, false);
             }
+            editor.apply();
         });
 
         return view;
@@ -152,14 +142,8 @@ public class AnimeCardList extends Fragment {
     public void onResume() {
         super.onResume();
         //fix variable length in viewpager 2
+        switchMaterial.setChecked(currentLayoutManagerType ==
+                LayoutManagerType.GRID_LAYOUT_MANAGER);
         view.requestLayout();
     }
-
-    @Override
-    public void onSaveInstanceState(@NonNull Bundle outState) {
-        outState.putSerializable(KEY_LAYOUT_MANAGER, currentLayoutManagerType);
-        super.onSaveInstanceState(outState);
-    }
-
-
 }

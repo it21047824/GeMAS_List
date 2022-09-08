@@ -80,15 +80,4 @@ public class Login extends AppCompatActivity {
             startActivity(intent);
         }
     }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-
-        //start main activity if already logged in
-        if(sp.getBoolean(getString(R.string.login), false)){
-            Intent intent = new Intent(Login.this, MainActivity.class);
-            startActivity(intent);
-        }
-    }
 }
