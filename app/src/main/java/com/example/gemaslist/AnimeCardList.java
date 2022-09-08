@@ -141,9 +141,10 @@ public class AnimeCardList extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        //fix variable length in viewpager 2
         switchMaterial.setChecked(currentLayoutManagerType ==
                 LayoutManagerType.GRID_LAYOUT_MANAGER);
+
+        //fix variable length in viewpager 2
         view.requestLayout();
     }
 }

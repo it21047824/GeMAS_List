@@ -14,6 +14,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.MenuItem;
+import android.view.View;
 
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.navigation.NavigationView;
@@ -23,6 +24,7 @@ import java.util.Stack;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
+    private boolean searchBtnHidden;
     private DrawerLayout drawerLayout;
     public Stack<String> appBarSubtitleHistory = new Stack<>();
 
@@ -61,6 +63,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 }
             }
 
+            searchButton.setVisibility(View.GONE);
+            searchBtnHidden = true;
+
             MainActivity.this.getSupportActionBar()
                     .setSubtitle(R.string.search);
             Navigation.findNavController(this, R.id.nav_host_fragment)
@@ -90,6 +95,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                             .setSubtitle(appBarSubtitleHistory.pop());
                     Navigation.findNavController(MainActivity.this, R.id.nav_host_fragment)
                             .navigateUp();
+                    if(searchBtnHidden){
+                        searchButton.setVisibility(View.VISIBLE);
+                        searchBtnHidden = false;
+                    }
                 } else {
                     finishAffinity();
                 }

@@ -74,7 +74,6 @@ public class AnimeRecyclerAdapter extends RecyclerView.Adapter<AnimeRecyclerAdap
                 holder.getRating().setVisibility(View.GONE);
                 break;
         }
-
     }
 
     @Override

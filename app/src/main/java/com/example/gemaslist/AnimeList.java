@@ -25,6 +25,7 @@ public class AnimeList extends Fragment {
     private AnimeCardList watchingList;
     private AnimeCardList planningList;
     private AnimeCardList completedList;
+    public static ViewPager2 viewPager;
 
     public AnimeList() {
         // Required empty public constructor
@@ -66,7 +67,7 @@ public class AnimeList extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_anime_list, container, false);
 
-        ViewPager2 viewPager = view.findViewById(R.id.anime_view_pager);
+        viewPager = view.findViewById(R.id.anime_view_pager);
 
         ViewPagerAdapter viewPagerAdapter = new ViewPagerAdapter(this);
         viewPager.setAdapter(viewPagerAdapter);

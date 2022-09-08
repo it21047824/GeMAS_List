@@ -114,7 +114,5 @@
         app:enterAnim="@anim/slide_up_in"
         app:exitAnim="@anim/fade_out"
         app:popEnterAnim="@anim/fade_in"
-        app:popExitAnim="@anim/slide_up_out"
-        app:popUpTo="@id/dashboard"
-        app:popUpToInclusive="false" />
+        app:popExitAnim="@anim/slide_up_out" />
 </navigation>
