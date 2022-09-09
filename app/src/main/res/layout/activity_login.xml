@@ -41,7 +41,6 @@
         android:layout_height="357dp"
         android:layout_marginTop="8dp"
         android:layout_marginBottom="32dp"
-        android:textAlignment="center"
         app:cardCornerRadius="20dp"
         app:cardElevation="5dp">
 
@@ -58,7 +57,7 @@
                 android:layout_marginTop="32dp"
                 android:autofillHints=""
                 android:ems="10"
-                android:hint="@string/username"
+                android:hint="@string/email"
                 android:minHeight="48dp"
                 android:textColorHint="#616161"
                 app:layout_constraintBottom_toTopOf="@+id/inputPasswordLayout"
@@ -71,7 +70,7 @@
                     android:id="@+id/input_username"
                     android:layout_width="270dp"
                     android:layout_height="60dp"
-                    android:inputType="textPersonName"
+                    android:inputType="textEmailAddress"
                     android:textColorHint="#546E7A"
                     tools:ignore="TextContrastCheck" />
             </com.google.android.material.textfield.TextInputLayout>
@@ -81,6 +80,7 @@
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
                 android:ems="10"
                 android:hint="@string/password"
                 android:inputType="textPassword"
@@ -122,24 +122,26 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
-                android:text="@string/login"
+                android:text="@string/sign_in"
                 android:textAlignment="center"
                 app:icon="@drawable/ic_baseline_login_24"
-                app:layout_constraintBottom_toTopOf="@+id/signUpLink"
+                app:layout_constraintBottom_toTopOf="@+id/login_signup_link"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.5"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/login_error"
                 tools:ignore="DuplicateSpeakableTextCheck" />
 
-            <TextView
-                android:id="@+id/signUpLink"
+            <com.google.android.material.textview.MaterialTextView
+                android:id="@+id/login_signup_link"
                 android:layout_width="63dp"
                 android:layout_height="19dp"
                 android:layout_marginTop="40dp"
                 android:text="@string/signUp"
                 android:textAlignment="center"
                 android:textColor="@color/main_theme"
+                android:clickable="true"
+                android:focusable="true"
                 app:layout_constraintBottom_toTopOf="@+id/forgotPassLink"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.5"
@@ -147,7 +149,7 @@
                 app:layout_constraintTop_toBottomOf="@+id/login_button"
                 tools:ignore="TextContrastCheck" />
 
-            <TextView
+            <com.google.android.material.textview.MaterialTextView
                 android:id="@+id/forgotPassLink"
                 android:layout_width="wrap_content"
                 android:layout_height="21dp"
@@ -156,11 +158,13 @@
                 android:text="@string/forgotPassword"
                 android:textAlignment="center"
                 android:textColor="@color/main_theme"
+                android:clickable="true"
+                android:focusable="true"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.5"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/signUpLink"
+                app:layout_constraintTop_toBottomOf="@+id/login_signup_link"
                 tools:ignore="TextContrastCheck" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>

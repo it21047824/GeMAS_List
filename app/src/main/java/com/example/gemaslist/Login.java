@@ -14,6 +14,7 @@ import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textview.MaterialTextView;
 
 import java.sql.Connection;
+import java.sql.SQLException;
 
 public class Login extends AppCompatActivity {
 
@@ -36,16 +37,6 @@ public class Login extends AppCompatActivity {
         sp = getSharedPreferences(getString(R.string.login), MODE_PRIVATE);
         login = Login.this;
 
-        //start main activity if already logged in
-        if(sp.getBoolean(getString(R.string.login), false)){
-            Intent intent = new Intent(Login.this, MainActivity.class);
-            startActivity(intent);
-        }
-
-        //set credentials from previous login
-        username.setText(sp.getString(getString(R.string.username), null));
-        password.setText(sp.getString(getString(R.string.password), null));
-
         //login
         Button loginButton = findViewById(R.id.login_button);
         loginButton.setOnClickListener((View view) -> {
@@ -53,7 +44,7 @@ public class Login extends AppCompatActivity {
             progressIndicator.setVisibility(View.VISIBLE);
             loginButton.setEnabled(false);
 
-            Thread loginAction = new Thread(() -> {
+            Thread loginThread = new Thread(() -> {
                 String uname=null, pass=null;
                 if(username.getText() != null){
                     uname = username.getText().toString();
@@ -62,13 +53,11 @@ public class Login extends AppCompatActivity {
                     pass = password.getText().toString();
                 }
 
-                Connection conn = Azure.getConnection();
-                Azure.Validity validity = Azure.validateUser(conn, uname, pass);
+                Connection loginConn = Azure.getConnection();
+                UserAccount result = Azure.validateUser(loginConn, uname, pass);
 
-                String finalPass = pass;
-                String finalUname = uname;
                 runOnUiThread(() -> {
-                    switch (validity) {
+                    switch (result.getResult()) {
                         case PASSWORD_INVALID:
                             login.error.setText(R.string.invalid_password);
                             login.error.setVisibility(View.VISIBLE);
@@ -77,11 +66,13 @@ public class Login extends AppCompatActivity {
                             login.error.setText(R.string.invalid_username);
                             login.error.setVisibility(View.VISIBLE);
                             break;
-                        case USER_VALID:
+                        case QUERY_SUCCESSFUL:
                             login.error.setVisibility(View.INVISIBLE);
                             SharedPreferences.Editor spEditor = sp.edit();
-                            spEditor.putString(getString(R.string.username), finalUname);
-                            spEditor.putString(getString(R.string.password), finalPass);
+                            spEditor.putString(getString(R.string.user_id), result.getUserID());
+                            spEditor.putString(getString(R.string.username), result.getUsername());
+                            spEditor.putString(getString(R.string.email), result.getEmail());
+                            spEditor.putString(getString(R.string.password), null);
                             spEditor.putBoolean(getString(R.string.login), true);
                             spEditor.apply();
 
@@ -96,11 +87,19 @@ public class Login extends AppCompatActivity {
                     login.progressIndicator.setVisibility(View.INVISIBLE);
                     loginButton.setEnabled(true);
                 });
-
+                try {
+                    loginConn.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
             });
-            loginAction.start();
+            loginThread.start();
 
         });
+
+        //signup
+        MaterialTextView signupText = findViewById(R.id.login_signup_link);
+        signupText.setOnClickListener(view -> startActivity(new Intent(Login.this, SignUp.class)));
 
         //set custom back button navigation
         OnBackPressedCallback backPressedCallback = new OnBackPressedCallback(true) {
@@ -118,8 +117,11 @@ public class Login extends AppCompatActivity {
 
         //start main activity if already logged in
         if(sp.getBoolean(getString(R.string.login), false)){
-            Intent intent = new Intent(Login.this, MainActivity.class);
-            startActivity(intent);
+            startActivity(new Intent(Login.this, MainActivity.class));
         }
+
+        //set credentials from previous login
+        username.setText(sp.getString(getString(R.string.email), null));
+        password.setText(sp.getString(getString(R.string.password), null));
     }
 }

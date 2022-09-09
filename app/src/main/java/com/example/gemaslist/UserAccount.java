@@ -1,0 +1,31 @@
+package com.example.gemaslist;
+
+public class UserAccount {
+    protected String userID;
+    protected String username;
+    protected String email;
+    protected Azure.Validity result;
+
+    public UserAccount(String userID, String username, String email, Azure.Validity result) {
+        this.userID = userID;
+        this.username = username;
+        this.email = email;
+        this.result = result;
+    }
+
+    public String getUserID() {
+        return userID;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public Azure.Validity getResult() {
+        return result;
+    }
+}

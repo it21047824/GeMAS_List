@@ -21,10 +21,11 @@ public class Azure {
             "ssl=require";
 
     public enum Validity {
-        USER_VALID,
+        QUERY_SUCCESSFUL,
         USERNAME_INVALID,
         PASSWORD_INVALID,
-        QUERY_FAILED
+        QUERY_FAILED,
+        EMAIL_ALREADY_IN_USE
     }
 
     public static Connection getConnection() {
@@ -38,20 +39,24 @@ public class Azure {
         return conn;
     }
 
-    public static Validity validateUser(Connection conn, String username, String password){
+    public static UserAccount validateUser(Connection conn, String email, String password){
 
         ResultSet res;
         Validity validity = Validity.PASSWORD_INVALID;
+        String resUID = null, resUsername = null, resEmail = null;
 
         try {
-            PreparedStatement stmt = conn.prepareStatement("SELECT * FROM user_accounts WHERE user_name=?");
-            stmt.setString(1, username);
+            PreparedStatement stmt = conn.prepareStatement("SELECT * FROM user_accounts WHERE email=?");
+            stmt.setString(1, email);
             res = stmt.executeQuery();
 
             if(res.next()){
                 String pass = res.getString(3);
-                if(pass.equals(password)){
-                    validity = Validity.USER_VALID;
+                if(Password.validatePassword(password, pass)){
+                    validity = Validity.QUERY_SUCCESSFUL;
+                    resUID = res.getString(1);
+                    resUsername = res.getString(2);
+                    resEmail = res.getString(4);
                 }
             } else {
                 validity = Validity.USERNAME_INVALID;
@@ -62,8 +67,49 @@ public class Azure {
             validity = Validity.QUERY_FAILED;
         }
 
+        return new UserAccount(
+                resUID,
+                resUsername,
+                resEmail,
+                validity
+        );
+    }
 
-        return validity;
+    public static Validity addUserAccount(Connection conn, String username, String email, String password) {
+
+
+        //check if email already in use
+        try {
+            PreparedStatement checkEmail = conn.prepareStatement("SELECT email from user_accounts WHERE email=?");
+            checkEmail.setString(1, "email");
+            ResultSet resultEmail = checkEmail.executeQuery();
+
+            if(resultEmail.next()){
+                return Validity.EMAIL_ALREADY_IN_USE;
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        //if email available, continue
+        int res;
+        String hashedPassword = Password.hashPassword(password);
+
+        try {
+            PreparedStatement stmt = conn.prepareStatement("INSERT INTO user_accounts VALUES(?,?,?)");
+            stmt.setString(1,username);
+            stmt.setString(2,hashedPassword);
+            stmt.setString(3,email);
+            res = stmt.executeUpdate();
+
+            if(res>0){
+                return Validity.QUERY_SUCCESSFUL;
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return Validity.QUERY_FAILED;
     }
 
 }
