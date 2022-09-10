@@ -8,14 +8,6 @@
     android:orientation="vertical"
     tools:context=".SignUp">
 
-    <com.google.android.material.progressindicator.LinearProgressIndicator
-        android:id="@+id/signup_progress"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:indeterminate="true"
-        android:visibility="invisible"
-        tools:visibility="visible"/>
-
     <androidx.appcompat.widget.LinearLayoutCompat
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -28,6 +20,14 @@
             android:layout_margin="32dp"
             app:cardCornerRadius="20dp"
             app:cardElevation="5dp">
+
+            <com.google.android.material.progressindicator.LinearProgressIndicator
+                android:id="@+id/signup_progress"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:indeterminate="true"
+                android:visibility="invisible"
+                tools:visibility="visible"/>
 
             <androidx.appcompat.widget.LinearLayoutCompat
                 android:layout_width="match_parent"
@@ -51,6 +51,8 @@
                     android:layout_marginTop="8dp"
                     android:hint="@string/username"
                     app:errorEnabled="true"
+                    app:counterEnabled="true"
+                    app:counterMaxLength="20"
                     style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
 
                     <com.google.android.material.textfield.TextInputEditText

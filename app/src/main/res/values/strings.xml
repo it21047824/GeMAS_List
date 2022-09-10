@@ -33,7 +33,7 @@
     <string name="save">Save</string>
     <string name="favourite">Favourite</string>
     <string name="lorem">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed sed erat pharetra, scelerisque lacus vel, aliquam sem. Quisque nunc mauris, cursus vel erat sit amet, volutpat pulvinar libero. In venenatis molestie dolor, ut rhoncus lacus dignissim sed. Donec nibh est, placerat vel ex vel, convallis efficitur lorem. Nullam ornare tristique est, vitae auctor purus molestie nec. Vestibulum eleifend aliquet ultricies. Curabitur neque odio, vehicula non posuere ut, elementum id ante. Vestibulum condimentum nisl nec lorem tristique, sed pharetra dolor varius. Proin eget risus in velit convallis venenatis. Quisque tincidunt ligula non velit condimentum congue. Vestibulum nunc augue, tincidunt vitae nisi eu, hendrerit condimentum lacus. Mauris lacus tortor, pretium euismod diam in, dignissim laoreet enim. Proin malesuada justo sed ultrices posuere. Aenean convallis risus mi, at laoreet augue tristique non.</string>
-    <string name="average_rating">Average Rating</string>
+    <string name="average_rating">Average Rating from MAL</string>
     <string name="remove">Remove</string>
     <string name="statistics">Statistics</string>
     <string name="anime_statistics">Anime Statistics</string>
@@ -53,4 +53,14 @@
     <string name="confirm_password">Confirm Password</string>
     <string name="create_account">Create Account</string>
     <string name="fill_all_fields">Fill all fields</string>
+    <string name="add_a_new_title">Add A New Title</string>
+    <string name="title_name">Title Name</string>
+    <string name="type">Type</string>
+    <string name="description">Description</string>
+    <string name="select_image">Select Image</string>
+    <string name="linear_preview">Linear Preview</string>
+    <string name="grid_preview">Grid Preview</string>
+    <string name="add_title">Add title</string>
+    <string name="tap_image_to_resize">*tap image to resize</string>
+    <string name="episode_count">Episode Count</string>
 </resources>

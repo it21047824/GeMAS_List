@@ -107,11 +107,7 @@ public class SignUp extends AppCompatActivity {
 
             @Override
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                if(charSequence.length()<3){
-                    usernameLayout.setError("*username must be at least 3 characters");
-                } else {
-                    usernameLayout.setError(null);
-                }
+                validateUsername(charSequence);
             }
 
             @Override
@@ -127,20 +123,7 @@ public class SignUp extends AppCompatActivity {
             String password = Objects.requireNonNull(passwordInput.getText()).toString();
             String confirm = Objects.requireNonNull(confirmPassInput.getText()).toString();
 
-            if(username.length()<3) {
-                usernameLayout.setError("*username must be at least 3 characters");
-                progressIndicator.setVisibility(View.INVISIBLE);
-                createAccountButton.setEnabled(true);
-            } if(!validateEmail(email)){
-                error.setText(R.string.fill_all_fields);
-                progressIndicator.setVisibility(View.INVISIBLE);
-                createAccountButton.setEnabled(true);
-            } else if(!validatePassword(password)){
-                error.setText(R.string.fill_all_fields);
-                progressIndicator.setVisibility(View.INVISIBLE);
-                createAccountButton.setEnabled(true);
-            } else if(!validateConfirmPassword(confirm)){
-                error.setText(R.string.fill_all_fields);
+            if(!validateUsername(username) || !validateEmail(email) || !validatePassword(password) || !validateConfirmPassword(confirm)) {
                 progressIndicator.setVisibility(View.INVISIBLE);
                 createAccountButton.setEnabled(true);
             } else {
@@ -160,7 +143,7 @@ public class SignUp extends AppCompatActivity {
                                 activity.error.setVisibility(View.INVISIBLE);
                                 finish();
                                 break;
-                            case EMAIL_ALREADY_IN_USE:
+                            case ALREADY_IN_USE:
                                 activity.emailLayout.setError("*this email is taken");
                                 break;
                             case QUERY_FAILED:
@@ -171,13 +154,26 @@ public class SignUp extends AppCompatActivity {
                         progressIndicator.setVisibility(View.INVISIBLE);
                         createAccountButton.setEnabled(true);
                     });
-
+                    Azure.closeConnection(signupConn);
                 });
                 signupThread.start();
 
             }
 
         });
+    }
+
+    private boolean validateUsername(CharSequence charSequence) {
+        if(charSequence.length()<3){
+            usernameLayout.setError("*username must be at least 3 characters");
+        } else {
+            if(charSequence.length()>20){
+                usernameLayout.setError("*username must be no more than 20 characters");
+            }
+            usernameLayout.setError(null);
+            return true;
+        }
+        return false;
     }
 
     private boolean validateConfirmPassword(CharSequence charSequence) {

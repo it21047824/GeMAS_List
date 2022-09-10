@@ -1,6 +1,8 @@
 package com.example.gemaslist;
 
 import android.annotation.SuppressLint;
+import android.content.Context;
+import android.net.Uri;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -25,7 +27,7 @@ public class Azure {
         USERNAME_INVALID,
         PASSWORD_INVALID,
         QUERY_FAILED,
-        EMAIL_ALREADY_IN_USE
+        ALREADY_IN_USE
     }
 
     public static Connection getConnection() {
@@ -37,6 +39,14 @@ public class Azure {
             e.printStackTrace();
         }
         return conn;
+    }
+
+    public static void closeConnection(Connection conn) {
+        try {
+            conn.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 
     public static UserAccount validateUser(Connection conn, String email, String password){
@@ -77,7 +87,6 @@ public class Azure {
 
     public static Validity addUserAccount(Connection conn, String username, String email, String password) {
 
-
         //check if email already in use
         try {
             PreparedStatement checkEmail = conn.prepareStatement("SELECT email from user_accounts WHERE email=?");
@@ -85,7 +94,7 @@ public class Azure {
             ResultSet resultEmail = checkEmail.executeQuery();
 
             if(resultEmail.next()){
-                return Validity.EMAIL_ALREADY_IN_USE;
+                return Validity.ALREADY_IN_USE;
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -112,4 +121,50 @@ public class Azure {
         return Validity.QUERY_FAILED;
     }
 
+    public static Validity addNewAnimeTitle(Connection conn,
+                                           Context context,
+                                           String title,
+                                           String description,
+                                           Uri poster,
+                                           String episodes) {
+
+        //check if the title already exists
+        try {
+            PreparedStatement stmt = conn.prepareCall
+                    ("SELECT title FROM anime_titles WHERE title=?");
+            stmt.setString(1, title);
+
+            ResultSet res = stmt.executeQuery();
+
+            if(res.next()){
+                return Validity.ALREADY_IN_USE;
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        //if not add the title
+        int result;
+        try {
+            PreparedStatement stmt = conn.prepareCall("INSERT INTO anime_titles" +
+                    "(title, description, poster, episodes) VALUES (?,?,?,?)");
+            stmt.setString(1, title);
+            stmt.setString(2, description);
+
+            byte[] image = AnimeTitle.uriToBytes(context, poster);
+            stmt.setBytes(3, image);
+            stmt.setInt(4, Integer.parseInt(episodes));
+
+            result = stmt.executeUpdate();
+
+            if(result>0){
+                return Validity.QUERY_SUCCESSFUL;
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return Validity.QUERY_FAILED;
+    }
 }

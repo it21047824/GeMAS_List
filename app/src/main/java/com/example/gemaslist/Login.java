@@ -14,7 +14,6 @@ import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textview.MaterialTextView;
 
 import java.sql.Connection;
-import java.sql.SQLException;
 
 public class Login extends AppCompatActivity {
 
@@ -87,11 +86,7 @@ public class Login extends AppCompatActivity {
                     login.progressIndicator.setVisibility(View.INVISIBLE);
                     loginButton.setEnabled(true);
                 });
-                try {
-                    loginConn.close();
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                }
+                Azure.closeConnection(loginConn);
             });
             loginThread.start();
 

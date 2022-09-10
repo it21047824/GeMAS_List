@@ -10,13 +10,6 @@
     android:gravity="center_horizontal"
     tools:context=".Login">
 
-    <com.google.android.material.progressindicator.LinearProgressIndicator
-        android:id="@+id/login_loading_indicator"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:visibility="invisible"
-        android:indeterminate="true" />
-
     <com.google.android.material.card.MaterialCardView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -43,6 +36,14 @@
         android:layout_marginBottom="32dp"
         app:cardCornerRadius="20dp"
         app:cardElevation="5dp">
+
+        <com.google.android.material.progressindicator.LinearProgressIndicator
+            android:id="@+id/login_loading_indicator"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:visibility="invisible"
+            android:indeterminate="true"
+            tools:visibility="visible"/>
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/loginCardLayout"

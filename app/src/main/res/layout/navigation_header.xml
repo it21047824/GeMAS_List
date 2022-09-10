@@ -6,7 +6,7 @@
     android:layout_height="150dp">
 
     <ImageView
-        android:id="@+id/bannerImage"
+        android:id="@+id/nav_banner_image"
         android:layout_width="match_parent"
         android:layout_height="150dp"
         android:scaleType="centerCrop"
@@ -16,7 +16,7 @@
         tools:layout_editor_absoluteY="169dp" />
 
     <ImageView
-        android:id="@+id/profileImage"
+        android:id="@+id/nav_profile_image"
         android:layout_width="80dp"
         android:layout_height="80dp"
         android:layout_marginStart="8dp"
@@ -27,8 +27,8 @@
         app:srcCompat="@drawable/profile_avatar"
         tools:ignore="ImageContrastCheck" />
 
-    <TextView
-        android:id="@+id/navProfileName"
+    <com.google.android.material.textview.MaterialTextView
+        android:id="@+id/nav_profile_name"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"

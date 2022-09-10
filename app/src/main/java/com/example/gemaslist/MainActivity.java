@@ -18,6 +18,7 @@ import android.view.View;
 
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.navigation.NavigationView;
+import com.google.android.material.textview.MaterialTextView;
 
 import java.util.Objects;
 import java.util.Stack;
@@ -27,13 +28,15 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private boolean searchBtnHidden;
     private DrawerLayout drawerLayout;
     public Stack<String> appBarSubtitleHistory = new Stack<>();
+    protected SharedPreferences sp;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        //finish early if not logged in
+        //get username
+        sp = getSharedPreferences(getString(R.string.login), MODE_PRIVATE);
 
         //actionbar and nav drawer setup
         Toolbar toolbar = findViewById(R.id.mainToolbar);
@@ -41,6 +44,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         drawerLayout = findViewById(R.id.drawerLayout);
         NavigationView navigationView = findViewById(R.id.navDrawer);
+        View navDrawerHeader = navigationView.getHeaderView(0);
+        MaterialTextView navDrawerUsername = navDrawerHeader.findViewById(R.id.nav_profile_name);
+        navDrawerUsername.setText(sp.getString(getString(R.string.username), "Username"));
 
         //set action bar and nav drawer
         ActionBarDrawerToggle actionBarDrawerToggle = new ActionBarDrawerToggle(
@@ -196,6 +202,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                         .setSubtitle(R.string.animeList);
                 Navigation.findNavController(this, R.id.nav_host_fragment)
                         .navigate(R.id.action_global_animeList);
+                break;
+            }
+            case R.id.navAddTitle: {
+                startActivity(new Intent(MainActivity.this, AddNewTitle.class));
                 break;
             }
             case R.id.navStats: {
