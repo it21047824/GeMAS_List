@@ -18,8 +18,6 @@ import android.view.ViewGroup;
 
 import com.google.android.material.switchmaterial.SwitchMaterial;
 
-import java.util.ArrayList;
-
 public class AnimeCardList extends Fragment {
 
     private static final String ARG_CARD_COLOR = "cardColor";
@@ -38,7 +36,7 @@ public class AnimeCardList extends Fragment {
     protected RecyclerView.LayoutManager layoutManager;
     protected AnimeRecyclerAdapter adapter;
     protected int cardColor;
-    protected ArrayList<Integer> items;
+    protected CustomLinkList items;
     protected SwitchMaterial switchMaterial;
 
     private View view;
@@ -48,11 +46,11 @@ public class AnimeCardList extends Fragment {
         // Required empty public constructor
     }
 
-    public static AnimeCardList newInstance(int color, ArrayList<Integer> items) {
+    public static AnimeCardList newInstance(int color, CustomLinkList items) {
         AnimeCardList animeCardList = new AnimeCardList();
         Bundle args = new Bundle();
         args.putInt(ARG_CARD_COLOR, color);
-        args.putIntegerArrayList(ARG_ITEMS, items);
+        args.putParcelable(ARG_ITEMS, items);
         animeCardList.setArguments(args);
         return animeCardList;
     }
@@ -69,7 +67,7 @@ public class AnimeCardList extends Fragment {
         //get arguments
         if (getArguments() != null) {
             cardColor = getArguments().getInt(ARG_CARD_COLOR);
-            items = getArguments().getIntegerArrayList(ARG_ITEMS);
+            items = getArguments().getParcelable(ARG_ITEMS);
         } else {
             if (getContext() != null){
                 TypedValue typedValue = new TypedValue();

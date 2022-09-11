@@ -1,5 +1,6 @@
 package com.example.gemaslist;
 
+import android.content.Context;
 import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -15,19 +16,19 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.google.android.material.card.MaterialCardView;
 import com.google.android.material.textview.MaterialTextView;
 
-import java.util.ArrayList;
+import java.sql.Connection;
 import java.util.Locale;
 import java.util.Objects;
 
 public class AnimeRecyclerAdapter extends RecyclerView.Adapter<AnimeRecyclerAdapter.ListViewHolder> {
 
-    private final ArrayList<Integer> items;
+    private final CustomLinkList items;
     protected MainActivity context;
     protected int color;
     protected LinearLayoutCompat.LayoutParams linear;
     protected LinearLayoutCompat.LayoutParams grid;
 
-    public AnimeRecyclerAdapter(MainActivity context, ArrayList<Integer> items, int color) {
+    public AnimeRecyclerAdapter(MainActivity context, CustomLinkList items, int color) {
         this.items = items;
         this.context = context;
         this.color = color;
@@ -40,8 +41,16 @@ public class AnimeRecyclerAdapter extends RecyclerView.Adapter<AnimeRecyclerAdap
         View view = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.anime_list_linear_card, parent, false);
 
-        linear = new LinearLayoutCompat.LayoutParams(250,300);
-        grid = new LinearLayoutCompat.LayoutParams(330,370);
+        Context context = view.getContext();
+
+        linear = new LinearLayoutCompat.LayoutParams(
+                (int) Azure.pxFromDp(context,55),
+                (int) Azure.pxFromDp(context, 77)
+                );
+        grid = new LinearLayoutCompat.LayoutParams(
+                (int) Azure.pxFromDp(context,115),
+                (int) Azure.pxFromDp(context, 161)
+        );
 
         return new ListViewHolder(view);
     }
@@ -49,13 +58,23 @@ public class AnimeRecyclerAdapter extends RecyclerView.Adapter<AnimeRecyclerAdap
     @Override
     public void onBindViewHolder(@NonNull ListViewHolder holder, int position) {
         //set data to cards
-        holder.getCard().setCardBackgroundColor(color);
-        holder.getAnimeImage().setImageResource(R.drawable.placeholder_image);
-        holder.getAnimeTitle().setText(String.format(Locale.US, "Static Anime Title %d", items.get(position)));
-        holder.getProgress().setText(String.format(Locale.US, "Progress : %d/12", 0));
-        holder.getRating().setText(String.format(Locale.US, "Rating : %d/10", 0));
+        Thread animeDataThread = new Thread(() ->{
+            Connection animeTitleConn = Azure.getConnection();
+            AnimeTitle anime = Azure.getAnimeTitle(animeTitleConn, items.getItem(position).title);
 
-        //changes with layout toggle
+            assert anime != null;
+
+            holder.getCard().setCardBackgroundColor(color);
+            holder.getAnimeImage().setImageBitmap(anime.getPoster());
+            holder.getAnimeTitle().setText(anime.getAnimeTitle());
+            holder.getProgress().setText(String.format(Locale.US, "Progress : %d/%d",
+                    items.getItem(position).progress, anime.getEpisodes()));
+            holder.getRating().setText(String.format(Locale.US, "Rating : %d/10",
+                    items.getItem(position).rating));
+        });
+        animeDataThread.start();
+
+        //changes for layout toggle
         switch (AnimeCardList.currentLayoutManagerType){
             case LINEAR_LAYOUT_MANAGER:
                 holder.getAnimeImage().setLayoutParams(linear);

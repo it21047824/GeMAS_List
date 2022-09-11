@@ -71,7 +71,7 @@ public class Login extends AppCompatActivity {
                             spEditor.putString(getString(R.string.user_id), result.getUserID());
                             spEditor.putString(getString(R.string.username), result.getUsername());
                             spEditor.putString(getString(R.string.email), result.getEmail());
-                            spEditor.putString(getString(R.string.password), null);
+                            spEditor.remove(getString(R.string.password));
                             spEditor.putBoolean(getString(R.string.login), true);
                             spEditor.apply();
 

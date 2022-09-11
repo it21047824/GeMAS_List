@@ -56,9 +56,11 @@ public class AnimeList extends Fragment {
             a.recycle();
         }
 
-        watchingList = AnimeCardList.newInstance(watchingColor, createArrayList(5));
-        planningList = AnimeCardList.newInstance(planningColor, createArrayList(10));
-        completedList = AnimeCardList.newInstance(completedColor, createArrayList(20));
+        AnimeUserData userData = AnimeUserData.getAnimeUserData();
+
+        watchingList = AnimeCardList.newInstance(watchingColor, userData.getWatchingList());
+        planningList = AnimeCardList.newInstance(planningColor, userData.getPlanningList());
+        completedList = AnimeCardList.newInstance(completedColor, userData.getCompletedList());
     }
 
     @Override

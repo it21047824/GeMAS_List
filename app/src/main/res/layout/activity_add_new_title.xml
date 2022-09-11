@@ -24,14 +24,6 @@
                 app:cardCornerRadius="20dp"
                 android:elevation="5dp">
 
-                <com.google.android.material.progressindicator.LinearProgressIndicator
-                    android:id="@+id/new_title_progress"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:indeterminate="true"
-                    android:visibility="invisible"
-                    tools:visibility="visible"/>
-
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -91,6 +83,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             app:errorEnabled="true"
+                            app:endIconMode="clear_text"
                             android:hint="@string/episode_count">
 
                             <com.google.android.material.textfield.TextInputEditText
@@ -98,7 +91,6 @@
                                 android:layout_width="150dp"
                                 android:layout_height="wrap_content"
                                 android:inputType="number"
-                                android:visibility="gone"
                                 tools:visibility="visible"/>
 
                         </com.google.android.material.textfield.TextInputLayout>
@@ -113,15 +105,41 @@
                         android:layout_marginTop="8dp"
                         android:layout_marginBottom="8dp"
                         android:hint="@string/add_a_new_title"
-                        app:layout_constraintBottom_toTopOf="@+id/textInputLayout3"
+                        app:layout_constraintBottom_toTopOf="@+id/new_romanji_layout"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintHorizontal_bias="0.5"
                         app:layout_constraintStart_toStartOf="parent"
                         app:errorEnabled="true"
+                        app:endIconMode="clear_text"
                         app:layout_constraintTop_toBottomOf="@+id/linearLayoutCompat2">
 
                         <com.google.android.material.textfield.TextInputEditText
                             android:id="@+id/new_title_name"
+                            android:layout_width="350dp"
+                            android:layout_height="wrap_content"
+                            android:inputType="textMultiLine"
+                            tools:text="Demon Slayer Season 3" />
+
+                    </com.google.android.material.textfield.TextInputLayout>
+
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:id="@+id/new_romanji_layout"
+                        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="8dp"
+                        android:hint="@string/romanji_name"
+                        app:layout_constraintBottom_toTopOf="@+id/textInputLayout3"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintHorizontal_bias="0.5"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:helperText="*optional - for search efficiency"
+                        app:layout_constraintTop_toBottomOf="@+id/new_title_layout"
+                        android:visibility="visible"
+                        app:endIconMode="clear_text">
+
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/new_romanji_name"
                             android:layout_width="350dp"
                             android:layout_height="wrap_content"
                             android:inputType="textMultiLine"
@@ -141,7 +159,7 @@
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintHorizontal_bias="0.5"
                         app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@+id/new_title_layout">
+                        app:layout_constraintTop_toBottomOf="@+id/new_romanji_layout">
 
                         <com.google.android.material.textfield.TextInputEditText
                             android:id="@+id/new_title_description"
@@ -232,7 +250,17 @@
                             android:layout_height="wrap_content"
                             android:layout_marginTop="8dp"
                             android:text="@string/tap_image_to_resize" />
+
                     </androidx.appcompat.widget.LinearLayoutCompat>
+
+                    <com.google.android.material.progressindicator.LinearProgressIndicator
+                        android:id="@+id/new_title_progress"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:indeterminate="true"
+                        android:visibility="invisible"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        tools:visibility="visible"/>
 
                 </androidx.constraintlayout.widget.ConstraintLayout>
 
