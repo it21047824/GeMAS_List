@@ -1,19 +1,19 @@
 package com.example.gemaslist;
 
 public class UserAccount {
-    protected String userID;
+    protected int userID;
     protected String username;
     protected String email;
     protected Azure.Validity result;
 
-    public UserAccount(String userID, String username, String email, Azure.Validity result) {
+    public UserAccount(int userID, String username, String email, Azure.Validity result) {
         this.userID = userID;
         this.username = username;
         this.email = email;
         this.result = result;
     }
 
-    public String getUserID() {
+    public int getUserID() {
         return userID;
     }
 

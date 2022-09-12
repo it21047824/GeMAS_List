@@ -6,6 +6,13 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".AnimeSelect">
 
+    <com.google.android.material.progressindicator.LinearProgressIndicator
+        android:id="@+id/anime_select_loading_indicator"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:visibility="invisible"
+        android:indeterminate="true" />
+
     <androidx.appcompat.widget.LinearLayoutCompat
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -29,12 +36,13 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
+            android:gravity="center_vertical"
             android:layout_marginTop="8dp">
 
             <androidx.appcompat.widget.AppCompatImageView
                 android:id="@+id/anime_select_image"
                 android:layout_width="150dp"
-                android:layout_height="200dp"
+                android:layout_height="210dp"
                 android:scaleType="centerCrop"
                 tools:src="@color/grey_light"/>
 
@@ -46,6 +54,7 @@
                 android:layout_gravity="center">
 
                 <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/anime_status_layout"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:hint="@string/status"
@@ -54,6 +63,7 @@
                     android:paddingStart="8dp"
                     android:paddingEnd="8dp"
                     android:paddingTop="8dp"
+                    app:errorEnabled="true"
                     style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense.ExposedDropdownMenu">
 
                     <AutoCompleteTextView
@@ -66,14 +76,15 @@
                 </com.google.android.material.textfield.TextInputLayout>
 
                 <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/anime_progress_layout"
                     android:layout_width="150dp"
                     android:layout_height="wrap_content"
                     android:paddingStart="8dp"
                     android:paddingEnd="8dp"
-                    android:paddingTop="8dp"
                     android:hint="@string/progress"
                     android:textColorHint="#616161"
                     app:suffixText="/12"
+                    app:errorEnabled="true"
                     style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
 
                     <com.google.android.material.textfield.TextInputEditText
@@ -85,13 +96,14 @@
                 </com.google.android.material.textfield.TextInputLayout>
 
                 <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/anime_rating_layout"
                     android:layout_width="150dp"
                     android:layout_height="wrap_content"
                     android:paddingStart="8dp"
                     android:paddingEnd="8dp"
-                    android:paddingTop="8dp"
                     android:hint="@string/rating"
                     android:textColorHint="#616161"
+                    app:errorEnabled="true"
                     app:suffixText="/10"
                     style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
 
@@ -176,12 +188,12 @@
                     android:id="@+id/anime_select_average_rating"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="8dp"
                     android:layout_marginStart="8dp"
+                    android:layout_marginTop="8dp"
                     android:layout_marginEnd="8dp"
                     android:fontFamily="sans-serif-light"
                     android:textSize="28sp"
-                    tools:text="8.4"/>
+                    tools:text="8.4" />
 
                 <com.google.android.material.textview.MaterialTextView
                     android:layout_width="wrap_content"
@@ -193,6 +205,7 @@
         </RelativeLayout>
 
         <com.google.android.material.button.MaterialButton
+            android:id="@+id/anime_remove_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"

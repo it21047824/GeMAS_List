@@ -23,11 +23,15 @@ public class Login extends AppCompatActivity {
     protected MaterialTextView error;
     protected Login login;
     protected LinearProgressIndicator progressIndicator;
+    protected Connection loginConn;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+        //create a connection
+        Thread createConn = new Thread(() -> loginConn = Azure.getConnection());
+        createConn.start();
 
         username = findViewById(R.id.input_username);
         password = findViewById(R.id.input_password);
@@ -52,7 +56,6 @@ public class Login extends AppCompatActivity {
                     pass = password.getText().toString();
                 }
 
-                Connection loginConn = Azure.getConnection();
                 UserAccount result = Azure.validateUser(loginConn, uname, pass);
 
                 runOnUiThread(() -> {
@@ -62,13 +65,13 @@ public class Login extends AppCompatActivity {
                             login.error.setVisibility(View.VISIBLE);
                             break;
                         case USERNAME_INVALID:
-                            login.error.setText(R.string.invalid_username);
+                            login.error.setText(R.string.invalid_email);
                             login.error.setVisibility(View.VISIBLE);
                             break;
                         case QUERY_SUCCESSFUL:
                             login.error.setVisibility(View.INVISIBLE);
                             SharedPreferences.Editor spEditor = sp.edit();
-                            spEditor.putString(getString(R.string.user_id), result.getUserID());
+                            spEditor.putInt(getString(R.string.user_id), result.getUserID());
                             spEditor.putString(getString(R.string.username), result.getUsername());
                             spEditor.putString(getString(R.string.email), result.getEmail());
                             spEditor.remove(getString(R.string.password));
@@ -86,7 +89,6 @@ public class Login extends AppCompatActivity {
                     login.progressIndicator.setVisibility(View.INVISIBLE);
                     loginButton.setEnabled(true);
                 });
-                Azure.closeConnection(loginConn);
             });
             loginThread.start();
 
@@ -118,5 +120,12 @@ public class Login extends AppCompatActivity {
         //set credentials from previous login
         username.setText(sp.getString(getString(R.string.email), null));
         password.setText(sp.getString(getString(R.string.password), null));
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        Thread closeConnThread = new Thread(Azure::closeConnection);
+        closeConnThread.start();
     }
 }

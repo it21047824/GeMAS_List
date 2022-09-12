@@ -21,7 +21,7 @@
     <string name="closeNavDrawer">Navigation Drawer Close</string>
     <string name="navigation_drawer_profile_banner">Navigation Drawer Profile Banner</string>
     <string name="navigation_drawer_profile_picture">Navigation Drawer Profile Picture</string>
-    <string name="app">App</string>
+    <string name="app">Utility</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="completed">Completed</string>
@@ -32,8 +32,7 @@
     <string name="status">Status</string>
     <string name="save">Save</string>
     <string name="favourite">Favourite</string>
-    <string name="lorem">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed sed erat pharetra, scelerisque lacus vel, aliquam sem. Quisque nunc mauris, cursus vel erat sit amet, volutpat pulvinar libero. In venenatis molestie dolor, ut rhoncus lacus dignissim sed. Donec nibh est, placerat vel ex vel, convallis efficitur lorem. Nullam ornare tristique est, vitae auctor purus molestie nec. Vestibulum eleifend aliquet ultricies. Curabitur neque odio, vehicula non posuere ut, elementum id ante. Vestibulum condimentum nisl nec lorem tristique, sed pharetra dolor varius. Proin eget risus in velit convallis venenatis. Quisque tincidunt ligula non velit condimentum congue. Vestibulum nunc augue, tincidunt vitae nisi eu, hendrerit condimentum lacus. Mauris lacus tortor, pretium euismod diam in, dignissim laoreet enim. Proin malesuada justo sed ultrices posuere. Aenean convallis risus mi, at laoreet augue tristique non.</string>
-    <string name="average_rating">Average Rating from MAL</string>
+    <string name="average_rating">Average Rating</string>
     <string name="remove">Remove</string>
     <string name="statistics">Statistics</string>
     <string name="anime_statistics">Anime Statistics</string>
@@ -47,7 +46,7 @@
     <string name="list">List</string>
     <string name="grid">Grid</string>
     <string name="invalid_password">Invalid Password</string>
-    <string name="invalid_username">Invalid Username</string>
+    <string name="invalid_email">Invalid Email</string>
     <string name="database_error">Database Error</string>
     <string name="sign_in">Sign in</string>
     <string name="confirm_password">Confirm Password</string>

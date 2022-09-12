@@ -1,10 +1,8 @@
 package com.example.gemaslist;
 
-import java.util.ArrayList;
-
 public class AnimeUserData {
 
-    private static AnimeUserData data;
+    private static volatile AnimeUserData data;
     private CustomLinkList watchingList;
     private CustomLinkList planningList;
     private CustomLinkList completedList;
@@ -15,11 +13,42 @@ public class AnimeUserData {
         completedList = new CustomLinkList();
     }
 
-    public static synchronized AnimeUserData getAnimeUserData() {
+    public static AnimeUserData getAnimeUserData() {
         if(data == null) {
-            data = new AnimeUserData();
+            synchronized (AnimeUserData.class){
+                data = new AnimeUserData();
+            }
         }
         return data;
+    }
+
+    public AnimeDataEntry find(int title) {
+        AnimeDataEntry temp = watchingList.find(title);
+        if(temp == null) {
+            temp = planningList.find(title);
+            if(temp == null){
+                temp = completedList.find(title);
+            }
+        }
+        return temp;
+    }
+
+    public boolean remove(int title) {
+        boolean temp = false;
+        if(watchingList.size()>0){
+            temp = watchingList.removeItem(title);
+        }
+        if(!temp) {
+            if(planningList.size()>0){
+                temp = planningList.removeItem(title);
+            }
+        }
+        if(!temp){
+            if(completedList.size()>0){
+                temp = completedList.removeItem(title);
+            }
+        }
+        return temp;
     }
 
     public void setWatchingList(CustomLinkList watchingList) {

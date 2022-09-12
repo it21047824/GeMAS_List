@@ -13,13 +13,16 @@ import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Toast;
 
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.textview.MaterialTextView;
 
+import java.sql.Connection;
 import java.util.Objects;
 import java.util.Stack;
 
@@ -29,14 +32,15 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private DrawerLayout drawerLayout;
     public Stack<String> appBarSubtitleHistory = new Stack<>();
     protected SharedPreferences sp;
+    private int userID;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
-        //get username
+        //get shared preferences
         sp = getSharedPreferences(getString(R.string.login), MODE_PRIVATE);
+        userID = sp.getInt(getString(R.string.user_id), 0);
 
         //actionbar and nav drawer setup
         Toolbar toolbar = findViewById(R.id.mainToolbar);
@@ -279,5 +283,29 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     @Override
     public void onPointerCaptureChanged(boolean hasCapture) {
         super.onPointerCaptureChanged(hasCapture);
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        Thread getUserData = new Thread(() -> {
+            Connection userDataConn = Azure.getConnection();
+
+            try {
+                Azure.Validity result = Azure.getAnimeUserData(userDataConn, userID);
+                if(result != Azure.Validity.QUERY_SUCCESSFUL){
+                    runOnUiThread(()-> Toast.makeText(this,
+                            "Could not load user data", Toast.LENGTH_LONG).show());
+                }
+            } catch (NullPointerException e) {/*ignore*/}
+        });
+        getUserData.start();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        Thread closeConnThread = new Thread(Azure::closeConnection);
+        closeConnThread.start();
     }
 }

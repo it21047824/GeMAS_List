@@ -154,7 +154,6 @@ public class SignUp extends AppCompatActivity {
                         progressIndicator.setVisibility(View.INVISIBLE);
                         createAccountButton.setEnabled(true);
                     });
-                    Azure.closeConnection(signupConn);
                 });
                 signupThread.start();
 

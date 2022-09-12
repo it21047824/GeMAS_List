@@ -27,7 +27,12 @@
         android:id="@+id/animeSelect"
         android:name="com.example.gemaslist.AnimeSelect"
         android:label="fragment_anime_select"
-        tools:layout="@layout/fragment_anime_select" />
+        tools:layout="@layout/fragment_anime_select" >
+        <argument
+            android:name="title_id"
+            app:argType="integer"
+            android:defaultValue="1000" />
+    </fragment>
     <action
         android:id="@+id/action_global_dashboard"
         app:destination="@id/dashboard"

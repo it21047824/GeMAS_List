@@ -5,7 +5,6 @@ import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.LinearLayoutCompat.LayoutParams;
 
-import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -210,26 +209,31 @@ public class AddNewTitle extends AppCompatActivity {
             selectImageIntent.setType("image/*");
             selectImageActivity.launch(selectImageIntent);
         });
-
         //re-crop image
         linearPreview.setOnClickListener(view -> {
-            if(croppedUri != null){
+            if(croppedUri != null && selectedImage != null){
                 Intent cropImageIntent = new Intent(
                         AddNewTitle.this,
                         ImageCropper.class
                 );
                 cropImageIntent.putExtra("DATA", selectedImage.toString());
                 cropImageActivity.launch(cropImageIntent);
+            } else {
+                Toast.makeText(view.getContext(), "There was an error. Reselect the image",
+                        Toast.LENGTH_LONG).show();
             }
         });
         gridPreview.setOnClickListener(view -> {
-            if(croppedUri != null){
+            if(croppedUri != null && selectedImage != null){
                 Intent cropImageIntent = new Intent(
                         AddNewTitle.this,
                         ImageCropper.class
                 );
                 cropImageIntent.putExtra("DATA", selectedImage.toString());
                 cropImageActivity.launch(cropImageIntent);
+            } else {
+                Toast.makeText(view.getContext(), "There was an error. Reselect the image",
+                        Toast.LENGTH_LONG).show();
             }
         });
     }
@@ -255,7 +259,6 @@ public class AddNewTitle extends AppCompatActivity {
         String finalEpisodes = episodes;
         String finalRomanji = romanji;
 
-        @SuppressLint("ApplySharedPref")
         Thread addAnimeTitleThread = new Thread(() -> {
             Azure.Validity result = Azure.Validity.QUERY_FAILED;
             Connection addAnimeTitleConn = Azure.getConnection();
@@ -281,6 +284,17 @@ public class AddNewTitle extends AppCompatActivity {
                                 finalEpisodes,
                                 finalRomanji
                         );
+
+                        if(result == Azure.Validity.QUERY_SUCCESSFUL){
+                            SharedPreferences.Editor editor = sp.edit();
+                            editor.remove("TYPE");
+                            editor.remove("EPISODES");
+                            editor.remove("TITLE");
+                            editor.remove("ROMANJI");
+                            editor.remove("DESCRIPTION");
+                            editor.remove("IMAGE");
+                            editor.apply();
+                        }
                     }
                     break;
                 }
@@ -302,19 +316,9 @@ public class AddNewTitle extends AppCompatActivity {
                         Toast.makeText(context, "Database Error", Toast.LENGTH_LONG).show();
                         break;
                     case QUERY_SUCCESSFUL:
-                        SharedPreferences.Editor editor = sp.edit();
-                        editor.remove("TYPE");
-                        editor.remove("EPISODES");
-                        editor.remove("TITLE");
-                        editor.remove("ROMANJI");
-                        editor.remove("DESCRIPTION");
-                        editor.remove("IMAGE");
-                        editor.commit();
-
                         episodeLayout.setError(null);
                         newTitleLayout.setError(null);
                         Toast.makeText(context, "Successfully Added", Toast.LENGTH_LONG).show();
-
 
                         finish();
                         break;
@@ -326,7 +330,6 @@ public class AddNewTitle extends AppCompatActivity {
                 addTitleButton.setEnabled(true);
             });
 
-            Azure.closeConnection(addAnimeTitleConn);
         });
         addAnimeTitleThread.start();
     }

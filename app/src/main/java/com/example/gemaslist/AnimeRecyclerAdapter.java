@@ -1,6 +1,7 @@
 package com.example.gemaslist;
 
 import android.content.Context;
+import android.os.Bundle;
 import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -17,18 +18,22 @@ import com.google.android.material.card.MaterialCardView;
 import com.google.android.material.textview.MaterialTextView;
 
 import java.sql.Connection;
+import java.util.ArrayList;
 import java.util.Locale;
 import java.util.Objects;
 
 public class AnimeRecyclerAdapter extends RecyclerView.Adapter<AnimeRecyclerAdapter.ListViewHolder> {
 
-    private final CustomLinkList items;
+    private static final Object lock = new Object();
+    private final ArrayList<AnimeDataEntry> items;
     protected MainActivity context;
     protected int color;
     protected LinearLayoutCompat.LayoutParams linear;
     protected LinearLayoutCompat.LayoutParams grid;
+    protected AnimeTitle anime;
+    protected Connection animeTitleConn;
 
-    public AnimeRecyclerAdapter(MainActivity context, CustomLinkList items, int color) {
+    public AnimeRecyclerAdapter(MainActivity context, ArrayList<AnimeDataEntry> items, int color) {
         this.items = items;
         this.context = context;
         this.color = color;
@@ -44,8 +49,8 @@ public class AnimeRecyclerAdapter extends RecyclerView.Adapter<AnimeRecyclerAdap
         Context context = view.getContext();
 
         linear = new LinearLayoutCompat.LayoutParams(
-                (int) Azure.pxFromDp(context,55),
-                (int) Azure.pxFromDp(context, 77)
+                (int) Azure.pxFromDp(context,65),
+                (int) Azure.pxFromDp(context, 91)
                 );
         grid = new LinearLayoutCompat.LayoutParams(
                 (int) Azure.pxFromDp(context,115),
@@ -56,21 +61,38 @@ public class AnimeRecyclerAdapter extends RecyclerView.Adapter<AnimeRecyclerAdap
     }
 
     @Override
-    public void onBindViewHolder(@NonNull ListViewHolder holder, int position) {
+    public synchronized void onBindViewHolder(@NonNull ListViewHolder holder, int position) {
         //set data to cards
         Thread animeDataThread = new Thread(() ->{
-            Connection animeTitleConn = Azure.getConnection();
-            AnimeTitle anime = Azure.getAnimeTitle(animeTitleConn, items.getItem(position).title);
+            if(animeTitleConn == null){
+                animeTitleConn = Azure.getConnection();
+            }
 
-            assert anime != null;
+            synchronized (lock){
+                anime = Azure.getAnimeTitle(animeTitleConn, items.get(position).title);
 
-            holder.getCard().setCardBackgroundColor(color);
-            holder.getAnimeImage().setImageBitmap(anime.getPoster());
-            holder.getAnimeTitle().setText(anime.getAnimeTitle());
-            holder.getProgress().setText(String.format(Locale.US, "Progress : %d/%d",
-                    items.getItem(position).progress, anime.getEpisodes()));
-            holder.getRating().setText(String.format(Locale.US, "Rating : %d/10",
-                    items.getItem(position).rating));
+                context.runOnUiThread(() -> {
+                    holder.getCard().setCardBackgroundColor(color);
+                    holder.getAnimeImage().setImageBitmap(anime.getPoster());
+                    holder.getAnimeTitle().setText(anime.getAnimeTitle());
+                    holder.getProgress().setText(String.format(Locale.US, "Progress : %d/%d",
+                            items.get(position).progress, anime.getEpisodes()));
+                    holder.getRating().setText(String.format(Locale.US, "Rating : %d/10",
+                            items.get(position).rating));
+                    holder.getCard().setOnClickListener(view -> {
+                        Bundle bundle = new Bundle();
+                        bundle.putInt("title_id", items.get(position).title);
+
+                        context.appBarSubtitleHistory.push((String)
+                                Objects.requireNonNull(context.getSupportActionBar()).getSubtitle());
+
+                        Objects.requireNonNull(context.getSupportActionBar())
+                                .setSubtitle(R.string.select);
+                        Navigation.findNavController(context, R.id.nav_host_fragment)
+                                .navigate(R.id.action_animeList_to_animeSelect, bundle);
+                    });
+                });
+            }
         });
         animeDataThread.start();
 
@@ -100,7 +122,7 @@ public class AnimeRecyclerAdapter extends RecyclerView.Adapter<AnimeRecyclerAdap
         return items.size();
     }
 
-    public class ListViewHolder extends RecyclerView.ViewHolder {
+    public static class ListViewHolder extends RecyclerView.ViewHolder {
         private final MaterialCardView card;
         private final MaterialTextView title, progress, rating;
         private final LinearLayoutCompat layout;
@@ -108,17 +130,6 @@ public class AnimeRecyclerAdapter extends RecyclerView.Adapter<AnimeRecyclerAdap
 
         public ListViewHolder(@NonNull View view) {
             super(view);
-
-            //card on click event
-            view.setOnClickListener(v -> {
-                context.appBarSubtitleHistory.push((String)
-                        Objects.requireNonNull(context.getSupportActionBar()).getSubtitle());
-
-                Objects.requireNonNull(context.getSupportActionBar())
-                        .setSubtitle(R.string.select);
-                Navigation.findNavController(context, R.id.nav_host_fragment)
-                        .navigate(R.id.action_animeList_to_animeSelect);
-            });
 
             //initialize views
             card = view.findViewById(R.id.anime_list_card);

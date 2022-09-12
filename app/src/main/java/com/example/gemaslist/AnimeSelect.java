@@ -1,9 +1,15 @@
 package com.example.gemaslist;
 
+import android.app.Activity;
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
 
+import android.text.Editable;
+import android.text.TextWatcher;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,17 +17,37 @@ import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.CheckBox;
 import android.widget.ImageView;
+import android.widget.Toast;
 
+import com.google.android.material.button.MaterialButton;
+import com.google.android.material.progressindicator.LinearProgressIndicator;
 import com.google.android.material.textfield.TextInputEditText;
+import com.google.android.material.textfield.TextInputLayout;
 import com.google.android.material.textview.MaterialTextView;
 
+import java.sql.Connection;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
 public class AnimeSelect extends Fragment {
 
+    private MaterialTextView averageRatingView, animeTitleView, animeDescriptionView;
+    private ImageView animeImageView;
+    private TextInputEditText animeProgressView, animeRatingView;
+    private CheckBox favouriteCheckBoxView;
+    private LinearProgressIndicator loadingIndicator;
+    private int title_id;
+    private AnimeDataEntry dataEntry;
+    private AnimeUserData userData;
+    private TextInputLayout progressLayout, ratingLayout, statusLayout;
+    private String animeStatus;
+    private int animeProgress, animeRating;
     private boolean favourite;
+    private AnimeTitle title;
+    private Connection animeSelectConn;
+    private SharedPreferences sp;
+    private AutoCompleteTextView dropDownMenu;
 
     public AnimeSelect() {
         // Required empty public constructor
@@ -34,8 +60,36 @@ public class AnimeSelect extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        sp = requireContext().getSharedPreferences("Login", Context.MODE_PRIVATE);
 
+        animeStatus = null;
+        animeProgress = -1;
+        animeRating = -1;
         favourite = false;
+
+        if(getArguments() != null){
+            title_id = getArguments().getInt("title_id");
+            userData = AnimeUserData.getAnimeUserData();
+            dataEntry = userData.find(title_id);
+            if(dataEntry != null){
+                switch (dataEntry.status){
+                    case Azure.WATCHING:
+                        animeStatus = "Watching";
+                        break;
+                    case Azure.PLANNING:
+                        animeStatus = "Planning";
+                        break;
+                    case Azure.COMPLETED:
+                        animeStatus = "Completed";
+                        break;
+                }
+                animeProgress = dataEntry.progress;
+                animeRating = dataEntry.rating;
+                favourite = dataEntry.favourite;
+            } else {
+                dataEntry = new AnimeDataEntry(title_id, -1, -1, -1, false);
+            }
+        }
     }
 
     @Override
@@ -51,33 +105,225 @@ public class AnimeSelect extends Fragment {
         dropDownItems.add("Completed");
         ArrayAdapter<String> arrayAdapter =
                 new ArrayAdapter<>(getContext(), R.layout.dropdown_item, dropDownItems);
-        AutoCompleteTextView dropDownMenu = view.findViewById(R.id.anime_select_status);
+        dropDownMenu = view.findViewById(R.id.anime_select_status);
         dropDownMenu.setAdapter(arrayAdapter);
 
-        //set dynamic content
-        String animeTitle = "Title";
-        String animeStatus = "Planning";
-        String animeProgress = String.format(Locale.US, "%d",0);
-        String animeRating = String.format(Locale.US,"%d",0);
-        String animeDescription = getString(R.string.lorem);
-        String averageRating = String.format(Locale.US,"%.1f", 0.00);
+        animeTitleView = view.findViewById(R.id.anime_select_title);
+        animeImageView = view.findViewById(R.id.anime_select_image);
+        animeProgressView = view.findViewById(R.id.anime_select_progress);
+        animeRatingView = view.findViewById(R.id.anime_select_rating);
+        favouriteCheckBoxView = view.findViewById(R.id.anime_select_favourite);
+        animeDescriptionView = view.findViewById(R.id.anime_select_description);
+        averageRatingView = view.findViewById(R.id.anime_select_average_rating);
+        progressLayout = view.findViewById(R.id.anime_progress_layout);
+        ratingLayout = view.findViewById(R.id.anime_rating_layout);
+        statusLayout = view.findViewById(R.id.anime_status_layout);
+        loadingIndicator = view.findViewById(R.id.anime_select_loading_indicator);
+        MaterialButton saveButton = view.findViewById(R.id.anime_save_button);
+        loadingIndicator.setVisibility(View.VISIBLE);
+        saveButton.setEnabled(false);
 
-        MaterialTextView animeTitleView = view.findViewById(R.id.anime_select_title);
-        ImageView animeImageView = view.findViewById(R.id.anime_select_image);
-        TextInputEditText animeProgressView = view.findViewById(R.id.anime_select_progress);
-        TextInputEditText animeRatingView = view.findViewById(R.id.anime_select_rating);
-        CheckBox favouriteCheckBoxView = view.findViewById(R.id.anime_select_favourite);
-        MaterialTextView animeDescriptionView = view.findViewById(R.id.anime_select_description);
-        MaterialTextView averageRatingView = view.findViewById(R.id.anime_select_average_rating);
+        dropDownMenu.setOnItemClickListener(((adapterView, view1, i, l) -> statusLayout.setError(null)));
+        favouriteCheckBoxView.setOnCheckedChangeListener((compoundButton, b) -> favourite = b);
 
-        animeTitleView.setText(animeTitle);
-        animeImageView.setImageResource(R.drawable.placeholder_image);
-        dropDownMenu.setText(animeStatus, false);
-        animeProgressView.setText(animeProgress);
-        animeRatingView.setText(animeRating);
-        favouriteCheckBoxView.setChecked(favourite);
-        animeDescriptionView.setText(animeDescription);
-        averageRatingView.setText(averageRating);
+        animeRatingView.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) { }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                if(charSequence.length()>0){
+                    int input = Integer.parseInt(charSequence.toString());
+                    if(input < 0 || input > 10){
+                        ratingLayout.setError("*invalid");
+                    } else {
+                        ratingLayout.setError(null);
+                    }
+                } else {
+                    ratingLayout.setError(null);
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) { }
+        });
+        animeProgressView.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) { }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                if(charSequence.length()>0){
+                    int input = Integer.parseInt(charSequence.toString());
+                    if(input < 0 || input > title.getEpisodes()){
+                        progressLayout.setError("*invalid");
+                    } else {
+                        progressLayout.setError(null);
+                    }
+                } else {
+                    progressLayout.setError(null);
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) { }
+        });
+
+        Activity activity = getActivity();
+
+        Thread getDataThread = new Thread(() -> {
+            animeSelectConn = Azure.getConnection();
+            title = Azure.getAnimeTitle(animeSelectConn, title_id);
+
+            if (activity != null) {
+                activity.runOnUiThread(() -> {
+
+                    if (title != null) {
+                        animeTitleView.setText(title.getAnimeTitle());
+                        animeImageView.setImageBitmap(title.getPoster());
+                        progressLayout.setSuffixText(String.format(Locale.US, "/%d", title.getEpisodes()));
+                        dropDownMenu.setText(animeStatus, false);
+                        if(animeProgress != -1){
+                            animeProgressView.setText(String.format(Locale.US, "%d", animeProgress));
+                        }
+                        if(animeRating != -1){
+                            animeRatingView.setText(String.format(Locale.US, "%d", animeRating));
+                        }
+                        favouriteCheckBoxView.setChecked(favourite);
+                        animeDescriptionView.setText(title.getDescription());
+                        averageRatingView.setText("8.8");
+                    }
+
+                    loadingIndicator.setVisibility(View.INVISIBLE);
+                    saveButton.setEnabled(true);
+                });
+            }
+        });
+        getDataThread.start();
+
+        //save data on button click
+        saveButton.setOnClickListener(buttonView -> {
+            saveButton.setEnabled(false);
+            loadingIndicator.setVisibility(View.VISIBLE);
+
+            //save changes to userdata (local)
+            int status = -1;
+            int progress = animeProgress;
+            int rating = animeRating;
+
+            if(animeProgressView.getText() != null){
+                try {
+                    progress = Integer.parseInt(animeProgressView.getText().toString());
+                } catch (NumberFormatException e){/*ignore*/}
+            }
+            if(animeRatingView.getText() != null){
+                try {
+                    rating = Integer.parseInt(animeRatingView.getText().toString());
+                } catch (NumberFormatException e){/*ignore*/}
+            }
+
+            switch(dropDownMenu.getText().toString()){
+                case "Watching":
+                    status = Azure.WATCHING;
+                    break;
+                case "Planning":
+                    status = Azure.PLANNING;
+                    break;
+                case "Completed":
+                    status = Azure.COMPLETED;
+                    break;
+            }
+
+            if(favourite != dataEntry.favourite){
+                dataEntry.favourite = favourite;
+            }
+
+            if(progress != dataEntry.progress){
+                dataEntry.progress = progress;
+            }
+
+            if(rating != dataEntry.rating){
+                dataEntry.rating = rating;
+            }
+
+            if(status != -1){
+                if(status != dataEntry.status){
+                    dataEntry.status = status;
+                    userData.remove(title_id);
+
+                    switch(status) {
+                        case Azure.WATCHING:
+                            userData.getWatchingList().addItem(dataEntry);
+                            break;
+                        case Azure.PLANNING:
+                            userData.getPlanningList().addItem(dataEntry);
+                            break;
+                        case Azure.COMPLETED:
+                            userData.getCompletedList().addItem(dataEntry);
+                            break;
+                    }
+                }
+
+                //upload changes to database
+                Thread saveDataThread = new Thread(() -> {
+                    animeSelectConn = Azure.getConnection();
+                    int userId = sp.getInt(getString(R.string.user_id), 0);
+                    Azure.Validity success = Azure.saveAnimeUserData(animeSelectConn, userId);
+
+                    requireActivity().runOnUiThread(() -> {
+                        switch (success){
+                            case QUERY_FAILED:
+                                Toast.makeText(activity, "Database Error", Toast.LENGTH_LONG).show();
+                                break;
+                            case QUERY_SUCCESSFUL:
+                                Toast.makeText(activity, "Saved", Toast.LENGTH_LONG).show();
+                        }
+                        saveButton.setEnabled(true);
+                        loadingIndicator.setVisibility(View.INVISIBLE);
+                    });
+
+                });
+                saveDataThread.start();
+            } else {
+                statusLayout.setError("*must select");
+                saveButton.setEnabled(true);
+                loadingIndicator.setVisibility(View.INVISIBLE);
+            }
+        });
+
+        MaterialButton removeButton = view.findViewById(R.id.anime_remove_button);
+        removeButton.setOnClickListener(removeView -> {
+            removeButton.setEnabled(false);
+            loadingIndicator.setVisibility(View.VISIBLE);
+
+            userData.remove(title_id);
+
+            Thread removeAnimeThread = new Thread(() -> {
+                Connection removeAnimeConn = Azure.getConnection();
+                int userId = sp.getInt(getString(R.string.user_id), 0);
+                Azure.Validity result = Azure.saveAnimeUserData(removeAnimeConn, userId);
+
+                requireActivity().runOnUiThread(() -> {
+                    switch (result){
+                        case QUERY_FAILED:
+                            Toast.makeText(activity, "Database Error", Toast.LENGTH_LONG).show();
+                            break;
+                        case QUERY_SUCCESSFUL:
+                            Toast.makeText(activity, "Saved", Toast.LENGTH_LONG).show();
+                    }
+
+                    dropDownMenu.setText(null);
+                    animeProgressView.setText(null);
+                    animeRatingView.setText(null);
+                    favouriteCheckBoxView.setChecked(false);
+
+                    removeButton.setEnabled(true);
+                    loadingIndicator.setVisibility(View.INVISIBLE);
+                });
+
+            });
+            removeAnimeThread.start();
+        });
 
         return view;
     }

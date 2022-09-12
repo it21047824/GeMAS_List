@@ -36,6 +36,7 @@ public class Azure {
     public static final int WATCHING = 0;
     public static final int PLANNING = 1;
     public static final int COMPLETED = 2;
+    public static volatile Connection conn;
 
     public enum Validity {
         QUERY_SUCCESSFUL,
@@ -46,17 +47,20 @@ public class Azure {
     }
 
     public static Connection getConnection() {
-        Connection conn = null;
-        try {
-            Class.forName("net.sourceforge.jtds.jdbc.Driver");
-            conn = DriverManager.getConnection(URL);
-        } catch (ClassNotFoundException | SQLException e) {
-            e.printStackTrace();
+        if(conn == null) {
+            synchronized (Azure.class){
+                try {
+                    Class.forName("net.sourceforge.jtds.jdbc.Driver");
+                    conn = DriverManager.getConnection(URL);
+                } catch (ClassNotFoundException | SQLException e) {
+                    e.printStackTrace();
+                }
+            }
         }
         return conn;
     }
 
-    public static void closeConnection(Connection conn) {
+    public static void closeConnection() {
         try {
             conn.close();
         } catch (SQLException e) {
@@ -68,7 +72,8 @@ public class Azure {
 
         ResultSet res;
         Validity validity = Validity.PASSWORD_INVALID;
-        String resUID = null, resUsername = null, resEmail = null;
+        String resUsername = null, resEmail = null;
+        int resUID = 0;
 
         try {
             PreparedStatement stmt = conn.prepareStatement("SELECT * FROM user_accounts WHERE email=?");
@@ -79,7 +84,7 @@ public class Azure {
                 String pass = res.getString(3);
                 if(Password.validatePassword(password, pass)){
                     validity = Validity.QUERY_SUCCESSFUL;
-                    resUID = res.getString(1);
+                    resUID = res.getInt(1);
                     resUsername = res.getString(2);
                     resEmail = res.getString(4);
                 }
@@ -198,77 +203,84 @@ public class Azure {
             }
         } catch (SQLException e) {
             e.printStackTrace();
-            Log.e("Azure", e.getMessage());
         }
         return Validity.QUERY_FAILED;
     }
-
+    //TODO: get global rating
     public static AnimeTitle getAnimeTitle(Connection conn, int titleID) {
         try {
-            PreparedStatement stmt = conn.prepareStatement("SELECT FROM anime_titles WHERE anime_id=?");
+            PreparedStatement stmt = conn.prepareStatement("SELECT * FROM anime_titles WHERE anime_id=?");
             stmt.setInt(1, titleID);
 
             ResultSet res = stmt.executeQuery();
 
             if (res.next()){
-                return new AnimeTitle(res.getInt(0),
-                        res.getString(1),
+                return new AnimeTitle(res.getInt(1),
                         res.getString(2),
-                        byteToBitmap(res.getBytes(3)),
-                        res.getInt(4),
-                        res.getString(5));
+                        res.getString(3),
+                        byteToBitmap(res.getBytes(4)),
+                        res.getInt(5),
+                        res.getString(6),
+                        (float) 8.8);
             }
         } catch (SQLException e) {
             e.printStackTrace();
+            Log.e("Azure", e.getMessage());
         }
         return null;
     }
 
-    public static String getAnimeUserData(Connection conn, int accountID) {
+    public static Validity getAnimeUserData(Connection conn, int accountID) {
         JSONObject retrievedData;
         JSONArray dataArray;
 
         try {
-            PreparedStatement stmt = conn.prepareStatement("SELECT data FROM anime_user_data WHERE user_id=?");
+            PreparedStatement stmt = conn.prepareStatement("SELECT user_data FROM anime_user_data WHERE user_id=?");
             stmt.setInt(1, accountID);
 
             ResultSet res = stmt.executeQuery();
+
+            AnimeUserData userData = AnimeUserData.getAnimeUserData();
+            CustomLinkList watching = userData.getWatchingList();
+            CustomLinkList planning = userData.getPlanningList();
+            CustomLinkList completed = userData.getCompletedList();
+
             //process stored data
             if(res.next()){
-                retrievedData = new JSONObject(res.getString(0));
-                dataArray = retrievedData.getJSONArray("DATA");
 
-                AnimeUserData userData = AnimeUserData.getAnimeUserData();
-                CustomLinkList watching = userData.getWatchingList();
-                CustomLinkList planning = userData.getPlanningList();
-                CustomLinkList completed = userData.getCompletedList();
+                if(res.getString(1) != null){
+                    retrievedData = new JSONObject(res.getString(1));
+                    dataArray = retrievedData.getJSONArray("DATA");
 
-                for (int i=0; i<dataArray.length(); i++) {
-                    JSONObject obj = dataArray.getJSONObject(i);
-                    int title = obj.getInt("TITLE");
-                    int status = obj.getInt("STATUS");
-                    int rating = obj.getInt("RATING");
-                    int progress = obj.getInt("PROGRESS");
+                    for (int i=0; i<dataArray.length(); i++) {
+                        JSONObject obj = dataArray.getJSONObject(i);
+                        int title = obj.getInt("TITLE");
+                        int status = obj.getInt("STATUS");
+                        int rating = obj.getInt("RATING");
+                        int progress = obj.getInt("PROGRESS");
+                        boolean favourite = obj.getBoolean("FAVOURITE");
 
-                    switch (status) {
-                        case WATCHING:
-                            watching.addItem(new AnimeDataEntry(title, status, progress, rating));
-                            break;
-                        case PLANNING:
-                            planning.addItem(new AnimeDataEntry(title, status, progress, rating));
-                            break;
-                        case COMPLETED:
-                            completed.addItem(new AnimeDataEntry(title, status, progress, rating));
-                            break;
+                        switch (status) {
+                            case WATCHING:
+                                watching.addItem(new AnimeDataEntry(title, status, progress, rating, favourite));
+                                break;
+                            case PLANNING:
+                                planning.addItem(new AnimeDataEntry(title, status, progress, rating, favourite));
+                                break;
+                            case COMPLETED:
+                                completed.addItem(new AnimeDataEntry(title, status, progress, rating, favourite));
+                                break;
+                        }
                     }
                 }
 
+                return Validity.QUERY_SUCCESSFUL;
             }
         } catch (SQLException | JSONException e) {
             e.printStackTrace();
         }
 
-        return null;
+        return Validity.QUERY_FAILED;
     }
 
     public static Validity saveAnimeUserData(Connection conn, int accountID) {
@@ -288,6 +300,7 @@ public class Azure {
                 obj.put("STATUS", watching.getItem(i).status);
                 obj.put("RATING", watching.getItem(i).rating);
                 obj.put("PROGRESS", watching.getItem(i).progress);
+                obj.put("FAVOURITE", watching.getItem(i).favourite);
                 dataArray.put(obj);
             } catch (JSONException e) {
                 e.printStackTrace();
@@ -302,6 +315,7 @@ public class Azure {
                 obj.put("STATUS", planning.getItem(i).status);
                 obj.put("RATING", planning.getItem(i).rating);
                 obj.put("PROGRESS", planning.getItem(i).progress);
+                obj.put("FAVOURITE", planning.getItem(i).favourite);
                 dataArray.put(obj);
             } catch (JSONException e) {
                 e.printStackTrace();
@@ -316,6 +330,7 @@ public class Azure {
                 obj.put("STATUS", completed.getItem(i).status);
                 obj.put("RATING", completed.getItem(i).rating);
                 obj.put("PROGRESS", completed.getItem(i).progress);
+                obj.put("FAVOURITE", completed.getItem(i).favourite);
                 dataArray.put(obj);
             } catch (JSONException e) {
                 e.printStackTrace();
@@ -326,15 +341,14 @@ public class Azure {
         String finalDataString = null;
         try {
             finalData.put("DATA", dataArray);
-            finalDataString = finalData.toString(4);
+            finalDataString = finalData.toString();
         } catch (JSONException e) {
             e.printStackTrace();
         }
 
-
         try {
-            PreparedStatement saveData = conn.prepareStatement("UPDATE anime_user_data" +
-                    "SET data=? WHERE user_id=?");
+            PreparedStatement saveData = conn.prepareStatement("UPDATE anime_user_data " +
+                    "SET user_data=? WHERE user_id=?");
             saveData.setString(1, finalDataString);
             saveData.setInt(2, accountID);
 
@@ -345,6 +359,7 @@ public class Azure {
             }
         } catch (SQLException e) {
             e.printStackTrace();
+            Log.e("Azure", e.getMessage());
         }
 
         return Validity.QUERY_FAILED;

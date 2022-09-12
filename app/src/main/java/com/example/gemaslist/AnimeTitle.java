@@ -9,19 +9,23 @@ public class AnimeTitle {
     private final Bitmap poster;
     private final int episodes;
     private final String romanji;
+    private final float rating;
 
     public AnimeTitle(int animeID,
                       String animeTitle,
                       String description,
                       Bitmap poster,
                       int episodes,
-                      String romanji) {
+                      String romanji,
+                      float rating
+    ) {
         this.animeID = animeID;
         this.animeTitle = animeTitle;
         this.description = description;
         this.poster = poster;
         this.episodes = episodes;
         this.romanji = romanji;
+        this.rating = rating;
     }
 
     public int getAnimeID() {
@@ -46,5 +50,9 @@ public class AnimeTitle {
 
     public String getRomanji() {
         return romanji;
+    }
+
+    public float getRating() {
+        return rating;
     }
 }

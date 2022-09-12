@@ -8,6 +8,7 @@ import androidx.fragment.app.Fragment;
 import androidx.viewpager2.adapter.FragmentStateAdapter;
 import androidx.viewpager2.widget.ViewPager2;
 
+import android.util.Log;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -61,6 +62,7 @@ public class AnimeList extends Fragment {
         watchingList = AnimeCardList.newInstance(watchingColor, userData.getWatchingList());
         planningList = AnimeCardList.newInstance(planningColor, userData.getPlanningList());
         completedList = AnimeCardList.newInstance(completedColor, userData.getCompletedList());
+
     }
 
     @Override
@@ -118,13 +120,4 @@ public class AnimeList extends Fragment {
             return fragmentTitles.get(position);
         }
     }
-
-    public ArrayList<Integer> createArrayList(int count) {
-        ArrayList<Integer> arr = new ArrayList<>();
-        for(int i=1; i<=count; i++){
-            arr.add(i);
-        }
-        return arr;
-    }
-
 }
