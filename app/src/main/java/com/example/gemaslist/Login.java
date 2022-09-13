@@ -17,7 +17,7 @@ import java.sql.Connection;
 
 public class Login extends AppCompatActivity {
 
-    private TextInputEditText username;
+    private TextInputEditText emailInput;
     private TextInputEditText password;
     private SharedPreferences sp;
     protected MaterialTextView error;
@@ -29,11 +29,8 @@ public class Login extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
-        //create a connection
-        Thread createConn = new Thread(() -> loginConn = Azure.getConnection());
-        createConn.start();
 
-        username = findViewById(R.id.input_username);
+        emailInput = findViewById(R.id.input_email);
         password = findViewById(R.id.input_password);
         error = findViewById(R.id.login_error);
         progressIndicator = findViewById(R.id.login_loading_indicator);
@@ -48,15 +45,18 @@ public class Login extends AppCompatActivity {
             loginButton.setEnabled(false);
 
             Thread loginThread = new Thread(() -> {
-                String uname=null, pass=null;
-                if(username.getText() != null){
-                    uname = username.getText().toString();
+                //create connection
+                loginConn = Azure.getConnection();
+
+                String email=null, pass=null;
+                if(emailInput.getText() != null){
+                    email = emailInput.getText().toString();
                 }
                 if(password.getText() != null){
                     pass = password.getText().toString();
                 }
 
-                UserAccount result = Azure.validateUser(loginConn, uname, pass);
+                UserAccount result = Azure.validateUser(loginConn, email, pass);
 
                 runOnUiThread(() -> {
                     switch (result.getResult()) {
@@ -83,6 +83,10 @@ public class Login extends AppCompatActivity {
                             break;
                         case QUERY_FAILED:
                             login.error.setText(R.string.database_error);
+                            login.error.setVisibility(View.VISIBLE);
+                            break;
+                        case NULL_ARGS:
+                            login.error.setText(R.string.error);
                             login.error.setVisibility(View.VISIBLE);
                             break;
                     }
@@ -118,14 +122,7 @@ public class Login extends AppCompatActivity {
         }
 
         //set credentials from previous login
-        username.setText(sp.getString(getString(R.string.email), null));
+        emailInput.setText(sp.getString(getString(R.string.email), null));
         password.setText(sp.getString(getString(R.string.password), null));
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        Thread closeConnThread = new Thread(Azure::closeConnection);
-        closeConnThread.start();
     }
 }

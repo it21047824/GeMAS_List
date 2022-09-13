@@ -35,9 +35,12 @@ import java.util.Locale;
 
 public class AnimeStats extends Fragment {
 
-    private int watching, planning, completed;
-    private float total;
-    private View view;
+    protected int numWatching, numPlanning, numCompleted, numTotal, totalRatings;
+    protected float averageRating;
+    protected View view;
+    protected AnimeUserData userData;
+    protected CustomLinkList watching, planning, completed;
+    protected int[] ratingData;
 
     public AnimeStats() {
         // Required empty public constructor
@@ -50,11 +53,47 @@ public class AnimeStats extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        userData = AnimeUserData.getAnimeUserData();
 
-        watching = 5;
-        planning = 45;
-        completed = 50;
-        total = (float) watching+planning+completed;
+        watching = userData.getWatchingList();
+        planning = userData.getPlanningList();
+        completed = userData.getCompletedList();
+        numWatching = watching.size();
+        numPlanning = planning.size();
+        numCompleted = completed.size();
+
+        numTotal = numWatching + numPlanning + numCompleted;
+
+        //calculate average rating
+        int ratingSum = 0;
+        totalRatings = 0;
+        ratingData = new int[11];
+        for(int i=0; i<numWatching; i++){
+            if(watching.getItem(i).rating != -1){
+                int r = watching.getItem(i).rating;
+                ratingSum += r;
+                ratingData[r]++;
+                totalRatings++;
+            }
+        }
+        for(int i=0; i<numPlanning; i++){
+            if(planning.getItem(i).rating != -1){
+                int r = planning.getItem(i).rating;
+                ratingSum += r;
+                ratingData[r]++;
+                totalRatings++;
+            }
+        }
+        for(int i=0; i<numCompleted; i++){
+            if(completed.getItem(i).rating != -1){
+                int r = completed.getItem(i).rating;
+                ratingSum += r;
+                ratingData[r]++;
+                totalRatings++;
+            }
+        }
+
+        averageRating = (float) ratingSum / totalRatings;
     }
 
     @Override
@@ -73,11 +112,11 @@ public class AnimeStats extends Fragment {
         MaterialTextView completedAnime = view.findViewById(R.id.anime_stats_completed);
 
         //set info
-        totalAnime.setText(String.format(Locale.US,"%d", 100));
-        meanScore.setText(String.format(Locale.US,"%.1f", 7.7));
-        watchingAnime.setText(String.format(Locale.US,"%d", watching));
-        planningAnime.setText(String.format(Locale.US,"%d", planning));
-        completedAnime.setText(String.format(Locale.US,"%d", completed));
+        totalAnime.setText(String.format(Locale.US,"%d", numTotal));
+        meanScore.setText(String.format(Locale.US,"%.1f", averageRating));
+        watchingAnime.setText(String.format(Locale.US,"%d", numWatching));
+        planningAnime.setText(String.format(Locale.US,"%d", numPlanning));
+        completedAnime.setText(String.format(Locale.US,"%d", numCompleted));
 
         //create pie chart
         PieChartDrawable pieChart = new PieChartDrawable();
@@ -94,20 +133,15 @@ public class AnimeStats extends Fragment {
         LinearLayoutCompat barGraphContainer =
                 view.findViewById(R.id.anime_stats_bar_graph_container);
         LinearLayoutCompat barGraphView = view.findViewById(R.id.anime_stats_bar_graph);
-        int[] barGraphData = new int[]{0,0,0,2,10,15,30,70,40,10,5};
 
         //set total anime ratings
-        int totalFrequency = 0;
-        for (int frequency : barGraphData){
-            totalFrequency += frequency;
-        }
         MaterialTextView totalAnimeRatings = view.findViewById(R.id.anime_stats_total_ratings);
-        totalAnimeRatings.setText(String.format(Locale.US,"%d",totalFrequency));
+        totalAnimeRatings.setText(String.format(Locale.US,"%d",totalRatings));
 
         AnimeStats.createBarGraph(
                 barGraphContainer,
                 barGraphView,
-                barGraphData,
+                ratingData,
                 getResources().getColor(R.color.main_theme),
                 2.3F
         );
@@ -129,7 +163,7 @@ public class AnimeStats extends Fragment {
         private float startAngle = 270.0F;
 
         public float getAngle(int num) {
-            float angle = ((num/total)*360);
+            float angle = ((num/ (float) numTotal)*360);
             setStartAngle(startAngle+angle);
             return angle;
         }
@@ -197,12 +231,14 @@ public class AnimeStats extends Fragment {
             int height = getBounds().height();
             float radius = (float) Math.min(width, height) / 3;
 
-            canvas.drawArc(rect, startAngle, getAngle(completed), true, paintTernary);
-            canvas.drawArc(rect, startAngle, getAngle(planning), true, paintSecondary);
-            canvas.drawArc(rect, startAngle, getAngle(watching), true, paintPrimary);
+            canvas.drawArc(rect, startAngle, getAngle(numCompleted), true, paintTernary);
+            canvas.drawArc(rect, startAngle, getAngle(numPlanning), true, paintSecondary);
+            canvas.drawArc(rect, startAngle, getAngle(numWatching), true, paintPrimary);
             canvas.drawCircle((float)width/2, (float)height/2, radius, paintBackground);
             canvas.drawText("Status Distribution", (float)width/2, (float)height/2, blackPaint);
         }
+
+
 
         @Override
         public void setAlpha(int i) {

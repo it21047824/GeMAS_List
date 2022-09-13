@@ -43,26 +43,32 @@ public class Azure {
         USERNAME_INVALID,
         PASSWORD_INVALID,
         QUERY_FAILED,
-        ALREADY_IN_USE
+        ALREADY_IN_USE,
+        NULL_ARGS
     }
 
+    private Azure(){}
+
     public static Connection getConnection() {
-        if(conn == null) {
-            synchronized (Azure.class){
-                try {
+        try {
+            if(conn==null || conn.isClosed()) {
+                synchronized (Azure.class){
                     Class.forName("net.sourceforge.jtds.jdbc.Driver");
                     conn = DriverManager.getConnection(URL);
-                } catch (ClassNotFoundException | SQLException e) {
-                    e.printStackTrace();
+                    Log.e("Azure", "new conn");
                 }
             }
+        } catch (ClassNotFoundException | SQLException e) {
+            Log.e("Azure", e.getMessage());
         }
+        Log.e("Azure", "singleton conn");
         return conn;
     }
 
     public static void closeConnection() {
         try {
             conn.close();
+            Log.e("Azure", "conn closed");
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -71,30 +77,34 @@ public class Azure {
     public static UserAccount validateUser(Connection conn, String email, String password){
 
         ResultSet res;
-        Validity validity = Validity.PASSWORD_INVALID;
+        Validity validity = Validity.NULL_ARGS;
         String resUsername = null, resEmail = null;
         int resUID = 0;
 
-        try {
-            PreparedStatement stmt = conn.prepareStatement("SELECT * FROM user_accounts WHERE email=?");
-            stmt.setString(1, email);
-            res = stmt.executeQuery();
+        if(email != null){
+            try {
+                PreparedStatement stmt = conn.prepareStatement("SELECT * FROM user_accounts WHERE email=?");
+                stmt.setString(1, email);
+                res = stmt.executeQuery();
 
-            if(res.next()){
-                String pass = res.getString(3);
-                if(Password.validatePassword(password, pass)){
-                    validity = Validity.QUERY_SUCCESSFUL;
-                    resUID = res.getInt(1);
-                    resUsername = res.getString(2);
-                    resEmail = res.getString(4);
+                if (res.next()) {
+                    String pass = res.getString(3);
+                    if (Password.validatePassword(password, pass)) {
+                        validity = Validity.QUERY_SUCCESSFUL;
+                        resUID = res.getInt(1);
+                        resUsername = res.getString(2);
+                        resEmail = res.getString(4);
+                    } else {
+                        validity = Validity.PASSWORD_INVALID;
+                    }
+                } else {
+                    validity = Validity.USERNAME_INVALID;
                 }
-            } else {
-                validity = Validity.USERNAME_INVALID;
-            }
 
-        } catch (SQLException e) {
-            e.printStackTrace();
-            validity = Validity.QUERY_FAILED;
+            } catch (SQLException e) {
+                e.printStackTrace();
+                validity = Validity.QUERY_FAILED;
+            }
         }
 
         return new UserAccount(
@@ -293,6 +303,7 @@ public class Azure {
         CustomLinkList completed = currentData.getCompletedList();
 
         //get all data from watching list
+
         for(int i=0; i<watching.size(); i++){
             JSONObject obj = new JSONObject();
             try {
@@ -308,6 +319,7 @@ public class Azure {
         }
 
         //get all data from planning list
+
         for(int i=0; i<planning.size(); i++){
             JSONObject obj = new JSONObject();
             try {
@@ -319,10 +331,12 @@ public class Azure {
                 dataArray.put(obj);
             } catch (JSONException e) {
                 e.printStackTrace();
+                Log.e("Azure", "stuck");
             }
         }
 
         //get all data from completed list
+        Log.e("Azure", "c-size "+completed.size());
         for(int i=0; i<completed.size(); i++){
             JSONObject obj = new JSONObject();
             try {
@@ -334,6 +348,7 @@ public class Azure {
                 dataArray.put(obj);
             } catch (JSONException e) {
                 e.printStackTrace();
+                Log.e("Azure", e.getMessage());
             }
         }
 

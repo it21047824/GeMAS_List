@@ -42,6 +42,23 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         sp = getSharedPreferences(getString(R.string.login), MODE_PRIVATE);
         userID = sp.getInt(getString(R.string.user_id), 0);
 
+        //get anime user data
+        Thread getUserData = new Thread(() -> {
+            Connection userDataConn = Azure.getConnection();
+
+            try {
+                Azure.Validity result = Azure.getAnimeUserData(userDataConn, userID);
+                if(result == Azure.Validity.QUERY_FAILED){
+                    runOnUiThread(()-> Toast.makeText(this,
+                            "Could not load user data", Toast.LENGTH_LONG).show());
+                } else if (result == Azure.Validity.QUERY_SUCCESSFUL){
+                    runOnUiThread(()-> Toast.makeText(this,
+                            "User data loaded", Toast.LENGTH_LONG).show());
+                }
+            } catch (NullPointerException e) {/*ignore*/}
+        });
+        getUserData.start();
+
         //actionbar and nav drawer setup
         Toolbar toolbar = findViewById(R.id.mainToolbar);
         setSupportActionBar(toolbar);
@@ -285,27 +302,4 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         super.onPointerCaptureChanged(hasCapture);
     }
 
-    @Override
-    protected void onStart() {
-        super.onStart();
-        Thread getUserData = new Thread(() -> {
-            Connection userDataConn = Azure.getConnection();
-
-            try {
-                Azure.Validity result = Azure.getAnimeUserData(userDataConn, userID);
-                if(result != Azure.Validity.QUERY_SUCCESSFUL){
-                    runOnUiThread(()-> Toast.makeText(this,
-                            "Could not load user data", Toast.LENGTH_LONG).show());
-                }
-            } catch (NullPointerException e) {/*ignore*/}
-        });
-        getUserData.start();
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        Thread closeConnThread = new Thread(Azure::closeConnection);
-        closeConnThread.start();
-    }
 }

@@ -2,9 +2,9 @@ package com.example.gemaslist;
 
 import android.os.Parcel;
 import android.os.Parcelable;
-import android.util.Log;
 
 public class CustomLinkList implements Parcelable {
+    private static final Object LOCK = new Object();
     private AnimeDataEntry first;
 
     public CustomLinkList() {
@@ -12,32 +12,35 @@ public class CustomLinkList implements Parcelable {
     }
 
     public boolean addItem(AnimeDataEntry input) {
-        if(first == null) {
-            first = input;
-            return true;
-        } else {
-            AnimeDataEntry temp = first;
-            while(true) {
-                if(input.rating > temp.rating){
-                    input.prev = temp.prev;
-                    input.next = temp;
-                    if(temp.prev != null){
-                        temp.prev.next = input;
-                    }
-                    temp.prev = input;
-                    Log.e("CustomLinkList", "added");
-                    return true;
-                } else {
-                    if(temp.next == null){
-                        input.prev = temp;
-                        temp.next = input;
+        synchronized (LOCK){
+            if(first == null) {
+                first = input;
+                return true;
+            } else {
+                AnimeDataEntry temp = first;
+                while(true) {
+                    if(input.rating > temp.rating){
+                        input.prev = temp.prev;
+                        input.next = temp;
+                        if(temp.prev != null){
+                            temp.prev.next = input;
+                        }
+                        temp.prev = input;
+
                         return true;
                     } else {
-                        temp = temp.next;
+                        if(temp.next == null){
+                            input.prev = temp;
+                            temp.next = input;
+                            return true;
+                        } else {
+                            temp = temp.next;
+                        }
                     }
                 }
             }
         }
+
     }
 
     public int size() {
@@ -73,22 +76,26 @@ public class CustomLinkList implements Parcelable {
     }
 
     public boolean removeItem(int title) {
-        AnimeDataEntry temp = first;
-        while(temp!=null){
-            if(temp.title == title){
-                if(temp.prev != null){
-                    temp.prev.next = temp.next;
-                } else {
-                    first = temp.next;
+        synchronized (LOCK){
+            AnimeDataEntry temp = first;
+            while(temp!=null){
+                if(temp.title == title){
+                    if(temp.prev != null){
+                        temp.prev.next = temp.next;
+                    } else {
+                        first = temp.next;
+                    }
+                    if(temp.next != null) {
+                        temp.next.prev = temp.prev;
+                    }
+                    temp.prev = null;
+                    temp.next = null;
+                    return true;
                 }
-                if(temp.next != null) {
-                    temp.next.prev = temp.prev;
-                }
-                return true;
+                temp = temp.next;
             }
-            temp = temp.next;
+            return false;
         }
-        return false;
     }
 
 

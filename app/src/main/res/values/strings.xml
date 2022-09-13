@@ -63,4 +63,6 @@
     <string name="tap_image_to_resize">*tap image to resize</string>
     <string name="episode_count">Episode Count</string>
     <string name="romanji_name">Romanji name</string>
+    <string name="romanji">Romanji</string>
+    <string name="error">Error</string>
 </resources>

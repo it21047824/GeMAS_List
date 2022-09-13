@@ -2,7 +2,7 @@ package com.example.gemaslist;
 
 public class AnimeUserData {
 
-    private static volatile AnimeUserData data;
+    private static AnimeUserData data;
     private CustomLinkList watchingList;
     private CustomLinkList planningList;
     private CustomLinkList completedList;
@@ -49,18 +49,6 @@ public class AnimeUserData {
             }
         }
         return temp;
-    }
-
-    public void setWatchingList(CustomLinkList watchingList) {
-        this.watchingList = watchingList;
-    }
-
-    public void setPlanningList(CustomLinkList planningList) {
-        this.planningList = planningList;
-    }
-
-    public void setCompletedList(CustomLinkList completedList) {
-        this.completedList = completedList;
     }
 
     public CustomLinkList getWatchingList() {

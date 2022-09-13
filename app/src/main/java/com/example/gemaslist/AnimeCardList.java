@@ -120,6 +120,9 @@ public class AnimeCardList extends Fragment {
             editor.apply();
         });
 
+        switchMaterial.setChecked(currentLayoutManagerType ==
+                LayoutManagerType.GRID_LAYOUT_MANAGER);
+
         return view;
     }
 

@@ -26,6 +26,7 @@ import com.google.android.material.textfield.TextInputLayout;
 import com.google.android.material.textview.MaterialTextView;
 
 import java.sql.Connection;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
@@ -222,7 +223,8 @@ public class AnimeSelect extends Fragment {
                 } catch (NumberFormatException e){/*ignore*/}
             }
 
-            switch(dropDownMenu.getText().toString()){
+            String statusInput = dropDownMenu.getText().toString();
+            switch(statusInput){
                 case "Watching":
                     status = Azure.WATCHING;
                     break;
@@ -233,43 +235,55 @@ public class AnimeSelect extends Fragment {
                     status = Azure.COMPLETED;
                     break;
             }
-
-            if(favourite != dataEntry.favourite){
-                dataEntry.favourite = favourite;
-            }
-
-            if(progress != dataEntry.progress){
-                dataEntry.progress = progress;
-            }
-
-            if(rating != dataEntry.rating){
-                dataEntry.rating = rating;
-            }
-
             if(status != -1){
-                if(status != dataEntry.status){
-                    dataEntry.status = status;
-                    userData.remove(title_id);
-
-                    switch(status) {
-                        case Azure.WATCHING:
-                            userData.getWatchingList().addItem(dataEntry);
-                            break;
-                        case Azure.PLANNING:
-                            userData.getPlanningList().addItem(dataEntry);
-                            break;
-                        case Azure.COMPLETED:
-                            userData.getCompletedList().addItem(dataEntry);
-                            break;
-                    }
-                }
-
                 //upload changes to database
+                int finalRating = rating;
+                int finalStatus = status;
+                int finalProgress = progress;
                 Thread saveDataThread = new Thread(() -> {
+                    if(finalStatus != dataEntry.status
+                            || finalRating != dataEntry.rating
+                            || finalProgress != dataEntry.progress
+                            || favourite != dataEntry.favourite)
+                    {
+                        if(finalRating != dataEntry.rating){
+                            dataEntry.rating = finalRating;
+                        }
+                        if(favourite != dataEntry.favourite){
+                            dataEntry.favourite = favourite;
+                        }
+
+                        if(finalProgress != dataEntry.progress){
+                            dataEntry.progress = finalProgress;
+                        }
+                        dataEntry.status = finalStatus;
+
+                        //remove entry from current list
+                        boolean removeRes = userData.remove(title_id);
+
+                        //add to correct place
+                        if(removeRes){
+                            switch(finalStatus) {
+                                case Azure.WATCHING:
+                                    userData.getWatchingList().addItem(dataEntry);
+                                    break;
+                                case Azure.PLANNING:
+                                    userData.getPlanningList().addItem(dataEntry);
+                                    break;
+                                case Azure.COMPLETED:
+                                    userData.getCompletedList().addItem(dataEntry);
+                                    break;
+                            }
+                        }
+                    }
+
+
                     animeSelectConn = Azure.getConnection();
                     int userId = sp.getInt(getString(R.string.user_id), 0);
+
                     Azure.Validity success = Azure.saveAnimeUserData(animeSelectConn, userId);
 
+                    Log.e("Select", "saved");
                     requireActivity().runOnUiThread(() -> {
                         switch (success){
                             case QUERY_FAILED:
