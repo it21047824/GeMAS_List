@@ -7,12 +7,12 @@
 
     <fragment
         android:id="@+id/dashboard"
-        android:name="com.example.gemaslist.Dashboard"
+        android:name="com.RedRose.gemaslist.Dashboard"
         android:label="fragment_dashboard"
         tools:layout="@layout/fragment_dashboard" />
     <fragment
         android:id="@+id/animeList"
-        android:name="com.example.gemaslist.AnimeList"
+        android:name="com.RedRose.gemaslist.AnimeList"
         android:label="fragment_anime_list"
         tools:layout="@layout/fragment_anime_list" >
         <action
@@ -25,7 +25,7 @@
     </fragment>
     <fragment
         android:id="@+id/animeSelect"
-        android:name="com.example.gemaslist.AnimeSelect"
+        android:name="com.RedRose.gemaslist.AnimeSelect"
         android:label="fragment_anime_select"
         tools:layout="@layout/fragment_anime_select" >
         <argument
@@ -53,23 +53,23 @@
         app:popUpToInclusive="false" />
     <fragment
         android:id="@+id/games"
-        android:name="com.example.gemaslist.GamesList"
+        android:name="com.RedRose.gemaslist.GamesList"
         tools:layout="@layout/fragment_games_list" />
     <fragment
         android:id="@+id/movies"
-        android:name="com.example.gemaslist.MoviesList"
+        android:name="com.RedRose.gemaslist.MoviesList"
         tools:layout="@layout/fragment_movies_list" />
     <fragment
         android:id="@+id/series"
-        android:name="com.example.gemaslist.SeriesList"
+        android:name="com.RedRose.gemaslist.SeriesList"
         tools:layout="@layout/fragment_series_list" />
     <fragment
         android:id="@+id/profile"
-        android:name="com.example.gemaslist.Profile"
+        android:name="com.RedRose.gemaslist.Profile"
         tools:layout="@layout/fragment_profile" />
     <fragment
         android:id="@+id/logout"
-        android:name="com.example.gemaslist.Logout"
+        android:name="com.RedRose.gemaslist.Logout"
         tools:layout="@layout/fragment_logout" />
     <action
         android:id="@+id/action_global_games"
@@ -97,12 +97,12 @@
         app:popUpToInclusive="false" />
     <fragment
         android:id="@+id/statistics"
-        android:name="com.example.gemaslist.Statistics"
+        android:name="com.RedRose.gemaslist.Statistics"
         android:label="fragment_statistics"
         tools:layout="@layout/fragment_statistics" />
     <fragment
         android:id="@+id/search"
-        android:name="com.example.gemaslist.Search"
+        android:name="com.RedRose.gemaslist.Search"
         android:label="fragment_search"
         tools:layout="@layout/fragment_search" >
         <action

@@ -65,4 +65,7 @@
     <string name="romanji_name">Romanji name</string>
     <string name="romanji">Romanji</string>
     <string name="error">Error</string>
+    <string name="unrated">Unrated</string>
+    <string name="not_started">Not Started</string>
+    <string name="clear_selection">Clear Selection</string>
 </resources>
