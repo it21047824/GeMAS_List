@@ -12,6 +12,10 @@ import androidx.navigation.Navigation;
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.ConnectivityManager;
+import android.net.Network;
+import android.net.NetworkCapabilities;
+import android.net.NetworkRequest;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
@@ -21,7 +25,6 @@ import com.google.android.material.button.MaterialButton;
 import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.textview.MaterialTextView;
 
-import java.sql.Connection;
 import java.util.Objects;
 import java.util.Stack;
 
@@ -41,27 +44,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         sp = getSharedPreferences(getString(R.string.login), MODE_PRIVATE);
         userID = sp.getInt(getString(R.string.user_id), 0);
 
-        //get anime user data
-        Thread getUserData = new Thread(() -> {
-            Connection userDataConn = Azure.getConnection();
-
-            if(!AnimeUserData.dataInitialized()){
-                try {
-                    Azure.Validity result = Azure.getAnimeUserData(userDataConn, userID);
-                    if(result == Azure.Validity.QUERY_FAILED){
-                        runOnUiThread(()-> Toast.makeText(this,
-                                "Could not load user data", Toast.LENGTH_LONG).show());
-                    } else if (result == Azure.Validity.QUERY_SUCCESSFUL){
-                        runOnUiThread(()-> Toast.makeText(this,
-                                "User data loaded", Toast.LENGTH_LONG).show());
-                    }
-                } catch (NullPointerException e) {/*ignore*/}
-            }
-        });
-        getUserData.start();
-
         //actionbar and nav drawer setup
-        Toolbar toolbar = findViewById(R.id.mainToolbar);
+        Toolbar toolbar = findViewById(R.id.main_toolbar);
         setSupportActionBar(toolbar);
 
         drawerLayout = findViewById(R.id.drawerLayout);
@@ -133,6 +117,51 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             }
         };
         this.getOnBackPressedDispatcher().addCallback(this, backPressedCallback);
+
+        //Monitor network status
+        NetworkRequest networkRequest = new NetworkRequest.Builder()
+                .addCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET)
+                .addTransportType(NetworkCapabilities.TRANSPORT_WIFI)
+                .addTransportType(NetworkCapabilities.TRANSPORT_CELLULAR)
+                .build();
+
+        ConnectivityManager.NetworkCallback networkCallback = new ConnectivityManager.NetworkCallback() {
+            @Override
+            public void onAvailable(@NonNull Network network) {
+                super.onAvailable(network);
+                Azure.getConnection();
+                if(!AnimeUserData.dataInitialized()){
+                    try {
+                        Azure.Validity result = Azure.getAnimeUserData(userID);
+                        if(result == Azure.Validity.QUERY_FAILED){
+                            runOnUiThread(()-> Toast.makeText(MainActivity.this,
+                                    getResources().getString(R.string.user_data_error),
+                                    Toast.LENGTH_SHORT).show());
+                        } else if (result == Azure.Validity.QUERY_SUCCESSFUL){
+                            runOnUiThread(()-> Toast.makeText(MainActivity.this,
+                                    getResources().getString(R.string.network_connected),
+                                    Toast.LENGTH_SHORT).show());
+                        }
+                    } catch (NullPointerException e) {/*ignore*/}
+                }
+            }
+
+            @Override
+            public void onLost(@NonNull Network network) {
+                super.onLost(network);
+                AnimeUserData.clearData();
+                runOnUiThread(()-> Toast.makeText(MainActivity.this,
+                        getResources().getString(R.string.network_disconnected),
+                        Toast.LENGTH_SHORT).show());
+            }
+        };
+
+        Thread networkCheck = new Thread(() -> {
+            ConnectivityManager connectivityManager =
+                    getSystemService(ConnectivityManager.class);
+            connectivityManager.requestNetwork(networkRequest, networkCallback);
+        });
+        networkCheck.start();
     }
 
     @SuppressLint("NonConstantResourceId")

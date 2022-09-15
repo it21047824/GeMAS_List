@@ -1,11 +1,14 @@
 <resources>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+
+    <!--titles and labels-->
     <string name="app_name">GeMAS List</string>
     <string name="login">Login</string>
     <string name="username">Username</string>
     <string name="email">Email</string>
     <string name="user_id">User ID</string>
     <string name="password">Password</string>
-    <string name="logo">App Logo</string>
     <string name="signUp">Sign Up</string>
     <string name="forgotPassword">Forgot Password?</string>
     <string name="animeList">Anime List</string>
@@ -16,42 +19,25 @@
     <string name="series">Series</string>
     <string name="anime">Anime</string>
     <string name="profile">Profile</string>
-    <string name="logout">Logout</string>
-    <string name="openNavDrawer">Navigation Drawer Open</string>
-    <string name="closeNavDrawer">Navigation Drawer Close</string>
-    <string name="navigation_drawer_profile_banner">Navigation Drawer Profile Banner</string>
-    <string name="navigation_drawer_profile_picture">Navigation Drawer Profile Picture</string>
+    <string name="logout">Sign out</string>
     <string name="app">Utility</string>
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="completed">Completed</string>
     <string name="planning">Planning</string>
     <string name="watching">Watching</string>
     <string name="progress">Progress</string>
     <string name="rating">Rating</string>
     <string name="status">Status</string>
-    <string name="save">Save</string>
-    <string name="favourite">Favourite</string>
     <string name="average_rating">Average Rating</string>
-    <string name="remove">Remove</string>
     <string name="statistics">Statistics</string>
     <string name="anime_statistics">Anime Statistics</string>
     <string name="total_anime_watched">Total Anime</string>
     <string name="mean_score">Mean Score</string>
     <string name="total_ratings">Total Ratings</string>
     <string name="rating_distribution">Rating Distribution</string>
-    <string name="profile_banner">Navigation view profile banner</string>
     <string name="select">Select</string>
     <string name="search">Search</string>
     <string name="list">List</string>
     <string name="grid">Grid</string>
-    <string name="invalid_password">Invalid Password</string>
-    <string name="invalid_email">Invalid Email</string>
-    <string name="database_error">Database Error</string>
-    <string name="sign_in">Sign in</string>
-    <string name="confirm_password">Confirm Password</string>
-    <string name="create_account">Create Account</string>
-    <string name="fill_all_fields">Fill all fields</string>
     <string name="add_a_new_title">Add A New Title</string>
     <string name="title_name">Title Name</string>
     <string name="type">Type</string>
@@ -60,12 +46,41 @@
     <string name="linear_preview">Linear Preview</string>
     <string name="grid_preview">Grid Preview</string>
     <string name="add_title">Add title</string>
-    <string name="tap_image_to_resize">*tap image to resize</string>
     <string name="episode_count">Episode Count</string>
     <string name="romanji_name">Romanji name</string>
     <string name="romanji">Romanji</string>
-    <string name="error">Error</string>
     <string name="unrated">Unrated</string>
     <string name="not_started">Not Started</string>
+
+    <!--content descriptions-->
+    <string name="logo">App Logo</string>
+    <string name="openNavDrawer">Navigation Drawer Open</string>
+    <string name="closeNavDrawer">Navigation Drawer Close</string>
+    <string name="navigation_drawer_profile_banner">Navigation Drawer Profile Banner</string>
+    <string name="navigation_drawer_profile_picture">Navigation Drawer Profile Picture</string>
+    <string name="profile_banner">Navigation view profile banner</string>
+    <string name="search_button">Search Button</string>
+
+    <!--button labels-->
+    <string name="save">Save</string>
+    <string name="favourite">Favourite</string>
+    <string name="remove">Remove</string>
+    <string name="sign_in">Sign in</string>
     <string name="clear_selection">Clear Selection</string>
+
+    <!--messages-->
+    <string name="invalid_password">Invalid Password</string>
+    <string name="invalid_email">Invalid Email</string>
+    <string name="network_error">Network Error</string>
+    <string name="confirm_password">Confirm Password</string>
+    <string name="create_account">Create Account</string>
+    <string name="fill_all_fields">Fill all fields</string>
+    <string name="tap_image_to_resize">*tap image to resize</string>
+    <string name="error">Error</string>
+    <string name="network_connected">Network Connected\nUser data loaded</string>
+    <string name="user_data_error">Could not load user data</string>
+    <string name="network_disconnected">Network Disconnected</string>
+    <string name="image_reselect">There was an error\nReselect the image</string>
+    <string name="image_select">Please select an image</string>
+
 </resources>

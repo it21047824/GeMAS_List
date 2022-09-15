@@ -14,7 +14,6 @@ import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 import com.google.android.material.textview.MaterialTextView;
 
-import java.sql.Connection;
 import java.util.Objects;
 
 public class SignUp extends AppCompatActivity {
@@ -128,9 +127,7 @@ public class SignUp extends AppCompatActivity {
                 createAccountButton.setEnabled(true);
             } else {
                 Thread signupThread = new Thread(() -> {
-                    //add user to database
-                    Connection signupConn = Azure.getConnection();
-                    Azure.Validity result = Azure.addUserAccount(signupConn, username, email, password);
+                    Azure.Validity result = Azure.addUserAccount(username, email, password);
 
                     runOnUiThread(() -> {
                         switch (result){
@@ -147,7 +144,7 @@ public class SignUp extends AppCompatActivity {
                                 activity.emailLayout.setError("*this email is taken");
                                 break;
                             case QUERY_FAILED:
-                                activity.error.setText(R.string.database_error);
+                                activity.error.setText(R.string.network_error);
                                 activity.error.setVisibility(View.VISIBLE);
                                 break;
                         }

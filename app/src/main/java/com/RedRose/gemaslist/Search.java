@@ -21,7 +21,6 @@ import android.widget.TextView;
 import com.google.android.material.card.MaterialCardView;
 import com.google.android.material.progressindicator.LinearProgressIndicator;
 
-import java.sql.Connection;
 import java.util.ArrayList;
 import java.util.Objects;
 
@@ -31,7 +30,6 @@ public class Search extends Fragment {
     private ArrayList<AnimeTitle> titles;
     private MainActivity activity;
     private Context context;
-    private Connection test;
     private LinearLayoutCompat layout;
     private LinearProgressIndicator loader;
 
@@ -62,8 +60,6 @@ public class Search extends Fragment {
 
         //create cards
         Thread thread = new Thread(() -> {
-
-            test = Azure.getConnection();
 
             titles = new ArrayList<>();
 
@@ -193,7 +189,7 @@ public class Search extends Fragment {
             int i = 1000;
             while (i<1013){
 
-                titles.add(Azure.getAnimeTitle(test, i));
+                titles.add(Azure.getAnimeTitle(i));
 
                 i++;
             }

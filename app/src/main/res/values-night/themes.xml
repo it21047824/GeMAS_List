@@ -18,13 +18,15 @@
         <item name="colorOnSecondary">@color/black</item>
         <!-- Status bar color. -->
         <item name="android:statusBarColor">?attr/colorPrimaryVariant</item>
-        <!-- Customize your theme here. -->
+
+        <!--Custom themes colors in main theme-->
         <item name="animeWatching">@color/watching_dark</item>
         <item name="animePlanning">@color/planning_dark</item>
         <item name="animeCompleted">@color/completed_dark</item>
         <item name="customColor1">@color/grey_light</item>
     </style>
 
+    <!--Custom themes-->
     <style name="custom_checkbox">
         <item name="colorAccent">@color/teal_200</item>
     </style>

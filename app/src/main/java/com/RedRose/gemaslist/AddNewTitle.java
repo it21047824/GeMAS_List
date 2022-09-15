@@ -21,7 +21,6 @@ import com.google.android.material.progressindicator.LinearProgressIndicator;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 
-import java.sql.Connection;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -224,7 +223,8 @@ public class AddNewTitle extends AppCompatActivity {
                 cropImageIntent.putExtra("DATA", selectedImage.toString());
                 cropImageActivity.launch(cropImageIntent);
             } else {
-                Toast.makeText(view.getContext(), "There was an error. Reselect the image",
+                Toast.makeText(view.getContext(),
+                        getResources().getString(R.string.image_reselect),
                         Toast.LENGTH_LONG).show();
             }
         });
@@ -237,7 +237,8 @@ public class AddNewTitle extends AppCompatActivity {
                 cropImageIntent.putExtra("DATA", selectedImage.toString());
                 cropImageActivity.launch(cropImageIntent);
             } else {
-                Toast.makeText(view.getContext(), "There was an error. Reselect the image",
+                Toast.makeText(view.getContext(),
+                        getResources().getString(R.string.image_reselect),
                         Toast.LENGTH_LONG).show();
             }
         });
@@ -266,7 +267,6 @@ public class AddNewTitle extends AppCompatActivity {
 
         Thread addAnimeTitleThread = new Thread(() -> {
             Azure.Validity result = Azure.Validity.QUERY_FAILED;
-            Connection addAnimeTitleConn = Azure.getConnection();
 
             switch (type) {
                 case "Game" :
@@ -281,7 +281,6 @@ public class AddNewTitle extends AppCompatActivity {
                 case "Anime" : {
                     if(finalEpisodes != null && croppedUri != null){
                         result = Azure.addNewAnimeTitle(
-                                addAnimeTitleConn,
                                 context,
                                 title,
                                 description,
@@ -311,19 +310,24 @@ public class AddNewTitle extends AppCompatActivity {
                     episodeLayout.setError("*required");
                 }
                 if(croppedUri == null){
-                    Toast.makeText(context, "Please select an image", Toast.LENGTH_LONG).show();
+                    Toast.makeText(context,
+                            getResources().getString(R.string.image_select),
+                            Toast.LENGTH_LONG).show();
                 }
                 switch (finalResult) {
                     case ALREADY_IN_USE:
                         newTitleLayout.setError("*title already added");
                         break;
                     case QUERY_FAILED:
-                        Toast.makeText(context, "Database Error", Toast.LENGTH_LONG).show();
+                        Toast.makeText(context,
+                                getResources().getString(R.string.network_error),
+                                Toast.LENGTH_SHORT).show();
                         break;
                     case QUERY_SUCCESSFUL:
                         episodeLayout.setError(null);
                         newTitleLayout.setError(null);
-                        Toast.makeText(context, "Successfully Added", Toast.LENGTH_LONG).show();
+                        Toast.makeText(context, "Successfully Added",
+                                Toast.LENGTH_SHORT).show();
 
                         finish();
                         break;

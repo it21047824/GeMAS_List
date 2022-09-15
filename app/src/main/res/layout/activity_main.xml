@@ -20,7 +20,7 @@
             app:layout_constraintTop_toTopOf="parent">
 
             <com.google.android.material.appbar.MaterialToolbar
-                android:id="@+id/mainToolbar"
+                android:id="@+id/main_toolbar"
                 style="@style/Widget.MaterialComponents.Toolbar.Primary"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -54,6 +54,7 @@
                         android:id="@+id/appbar_search_button"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:contentDescription="@string/search_button"
                         android:minWidth="0dp"
                         android:backgroundTint="@color/main_theme"
                         app:icon="@drawable/ic_baseline_search_24"

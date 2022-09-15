@@ -17,7 +17,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.google.android.material.card.MaterialCardView;
 import com.google.android.material.textview.MaterialTextView;
 
-import java.sql.Connection;
 import java.util.ArrayList;
 import java.util.Locale;
 import java.util.Objects;
@@ -31,7 +30,6 @@ public class AnimeRecyclerAdapter extends RecyclerView.Adapter<AnimeRecyclerAdap
     protected LinearLayoutCompat.LayoutParams linear;
     protected LinearLayoutCompat.LayoutParams grid;
     protected AnimeTitle anime;
-    protected Connection animeTitleConn;
 
     public AnimeRecyclerAdapter(MainActivity context, ArrayList<AnimeDataEntry> items, int color) {
         this.items = items;
@@ -64,18 +62,17 @@ public class AnimeRecyclerAdapter extends RecyclerView.Adapter<AnimeRecyclerAdap
     public synchronized void onBindViewHolder(@NonNull ListViewHolder holder, int position) {
         //set data to cards
         Thread animeDataThread = new Thread(() ->{
-            if(animeTitleConn == null){
-                animeTitleConn = Azure.getConnection();
-            }
 
             synchronized (lock){
-                anime = Azure.getAnimeTitle(animeTitleConn, items.get(position).title);
+                anime = Azure.getAnimeTitle(items.get(position).title);
 
                 context.runOnUiThread(() -> {
                     int progress = items.get(position).progress;
                     int rating = items.get(position).rating;
                     holder.getCard().setCardBackgroundColor(color);
-                    holder.getAnimeImage().setImageBitmap(anime.getPoster());
+                    if(anime.getPoster()!= null){
+                        holder.getAnimeImage().setImageBitmap(anime.getPoster());
+                    }
                     holder.getAnimeTitle().setText(anime.getAnimeTitle());
                     if(progress != -1){
                         holder.getProgress().setText(String.format(Locale.US,

@@ -24,14 +24,13 @@ import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 import com.google.android.material.textview.MaterialTextView;
 
-import java.sql.Connection;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
 public class AnimeSelect extends Fragment {
 
-    private MaterialTextView averageRatingView, animeTitleView, animeDescriptionView;
+    private MaterialTextView averageRatingView, animeTitleView, animeDescriptionView, romanjiView;
     private ImageView animeImageView;
     private TextInputEditText animeProgressView, animeRatingView;
     private CheckBox favouriteCheckBoxView;
@@ -44,7 +43,6 @@ public class AnimeSelect extends Fragment {
     private int animeProgress, animeRating;
     private boolean favourite;
     private AnimeTitle title;
-    private Connection animeSelectConn;
     private SharedPreferences sp;
     private AutoCompleteTextView dropDownMenu;
 
@@ -114,6 +112,7 @@ public class AnimeSelect extends Fragment {
         favouriteCheckBoxView = view.findViewById(R.id.anime_select_favourite);
         animeDescriptionView = view.findViewById(R.id.anime_select_description);
         averageRatingView = view.findViewById(R.id.anime_select_average_rating);
+        romanjiView = view.findViewById(R.id.anime_romanji_name);
         progressLayout = view.findViewById(R.id.anime_progress_layout);
         ratingLayout = view.findViewById(R.id.anime_rating_layout);
         statusLayout = view.findViewById(R.id.anime_status_layout);
@@ -171,26 +170,32 @@ public class AnimeSelect extends Fragment {
         Activity activity = getActivity();
 
         Thread getDataThread = new Thread(() -> {
-            animeSelectConn = Azure.getConnection();
-            title = Azure.getAnimeTitle(animeSelectConn, title_id);
+            title = Azure.getAnimeTitle(title_id);
 
             if (activity != null) {
                 activity.runOnUiThread(() -> {
-
                     if (title != null) {
                         animeTitleView.setText(title.getAnimeTitle());
                         animeImageView.setImageBitmap(title.getPoster());
-                        progressLayout.setSuffixText(String.format(Locale.US, "/%d", title.getEpisodes()));
+                        progressLayout.setSuffixText(String.format(Locale.US,
+                                "/%d", title.getEpisodes()));
                         dropDownMenu.setText(animeStatus, false);
                         if(animeProgress != -1){
-                            animeProgressView.setText(String.format(Locale.US, "%d", animeProgress));
+                            animeProgressView.setText(String.format(Locale.US,
+                                    "%d", animeProgress));
                         }
                         if(animeRating != -1){
-                            animeRatingView.setText(String.format(Locale.US, "%d", animeRating));
+                            animeRatingView.setText(String.format(Locale.US,
+                                    "%d", animeRating));
                         }
+                        romanjiView.setText(title.getRomanji());
                         favouriteCheckBoxView.setChecked(favourite);
                         animeDescriptionView.setText(title.getDescription());
                         averageRatingView.setText("8.8");
+                    } else {
+                        Toast.makeText(activity,
+                                getResources().getString(R.string.network_error),
+                                Toast.LENGTH_SHORT).show();
                     }
 
                     loadingIndicator.setVisibility(View.INVISIBLE);
@@ -281,19 +286,20 @@ public class AnimeSelect extends Fragment {
                     }
 
 
-                    animeSelectConn = Azure.getConnection();
                     int userId = sp.getInt(getString(R.string.user_id), 0);
 
-                    Azure.Validity success = Azure.saveAnimeUserData(animeSelectConn, userId);
+                    Azure.Validity success = Azure.saveAnimeUserData(userId);
 
                     String finalMessage = message;
                     requireActivity().runOnUiThread(() -> {
                         switch (success){
                             case QUERY_FAILED:
-                                Toast.makeText(activity, "Database Error", Toast.LENGTH_LONG).show();
+                                Toast.makeText(activity,
+                                        getResources().getString(R.string.network_error),
+                                        Toast.LENGTH_SHORT).show();
                                 break;
                             case QUERY_SUCCESSFUL:
-                                Toast.makeText(activity, finalMessage, Toast.LENGTH_LONG).show();
+                                Toast.makeText(activity, finalMessage, Toast.LENGTH_SHORT).show();
                         }
                         saveButton.setEnabled(true);
                         loadingIndicator.setVisibility(View.INVISIBLE);
@@ -316,17 +322,18 @@ public class AnimeSelect extends Fragment {
             userData.remove(title_id);
 
             Thread removeAnimeThread = new Thread(() -> {
-                Connection removeAnimeConn = Azure.getConnection();
                 int userId = sp.getInt(getString(R.string.user_id), 0);
-                Azure.Validity result = Azure.saveAnimeUserData(removeAnimeConn, userId);
+                Azure.Validity result = Azure.saveAnimeUserData(userId);
 
                 requireActivity().runOnUiThread(() -> {
                     switch (result){
                         case QUERY_FAILED:
-                            Toast.makeText(activity, "Database Error", Toast.LENGTH_LONG).show();
+                            Toast.makeText(activity,
+                                    getResources().getString(R.string.network_error),
+                                    Toast.LENGTH_SHORT).show();
                             break;
                         case QUERY_SUCCESSFUL:
-                            Toast.makeText(activity, "Saved", Toast.LENGTH_LONG).show();
+                            Toast.makeText(activity, "Saved", Toast.LENGTH_SHORT).show();
                     }
 
                     dropDownMenu.setText(null);

@@ -36,7 +36,7 @@ public class Azure {
     public static final int WATCHING = 0;
     public static final int PLANNING = 1;
     public static final int COMPLETED = 2;
-    public static volatile Connection conn;
+    public static Connection conn;
 
     public enum Validity {
         QUERY_SUCCESSFUL,
@@ -61,7 +61,6 @@ public class Azure {
         } catch (ClassNotFoundException | SQLException e) {
             Log.e("Azure", e.getMessage());
         }
-        Log.e("Azure", "singleton conn");
         return conn;
     }
 
@@ -74,7 +73,17 @@ public class Azure {
         }
     }
 
-    public static UserAccount validateUser(Connection conn, String email, String password){
+    public static UserAccount validateUser(String email, String password){
+
+        //to prevent app from crashing
+        if(getConnection() == null){
+            return new UserAccount(
+                    -1,
+                    null,
+                    null,
+                    Validity.QUERY_FAILED
+            );
+        }
 
         ResultSet res;
         Validity validity = Validity.NULL_ARGS;
@@ -83,7 +92,8 @@ public class Azure {
 
         if(email != null){
             try {
-                PreparedStatement stmt = conn.prepareStatement("SELECT * FROM user_accounts WHERE email=?");
+                PreparedStatement stmt = getConnection()
+                        .prepareStatement("SELECT * FROM user_accounts WHERE email=?");
                 stmt.setString(1, email);
                 res = stmt.executeQuery();
 
@@ -115,11 +125,16 @@ public class Azure {
         );
     }
 
-    public static Validity addUserAccount(Connection conn, String username, String email, String password) {
+    public static Validity addUserAccount(String username, String email, String password) {
+        //to prevent app from crashing
+        if(getConnection() == null){
+            return Validity.QUERY_FAILED;
+        }
 
         //check if email already in use
         try {
-            PreparedStatement checkEmail = conn.prepareStatement("SELECT email from user_accounts WHERE email=?");
+            PreparedStatement checkEmail = getConnection()
+                    .prepareStatement("SELECT email from user_accounts WHERE email=?");
             checkEmail.setString(1, "email");
             ResultSet resultEmail = checkEmail.executeQuery();
 
@@ -135,7 +150,8 @@ public class Azure {
         String hashedPassword = Password.hashPassword(password);
 
         try {
-            PreparedStatement stmt = conn.prepareStatement("INSERT INTO user_accounts VALUES(?,?,?)");
+            PreparedStatement stmt = getConnection()
+                    .prepareStatement("INSERT INTO user_accounts VALUES(?,?,?)");
             stmt.setString(1,username);
             stmt.setString(2,hashedPassword);
             stmt.setString(3,email);
@@ -143,14 +159,16 @@ public class Azure {
 
             if(res>0){
                 //register user to save anime data
-                PreparedStatement getUid = conn.prepareStatement("SELECT user_id FROM user_accounts " +
+                PreparedStatement getUid = getConnection()
+                        .prepareStatement("SELECT user_id FROM user_accounts " +
                         "WHERE email=?");
                 getUid.setString(1, email);
 
                 ResultSet uid = getUid.executeQuery();
 
                 if(uid.next()) {
-                    PreparedStatement stmt2 = conn.prepareStatement("INSERT INTO " +
+                    PreparedStatement stmt2 = getConnection()
+                            .prepareStatement("INSERT INTO " +
                             "anime_user_data(user_id) VALUES(?)");
                     stmt2.setInt(1, uid.getInt(0));
                     int finalResult = stmt2.executeUpdate();
@@ -169,18 +187,21 @@ public class Azure {
         return Validity.QUERY_FAILED;
     }
 
-    public static Validity addNewAnimeTitle(Connection conn,
-                                            Context context,
+    public static Validity addNewAnimeTitle(Context context,
                                             String title,
                                             String description,
                                             Uri poster,
                                             String episodes,
                                             String romanji
     ) {
+        //to prevent app from crashing
+        if(getConnection() == null){
+            return Validity.QUERY_FAILED;
+        }
 
         //check if the title already exists
         try {
-            PreparedStatement stmt = conn.prepareCall
+            PreparedStatement stmt = getConnection().prepareCall
                     ("SELECT title FROM anime_titles WHERE title=?");
             stmt.setString(1, title);
 
@@ -197,7 +218,8 @@ public class Azure {
         //if not add the title
         int result;
         try {
-            PreparedStatement stmt = conn.prepareStatement("INSERT INTO anime_titles VALUES(?,?,?,?,?)");
+            PreparedStatement stmt = getConnection()
+                    .prepareStatement("INSERT INTO anime_titles VALUES(?,?,?,?,?)");
             stmt.setString(1, title);
             stmt.setString(2, description);
 
@@ -216,10 +238,18 @@ public class Azure {
         }
         return Validity.QUERY_FAILED;
     }
+
     //TODO: get global rating
-    public static AnimeTitle getAnimeTitle(Connection conn, int titleID) {
+    public static AnimeTitle getAnimeTitle(int titleID) {
+        //to prevent app from crashing
+        if(getConnection() == null){
+            Log.e("Azure", "conn null");
+            return null;
+        }
+
         try {
-            PreparedStatement stmt = conn.prepareStatement("SELECT * FROM anime_titles WHERE anime_id=?");
+            PreparedStatement stmt = getConnection()
+                    .prepareStatement("SELECT * FROM anime_titles WHERE anime_id=?");
             stmt.setInt(1, titleID);
 
             ResultSet res = stmt.executeQuery();
@@ -240,12 +270,18 @@ public class Azure {
         return null;
     }
 
-    public static Validity getAnimeUserData(Connection conn, int accountID) {
+    public static Validity getAnimeUserData(int accountID) {
+        //to prevent app from crashing
+        if(getConnection() == null){
+            return Validity.QUERY_FAILED;
+        }
+
         JSONObject retrievedData;
         JSONArray dataArray;
 
         try {
-            PreparedStatement stmt = conn.prepareStatement("SELECT user_data FROM anime_user_data WHERE user_id=?");
+            PreparedStatement stmt = getConnection()
+                    .prepareStatement("SELECT user_data FROM anime_user_data WHERE user_id=?");
             stmt.setInt(1, accountID);
 
             ResultSet res = stmt.executeQuery();
@@ -293,7 +329,12 @@ public class Azure {
         return Validity.QUERY_FAILED;
     }
 
-    public static Validity saveAnimeUserData(Connection conn, int accountID) {
+    public static Validity saveAnimeUserData(int accountID) {
+        //to prevent app from crashing
+        if(getConnection() == null){
+            return Validity.QUERY_FAILED;
+        }
+
         //create a JSON string to save
         AnimeUserData currentData = AnimeUserData.getAnimeUserData();
         JSONArray dataArray = new JSONArray();
@@ -362,7 +403,8 @@ public class Azure {
         }
 
         try {
-            PreparedStatement saveData = conn.prepareStatement("UPDATE anime_user_data " +
+            PreparedStatement saveData = getConnection()
+                    .prepareStatement("UPDATE anime_user_data " +
                     "SET user_data=? WHERE user_id=?");
             saveData.setString(1, finalDataString);
             saveData.setInt(2, accountID);

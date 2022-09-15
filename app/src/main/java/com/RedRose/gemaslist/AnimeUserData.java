@@ -17,6 +17,10 @@ public class AnimeUserData {
         return data != null;
     }
 
+    public static void clearData() {
+        data = null;
+    }
+
     public static AnimeUserData getAnimeUserData() {
         if(data == null) {
             synchronized (AnimeUserData.class){

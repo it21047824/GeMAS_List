@@ -6,14 +6,13 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 
 import com.google.android.material.progressindicator.LinearProgressIndicator;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textview.MaterialTextView;
-
-import java.sql.Connection;
 
 public class Login extends AppCompatActivity {
 
@@ -23,7 +22,6 @@ public class Login extends AppCompatActivity {
     protected MaterialTextView error;
     protected Login login;
     protected LinearProgressIndicator progressIndicator;
-    protected Connection loginConn;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,18 +43,17 @@ public class Login extends AppCompatActivity {
             loginButton.setEnabled(false);
 
             Thread loginThread = new Thread(() -> {
-                //create connection
-                loginConn = Azure.getConnection();
 
                 String email=null, pass=null;
                 if(emailInput.getText() != null){
                     email = emailInput.getText().toString();
+                    Log.e("Login", email);
                 }
                 if(password.getText() != null){
                     pass = password.getText().toString();
                 }
 
-                UserAccount result = Azure.validateUser(loginConn, email, pass);
+                UserAccount result = Azure.validateUser(email, pass);
 
                 runOnUiThread(() -> {
                     switch (result.getResult()) {
@@ -82,7 +79,7 @@ public class Login extends AppCompatActivity {
                             startActivity(intent);
                             break;
                         case QUERY_FAILED:
-                            login.error.setText(R.string.database_error);
+                            login.error.setText(R.string.network_error);
                             login.error.setVisibility(View.VISIBLE);
                             break;
                         case NULL_ARGS:
@@ -110,6 +107,10 @@ public class Login extends AppCompatActivity {
             }
         };
         this.getOnBackPressedDispatcher().addCallback(this, backPressedCallback);
+
+        //initialize the database connection
+        Thread databaseConn = new Thread(Azure::getConnection);
+        databaseConn.start();
     }
 
     @Override
