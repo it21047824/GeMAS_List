@@ -1,3 +1,8 @@
+
+
+//Migrated from Azure to Firebase
+//This File is Deprecated
+
 package com.RedRose.gemaslist;
 
 import android.annotation.SuppressLint;
@@ -73,7 +78,7 @@ public class Azure {
         }
     }
 
-    public static UserAccount validateUser(String email, String password){
+    public static UserAccount validateUserCreds(String email, String password){
 
         //to prevent app from crashing
         if(getConnection() == null){
@@ -239,7 +244,6 @@ public class Azure {
         return Validity.QUERY_FAILED;
     }
 
-    //TODO: get global rating
     public static AnimeTitle getAnimeTitle(int titleID) {
         //to prevent app from crashing
         if(getConnection() == null){

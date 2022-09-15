@@ -17,13 +17,17 @@ import android.net.Network;
 import android.net.NetworkCapabilities;
 import android.net.NetworkRequest;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
 
+import com.firebase.ui.auth.AuthUI;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.textview.MaterialTextView;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 
 import java.util.Objects;
 import java.util.Stack;
@@ -34,25 +38,36 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private DrawerLayout drawerLayout;
     public Stack<String> appBarSubtitleHistory = new Stack<>();
     protected SharedPreferences sp;
-    private int userID;
+    private String userID;
+    private MaterialButton searchButton;
+    private NavigationView navigationView;
+    private FirebaseAuth mAuth;
+    private FirebaseUser user;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        mAuth = FirebaseAuth.getInstance();
+        user = mAuth.getCurrentUser();
+
         //get shared preferences
         sp = getSharedPreferences(getString(R.string.login), MODE_PRIVATE);
-        userID = sp.getInt(getString(R.string.user_id), 0);
+        userID = sp.getString(getString(R.string.user_id), null);
 
         //actionbar and nav drawer setup
         Toolbar toolbar = findViewById(R.id.main_toolbar);
         setSupportActionBar(toolbar);
 
         drawerLayout = findViewById(R.id.drawerLayout);
-        NavigationView navigationView = findViewById(R.id.navDrawer);
+        navigationView = findViewById(R.id.navDrawer);
+        searchButton = findViewById(R.id.appbar_search_button);
         View navDrawerHeader = navigationView.getHeaderView(0);
         MaterialTextView navDrawerUsername = navDrawerHeader.findViewById(R.id.nav_profile_name);
-        navDrawerUsername.setText(sp.getString(getString(R.string.username), "Username"));
+        navDrawerUsername.setText(
+                sp.getString(getString(R.string.username),
+                        sp.getString(getString(R.string.email), "username")));
 
         //set action bar and nav drawer
         ActionBarDrawerToggle actionBarDrawerToggle = new ActionBarDrawerToggle(
@@ -63,7 +78,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 R.string.closeNavDrawer
         );
 
-        MaterialButton searchButton = findViewById(R.id.appbar_search_button);
+
         searchButton.setOnClickListener(view -> {
             String subtitle = (String) Objects.requireNonNull
                     (MainActivity.this.getSupportActionBar()).getSubtitle();
@@ -99,6 +114,22 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         );
 
         //set custom back button navigation
+        setBackPressMethod();
+
+        //Monitor network status
+        monitorNetwork();
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+
+        if (user == null){
+            finish();
+        }
+    }
+
+    private void setBackPressMethod() {
         OnBackPressedCallback backPressedCallback = new OnBackPressedCallback(true) {
             @Override
             public void handleOnBackPressed() {
@@ -112,13 +143,16 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                         searchBtnHidden = false;
                     }
                 } else {
+                    //TODO: check exit method
                     finishAffinity();
+                    System.exit(0);
                 }
             }
         };
         this.getOnBackPressedDispatcher().addCallback(this, backPressedCallback);
+    }
 
-        //Monitor network status
+    private void monitorNetwork() {
         NetworkRequest networkRequest = new NetworkRequest.Builder()
                 .addCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET)
                 .addTransportType(NetworkCapabilities.TRANSPORT_WIFI)
@@ -128,22 +162,22 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         ConnectivityManager.NetworkCallback networkCallback = new ConnectivityManager.NetworkCallback() {
             @Override
             public void onAvailable(@NonNull Network network) {
-                super.onAvailable(network);
-                Azure.getConnection();
-                if(!AnimeUserData.dataInitialized()){
-                    try {
-                        Azure.Validity result = Azure.getAnimeUserData(userID);
-                        if(result == Azure.Validity.QUERY_FAILED){
-                            runOnUiThread(()-> Toast.makeText(MainActivity.this,
-                                    getResources().getString(R.string.user_data_error),
-                                    Toast.LENGTH_SHORT).show());
-                        } else if (result == Azure.Validity.QUERY_SUCCESSFUL){
-                            runOnUiThread(()-> Toast.makeText(MainActivity.this,
-                                    getResources().getString(R.string.network_connected),
-                                    Toast.LENGTH_SHORT).show());
-                        }
-                    } catch (NullPointerException e) {/*ignore*/}
-                }
+//                super.onAvailable(network);
+//                Azure.getConnection();
+//                if(!AnimeUserData.dataInitialized()){
+//                    try {
+//                        Azure.Validity result = Azure.getAnimeUserData(userID);
+//                        if(result == Azure.Validity.QUERY_FAILED){
+//                            runOnUiThread(()-> Toast.makeText(MainActivity.this,
+//                                    getResources().getString(R.string.user_data_error),
+//                                    Toast.LENGTH_SHORT).show());
+//                        } else if (result == Azure.Validity.QUERY_SUCCESSFUL){
+//                            runOnUiThread(()-> Toast.makeText(MainActivity.this,
+//                                    getResources().getString(R.string.network_connected),
+//                                    Toast.LENGTH_SHORT).show());
+//                        }
+//                    } catch (NullPointerException e) {/*ignore*/}
+//                }
             }
 
             @Override
@@ -293,21 +327,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 break;
             }
             case R.id.navLogout: {
-//                String subtitle = (String) Objects.requireNonNull
-//                        (MainActivity.this.getSupportActionBar()).getSubtitle();
-//                if(appBarSubtitleHistory.empty()){
-//                    appBarSubtitleHistory.push(subtitle);
-//                } else {
-//                    if(!appBarSubtitleHistory.peek().equals(subtitle)){
-//                        appBarSubtitleHistory.push(subtitle);
-//                    }
-//                }
-//
-//                MainActivity.this.getSupportActionBar()
-//                        .setSubtitle(R.string.logout);
-//                Navigation.findNavController(this, R.id.nav_host_fragment)
-//                        .navigate(R.id.action_global_logout);
-
                 //logout
                 SharedPreferences sp = getSharedPreferences(getString(R.string.login), MODE_PRIVATE);
                 SharedPreferences.Editor editor = sp.edit();
@@ -317,8 +336,15 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 editor.remove(getString(R.string.email));
                 editor.apply();
 
-                Intent intent = new Intent(MainActivity.this, Login.class);
-                startActivity(intent);
+                AuthUI.getInstance().signOut(this)
+                        .addOnCompleteListener(task-> {
+                            if (task.isSuccessful()){
+                                startActivity(new Intent(MainActivity.this, Login.class));
+                            } else {
+                                Log.e("Main", "Failed to sign out", task.getException());
+                            }
+
+                        });
                 break;
             }
         }
@@ -329,11 +355,5 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     @Override
     public void onPointerCaptureChanged(boolean hasCapture) {
         super.onPointerCaptureChanged(hasCapture);
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        Azure.closeConnection();
     }
 }

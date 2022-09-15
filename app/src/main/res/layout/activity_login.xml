@@ -7,7 +7,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:gravity="center_horizontal"
+    android:gravity="center"
     tools:context=".Login">
 
     <com.google.android.material.card.MaterialCardView
@@ -15,7 +15,6 @@
         android:layout_height="wrap_content"
         android:padding="2dp"
         android:backgroundTint="@color/white"
-        android:layout_marginTop="90dp"
         app:cardCornerRadius="100dp">
 
         <ImageView
@@ -28,148 +27,146 @@
 
     </com.google.android.material.card.MaterialCardView>
 
-    <androidx.cardview.widget.CardView
-        android:id="@+id/cardView"
-        android:layout_width="334dp"
-        android:layout_height="357dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginBottom="32dp"
-        app:cardCornerRadius="20dp"
-        app:cardElevation="5dp">
+    <com.google.android.material.progressindicator.CircularProgressIndicator
+        android:id="@+id/login_progress_indicator"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:indeterminate="true" />
 
-        <com.google.android.material.progressindicator.LinearProgressIndicator
-            android:id="@+id/login_loading_indicator"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:visibility="invisible"
-            android:indeterminate="true"
-            tools:visibility="visible"/>
-
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/loginCardLayout"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
-
-            <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/inputUsernameLayout"
-                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="32dp"
-                android:autofillHints=""
-                android:ems="10"
-                android:hint="@string/email"
-                android:minHeight="48dp"
-                android:textColorHint="#616161"
-                app:layout_constraintBottom_toTopOf="@+id/inputPasswordLayout"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.5"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent">
-
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/input_email"
-                    android:layout_width="270dp"
-                    android:layout_height="60dp"
-                    android:inputType="textEmailAddress"
-                    android:textColorHint="#546E7A"
-                    tools:ignore="TextContrastCheck" />
-            </com.google.android.material.textfield.TextInputLayout>
-
-            <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/inputPasswordLayout"
-                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
-                android:ems="10"
-                android:hint="@string/password"
-                android:inputType="textPassword"
-                android:minHeight="48dp"
-                android:textColorHint="#616161"
-                app:layout_constraintBottom_toTopOf="@+id/login_error"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.5"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/inputUsernameLayout"
-                app:passwordToggleEnabled="true">
-
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/input_password"
-                    android:layout_width="270dp"
-                    android:layout_height="60dp"
-                    android:inputType="textPassword"
-                    android:textColorHint="#546E7A"
-                    tools:ignore="TextContrastCheck" />
-
-            </com.google.android.material.textfield.TextInputLayout>
-
-            <com.google.android.material.textview.MaterialTextView
-                android:id="@+id/login_error"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:visibility="invisible"
-                android:textColor="?attr/colorError"
-                app:layout_constraintBottom_toTopOf="@+id/login_button"
-                app:layout_constraintLeft_toLeftOf="parent"
-                app:layout_constraintRight_toRightOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/inputPasswordLayout"
-                tools:text="Password Hint"
-                tools:visibility="visible" />
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/login_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/sign_in"
+        android:textAlignment="center"
+        app:icon="@drawable/ic_baseline_login_24"
+        android:visibility="gone"/>
 
 
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/login_button"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
-                android:text="@string/sign_in"
-                android:textAlignment="center"
-                app:icon="@drawable/ic_baseline_login_24"
-                app:layout_constraintBottom_toTopOf="@+id/login_signup_link"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.5"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/login_error"
-                tools:ignore="DuplicateSpeakableTextCheck" />
+<!--    <androidx.cardview.widget.CardView-->
+<!--        android:id="@+id/cardView"-->
+<!--        android:layout_width="334dp"-->
+<!--        android:layout_height="357dp"-->
+<!--        android:layout_marginTop="8dp"-->
+<!--        android:layout_marginBottom="32dp"-->
+<!--        app:cardCornerRadius="20dp"-->
+<!--        app:cardElevation="5dp">-->
 
-            <com.google.android.material.textview.MaterialTextView
-                android:id="@+id/login_signup_link"
-                android:layout_width="63dp"
-                android:layout_height="19dp"
-                android:layout_marginTop="40dp"
-                android:text="@string/signUp"
-                android:textAlignment="center"
-                android:textColor="@color/main_theme"
-                android:clickable="true"
-                android:focusable="true"
-                app:layout_constraintBottom_toTopOf="@+id/forgotPassLink"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.5"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/login_button"
-                tools:ignore="TextContrastCheck" />
+<!--        <com.google.android.material.progressindicator.LinearProgressIndicator-->
+<!--            android:id="@+id/login_loading_indicator"-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:visibility="invisible"-->
+<!--            android:indeterminate="true"-->
+<!--            tools:visibility="visible"/>-->
 
-            <com.google.android.material.textview.MaterialTextView
-                android:id="@+id/forgotPassLink"
-                android:layout_width="wrap_content"
-                android:layout_height="21dp"
-                android:layout_marginTop="16dp"
-                android:layout_marginBottom="16dp"
-                android:text="@string/forgotPassword"
-                android:textAlignment="center"
-                android:textColor="@color/main_theme"
-                android:clickable="true"
-                android:focusable="true"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.5"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/login_signup_link"
-                tools:ignore="TextContrastCheck" />
+<!--        <androidx.constraintlayout.widget.ConstraintLayout-->
+<!--            android:id="@+id/loginCardLayout"-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="match_parent">-->
 
-        </androidx.constraintlayout.widget.ConstraintLayout>
+<!--            <com.google.android.material.textfield.TextInputLayout-->
+<!--                android:id="@+id/inputUsernameLayout"-->
+<!--                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"-->
+<!--                android:layout_width="wrap_content"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:layout_marginTop="32dp"-->
+<!--                android:autofillHints=""-->
+<!--                android:ems="10"-->
+<!--                android:hint="@string/email"-->
+<!--                android:minHeight="48dp"-->
+<!--                android:textColorHint="#616161"-->
+<!--                app:layout_constraintBottom_toTopOf="@+id/inputPasswordLayout"-->
+<!--                app:layout_constraintEnd_toEndOf="parent"-->
+<!--                app:layout_constraintHorizontal_bias="0.5"-->
+<!--                app:layout_constraintStart_toStartOf="parent"-->
+<!--                app:layout_constraintTop_toTopOf="parent">-->
 
-    </androidx.cardview.widget.CardView>
+<!--                <com.google.android.material.textfield.TextInputEditText-->
+<!--                    android:id="@+id/input_email"-->
+<!--                    android:layout_width="270dp"-->
+<!--                    android:layout_height="60dp"-->
+<!--                    android:inputType="textEmailAddress"-->
+<!--                    android:textColorHint="#546E7A"-->
+<!--                    tools:ignore="TextContrastCheck" />-->
+<!--            </com.google.android.material.textfield.TextInputLayout>-->
+
+<!--            <com.google.android.material.textfield.TextInputLayout-->
+<!--                android:id="@+id/inputPasswordLayout"-->
+<!--                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"-->
+<!--                android:layout_width="wrap_content"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:layout_marginTop="16dp"-->
+<!--                android:ems="10"-->
+<!--                android:hint="@string/password"-->
+<!--                android:inputType="textPassword"-->
+<!--                android:minHeight="48dp"-->
+<!--                android:textColorHint="#616161"-->
+<!--                app:layout_constraintBottom_toTopOf="@+id/login_error"-->
+<!--                app:layout_constraintEnd_toEndOf="parent"-->
+<!--                app:layout_constraintHorizontal_bias="0.5"-->
+<!--                app:layout_constraintStart_toStartOf="parent"-->
+<!--                app:layout_constraintTop_toBottomOf="@+id/inputUsernameLayout"-->
+<!--                app:passwordToggleEnabled="true">-->
+
+<!--                <com.google.android.material.textfield.TextInputEditText-->
+<!--                    android:id="@+id/input_password"-->
+<!--                    android:layout_width="270dp"-->
+<!--                    android:layout_height="60dp"-->
+<!--                    android:inputType="textPassword"-->
+<!--                    android:textColorHint="#546E7A"-->
+<!--                    tools:ignore="TextContrastCheck" />-->
+
+<!--            </com.google.android.material.textfield.TextInputLayout>-->
+
+<!--            <com.google.android.material.textview.MaterialTextView-->
+<!--                android:id="@+id/login_error"-->
+<!--                android:layout_width="wrap_content"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:visibility="invisible"-->
+<!--                android:textColor="?attr/colorError"-->
+<!--                app:layout_constraintBottom_toTopOf="@+id/login_button"-->
+<!--                app:layout_constraintLeft_toLeftOf="parent"-->
+<!--                app:layout_constraintRight_toRightOf="parent"-->
+<!--                app:layout_constraintTop_toBottomOf="@+id/inputPasswordLayout"-->
+<!--                tools:text="Password Hint"-->
+<!--                tools:visibility="visible" />-->
+
+
+<!--            <com.google.android.material.button.MaterialButton-->
+<!--                android:id="@+id/login_button"-->
+<!--                android:layout_width="wrap_content"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:layout_marginTop="16dp"-->
+<!--                android:text="@string/sign_in"-->
+<!--                android:textAlignment="center"-->
+<!--                app:icon="@drawable/ic_baseline_login_24"-->
+<!--                app:layout_constraintBottom_toTopOf="@+id/login_signup_link"-->
+<!--                app:layout_constraintEnd_toEndOf="parent"-->
+<!--                app:layout_constraintHorizontal_bias="0.5"-->
+<!--                app:layout_constraintStart_toStartOf="parent"-->
+<!--                app:layout_constraintTop_toBottomOf="@+id/login_error"-->
+<!--                tools:ignore="DuplicateSpeakableTextCheck" />-->
+
+<!--            <com.google.android.material.textview.MaterialTextView-->
+<!--                android:id="@+id/login_signup_link"-->
+<!--                android:layout_width="63dp"-->
+<!--                android:layout_height="48dp"-->
+<!--                android:layout_marginTop="40dp"-->
+<!--                android:clickable="true"-->
+<!--                android:focusable="true"-->
+<!--                android:text="@string/signUp"-->
+<!--                android:textAlignment="center"-->
+<!--                android:textColor="@color/main_theme"-->
+<!--                app:layout_constraintBottom_toBottomOf="parent"-->
+<!--                app:layout_constraintEnd_toEndOf="parent"-->
+<!--                app:layout_constraintHorizontal_bias="0.5"-->
+<!--                app:layout_constraintStart_toStartOf="parent"-->
+<!--                app:layout_constraintTop_toBottomOf="@+id/login_button"-->
+<!--                tools:ignore="TextContrastCheck" />-->
+
+<!--        </androidx.constraintlayout.widget.ConstraintLayout>-->
+
+<!--    </androidx.cardview.widget.CardView>-->
 
 </androidx.appcompat.widget.LinearLayoutCompat>

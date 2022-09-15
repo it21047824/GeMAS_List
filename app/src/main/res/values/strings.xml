@@ -47,8 +47,8 @@
     <string name="grid_preview">Grid Preview</string>
     <string name="add_title">Add title</string>
     <string name="episode_count">Episode Count</string>
-    <string name="romanji_name">Romanji name</string>
-    <string name="romanji">Romanji</string>
+    <string name="romanji_name">Romaji name</string>
+    <string name="romanji">Romaji</string>
     <string name="unrated">Unrated</string>
     <string name="not_started">Not Started</string>
 
@@ -82,5 +82,6 @@
     <string name="network_disconnected">Network Disconnected</string>
     <string name="image_reselect">There was an error\nReselect the image</string>
     <string name="image_select">Please select an image</string>
+    <string name="signed_in">Signed In as %s</string>
 
 </resources>

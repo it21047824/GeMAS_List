@@ -1,0 +1,69 @@
+{
+  "project_info": {
+    "project_number": "941886594932",
+    "firebase_url": "https://gemas-list-1662485803384-default-rtdb.asia-southeast1.firebasedatabase.app",
+    "project_id": "gemas-list-1662485803384",
+    "storage_bucket": "gemas-list-1662485803384.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:941886594932:android:27679c03f40445929f9621",
+        "android_client_info": {
+          "package_name": "com.RedRose.gemaslist"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "941886594932-7691tdark1dibfn299f9cf4mclkdclh6.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCTRXHM--LKvgAml7C_A9mios8KGjl1yBc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "941886594932-7691tdark1dibfn299f9cf4mclkdclh6.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:941886594932:android:723ba94f8fccd7ac9f9621",
+        "android_client_info": {
+          "package_name": "com.RodRose.gemaslist"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "941886594932-7691tdark1dibfn299f9cf4mclkdclh6.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCTRXHM--LKvgAml7C_A9mios8KGjl1yBc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "941886594932-7691tdark1dibfn299f9cf4mclkdclh6.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

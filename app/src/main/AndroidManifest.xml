@@ -27,9 +27,10 @@
         <activity
             android:name="com.RedRose.gemaslist.AddNewTitle"
             android:exported="false" />
-        <activity
-            android:name="com.RedRose.gemaslist.SignUp"
-            android:exported="false" />
+            <!--deprecated activity-->
+<!--        <activity-->
+<!--            android:name="com.RedRose.gemaslist.SignUp"-->
+<!--            android:exported="false" />-->
         <activity
             android:name="com.RedRose.gemaslist.MainActivity"
             android:exported="false" />
