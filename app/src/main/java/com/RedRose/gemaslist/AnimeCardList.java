@@ -23,7 +23,7 @@ import java.util.ArrayList;
 public class AnimeCardList extends Fragment {
 
     private static final String ARG_CARD_COLOR = "cardColor";
-    private static final String ARG_ITEMS = "listItems";
+    private static final String ARG_ITEMS = "listType";
     private static final String KEY_LAYOUT_MANAGER = "layoutManager";
     private static final String KEY_LAYOUT = "layoutBoolean";
     private static final int SPAN_COUNT = 3;
@@ -37,8 +37,8 @@ public class AnimeCardList extends Fragment {
     protected RecyclerView recyclerView;
     protected RecyclerView.LayoutManager layoutManager;
     protected AnimeRecyclerAdapter adapter;
-    protected int cardColor;
-    protected CustomLinkList argItems;
+    protected int cardColor, argList;
+    protected CustomLinkList userdata;
     protected ArrayList<AnimeDataEntry> items;
     protected SwitchMaterial switchMaterial;
 
@@ -49,11 +49,11 @@ public class AnimeCardList extends Fragment {
         // Required empty public constructor
     }
 
-    public static AnimeCardList newInstance(int color, CustomLinkList items) {
+    public static AnimeCardList newInstance(int color, int list) {
         AnimeCardList animeCardList = new AnimeCardList();
         Bundle args = new Bundle();
         args.putInt(ARG_CARD_COLOR, color);
-        args.putParcelable(ARG_ITEMS, items);
+        args.putInt(ARG_ITEMS, list);
         animeCardList.setArguments(args);
         return animeCardList;
     }
@@ -75,11 +75,27 @@ public class AnimeCardList extends Fragment {
         //get arguments
         if (getArguments() != null) {
             cardColor = getArguments().getInt(ARG_CARD_COLOR);
-            argItems = getArguments().getParcelable(ARG_ITEMS);
-            items = new ArrayList<>();
-            for(int i=0; i<argItems.size(); i++){
-                items.add(argItems.getItem(i));
+            argList = getArguments().getInt(ARG_ITEMS);
+            switch (argList) {
+                case FirebaseUtil.WATCHING:
+                    userdata = AnimeUserData.getAnimeUserData().getWatchingList();
+                    break;
+                case FirebaseUtil.PLANNING:
+                    userdata = AnimeUserData.getAnimeUserData().getPlanningList();
+                    break;
+                case FirebaseUtil.COMPLETED:
+                    userdata = AnimeUserData.getAnimeUserData().getCompletedList();
+                    break;
+                default:
+                    userdata = null;
+                    break;
             }
+
+            items = new ArrayList<>();
+            for(int i=0; i< userdata.size(); i++){
+                items.add(userdata.getItem(i));
+            }
+
         } else {
             if (getContext() != null){
                 TypedValue typedValue = new TypedValue();

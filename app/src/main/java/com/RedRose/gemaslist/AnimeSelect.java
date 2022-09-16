@@ -1,8 +1,6 @@
 package com.RedRose.gemaslist;
 
 import android.app.Activity;
-import android.content.Context;
-import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 
@@ -21,16 +19,15 @@ import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.Toast;
 
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.progressindicator.LinearProgressIndicator;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 import com.google.android.material.textview.MaterialTextView;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
@@ -53,8 +50,7 @@ public class AnimeSelect extends Fragment {
     private String animeStatus;
     private int animeProgress, animeRating;
     private boolean favourite;
-    private AnimeTitle title;
-    private SharedPreferences sp;
+    private int episodes;
     private AutoCompleteTextView dropDownMenu;
 
     public AnimeSelect() {
@@ -68,7 +64,6 @@ public class AnimeSelect extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        sp = requireContext().getSharedPreferences("Login", Context.MODE_PRIVATE);
 
         animeStatus = null;
         animeProgress = -1;
@@ -81,13 +76,13 @@ public class AnimeSelect extends Fragment {
             dataEntry = userData.find(title_id);
             if(dataEntry != null){
                 switch (dataEntry.status){
-                    case Azure.WATCHING:
+                    case FirebaseUtil.WATCHING:
                         animeStatus = "Watching";
                         break;
-                    case Azure.PLANNING:
+                    case FirebaseUtil.PLANNING:
                         animeStatus = "Planning";
                         break;
-                    case Azure.COMPLETED:
+                    case FirebaseUtil.COMPLETED:
                         animeStatus = "Completed";
                         break;
                 }
@@ -135,49 +130,6 @@ public class AnimeSelect extends Fragment {
         dropDownMenu.setOnItemClickListener(((adapterView, view1, i, l) -> statusLayout.setError(null)));
         favouriteCheckBoxView.setOnCheckedChangeListener((compoundButton, b) -> favourite = b);
 
-        animeRatingView.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) { }
-
-            @Override
-            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                if(charSequence.length()>0){
-                    int input = Integer.parseInt(charSequence.toString());
-                    if(input < 0 || input > 10){
-                        ratingLayout.setError("*invalid");
-                    } else {
-                        ratingLayout.setError(null);
-                    }
-                } else {
-                    ratingLayout.setError(null);
-                }
-            }
-
-            @Override
-            public void afterTextChanged(Editable editable) { }
-        });
-        animeProgressView.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) { }
-
-            @Override
-            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                if(charSequence.length()>0){
-                    int input = Integer.parseInt(charSequence.toString());
-                    if(input < 0 || input > title.getEpisodes()){
-                        progressLayout.setError("*invalid");
-                    } else {
-                        progressLayout.setError(null);
-                    }
-                } else {
-                    progressLayout.setError(null);
-                }
-            }
-
-            @Override
-            public void afterTextChanged(Editable editable) { }
-        });
-
         Activity activity = getActivity();
 
         //display information
@@ -187,14 +139,17 @@ public class AnimeSelect extends Fragment {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 String title = snapshot.child("title").getValue(String.class);
-                Long episodes = snapshot.child("episodes").getValue(Long.class);
+                //noinspection ConstantConditions
+                episodes = Math.toIntExact(snapshot.child("episodes").getValue(Long.class));
                 String description = snapshot.child("description").getValue(String.class);
                 String romaji = snapshot.child("romaji").getValue(String.class);
                 Long raters = snapshot.child("global_rating").child("raters").getValue(Long.class);
                 Long ratings = snapshot.child("global_rating").child("ratings").getValue(Long.class);
                 float average = (float) 0.0;
                 try {
+                    //noinspection ConstantConditions
                     if(raters > 0){
+                        //noinspection ConstantConditions
                         average = (float) ratings / raters;
                     }
                 } catch (Exception e) {
@@ -226,37 +181,67 @@ public class AnimeSelect extends Fragment {
         //display image
         FirebaseStorage storage = FirebaseStorage.getInstance();
         StorageReference imageRef = storage.getReference().child("anime_posters").child(title_id);
-        imageRef.getBytes(FirebaseUtil.ONE_MEGABYTE).addOnSuccessListener(new OnSuccessListener<byte[]>() {
+        imageRef.getBytes(FirebaseUtil.ONE_MEGABYTE).addOnSuccessListener(bytes -> {
+            Bitmap poster = FirebaseUtil.byteToBitmap(bytes);
+            animeImageView.setImageBitmap(poster);
+        });
+
+        //display user data
+        dropDownMenu.setText(animeStatus, false);
+        if(animeProgress != -1){
+            animeProgressView.setText(String.format(Locale.US,
+                    "%d", animeProgress));
+        }
+        if(animeRating != -1){
+            animeRatingView.setText(String.format(Locale.US,
+                    "%d", animeRating));
+        }
+        favouriteCheckBoxView.setChecked(favourite);
+
+
+        animeRatingView.addTextChangedListener(new TextWatcher() {
             @Override
-            public void onSuccess(byte[] bytes) {
-                Bitmap poster = FirebaseUtil.byteToBitmap(bytes);
-                animeImageView.setImageBitmap(poster);
-            }
-        });
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) { }
 
-        //TODO: get user data
-        Thread getDataThread = new Thread(() -> {
-            if (activity != null) {
-                activity.runOnUiThread(() -> {
-                    if (title != null) {
-                        //from userdata
-                        dropDownMenu.setText(animeStatus, false);
-                        if(animeProgress != -1){
-                            animeProgressView.setText(String.format(Locale.US,
-                                    "%d", animeProgress));
-                        }
-                        if(animeRating != -1){
-                            animeRatingView.setText(String.format(Locale.US,
-                                    "%d", animeRating));
-                        }
-                        favouriteCheckBoxView.setChecked(favourite);
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                if(charSequence.length()>0){
+                    int input = Integer.parseInt(charSequence.toString());
+                    if(input < 0 || input > 10){
+                        ratingLayout.setError("*invalid");
+                    } else {
+                        ratingLayout.setError(null);
                     }
-                });
+                } else {
+                    ratingLayout.setError(null);
+                }
             }
-        });
-        getDataThread.start();
 
-        //TODO: save user data
+            @Override
+            public void afterTextChanged(Editable editable) { }
+        });
+        animeProgressView.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) { }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                if(charSequence.length()>0){
+                    int input = Integer.parseInt(charSequence.toString());
+                    if(input < 0 || input > episodes){
+                        progressLayout.setError("*invalid");
+                    } else {
+                        progressLayout.setError(null);
+                    }
+                } else {
+                    progressLayout.setError(null);
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) { }
+        });
+
         //save data on button click
         saveButton.setOnClickListener(buttonView -> {
             saveButton.setEnabled(false);
@@ -281,92 +266,86 @@ public class AnimeSelect extends Fragment {
             String statusInput = dropDownMenu.getText().toString();
             switch(statusInput){
                 case "Watching":
-                    status = Azure.WATCHING;
+                    status = FirebaseUtil.WATCHING;
                     break;
                 case "Planning":
-                    status = Azure.PLANNING;
+                    status = FirebaseUtil.PLANNING;
                     break;
                 case "Completed":
-                    status = Azure.COMPLETED;
+                    status = FirebaseUtil.COMPLETED;
                     break;
             }
             if(status != -1){
-                //upload changes to database
-                int finalRating = rating;
-                int finalStatus = status;
-                int finalProgress = progress;
-                Thread saveDataThread = new Thread(() -> {
-                    String message = null;
-                    if(finalStatus != dataEntry.status
-                            || finalRating != dataEntry.rating
-                            || finalProgress != dataEntry.progress
-                            || favourite != dataEntry.favourite)
-                    {
-                        if(finalRating != dataEntry.rating){
-                            dataEntry.rating = finalRating;
-                        }
-                        if(favourite != dataEntry.favourite){
-                            dataEntry.favourite = favourite;
-                        }
 
-                        if(finalProgress != dataEntry.progress){
-                            dataEntry.progress = finalProgress;
-                        }
-                        dataEntry.status = finalStatus;
-
-                        //remove entry from current list
-                        boolean removeRes = userData.remove(title_id);
-
-                        //add to correct place
-                        if(removeRes){
-                            message = "Saved";
-                        } else {
-                            message = "Added to list";
-                        }
-
-                        switch(finalStatus) {
-                            case Azure.WATCHING:
-                                userData.getWatchingList().addItem(dataEntry);
-                                break;
-                            case Azure.PLANNING:
-                                userData.getPlanningList().addItem(dataEntry);
-                                break;
-                            case Azure.COMPLETED:
-                                userData.getCompletedList().addItem(dataEntry);
-                                break;
-                        }
+                String message = null;
+                if(status != dataEntry.status
+                        || rating != dataEntry.rating
+                        || progress != dataEntry.progress
+                        || favourite != dataEntry.favourite)
+                {
+                    if(rating != dataEntry.rating){
+                        dataEntry.rating = rating;
+                    }
+                    if(favourite != dataEntry.favourite){
+                        dataEntry.favourite = favourite;
                     }
 
+                    if(progress != dataEntry.progress){
+                        dataEntry.progress = progress;
+                    }
+                    dataEntry.status = status;
 
-                    int userId = sp.getInt(getString(R.string.user_id), 0);
+                    //remove entry from current list
+                    boolean removeRes = userData.remove(title_id);
 
-                    Azure.Validity success = Azure.saveAnimeUserData(userId);
+                    //add to correct place
+                    if(removeRes){
+                        message = "Saved";
+                    } else {
+                        message = "Added to list";
+                    }
 
+                    switch(status) {
+                        case FirebaseUtil.WATCHING:
+                            userData.getWatchingList().addItem(dataEntry);
+                            break;
+                        case FirebaseUtil.PLANNING:
+                            userData.getPlanningList().addItem(dataEntry);
+                            break;
+                        case FirebaseUtil.COMPLETED:
+                            userData.getCompletedList().addItem(dataEntry);
+                            break;
+                    }
+                }
+
+                //upload changes to database
+                String uid = FirebaseAuth.getInstance().getUid();
+                DatabaseReference reference = FirebaseUtil.getDB()
+                        .getReference(FirebaseUtil.USERDATA);
+
+                if (uid != null) {
                     String finalMessage = message;
-                    requireActivity().runOnUiThread(() -> {
-                        switch (success){
-                            case QUERY_FAILED:
-                                Toast.makeText(activity,
-                                        getResources().getString(R.string.network_error),
-                                        Toast.LENGTH_SHORT).show();
-                                break;
-                            case QUERY_SUCCESSFUL:
-                                Toast.makeText(activity, finalMessage, Toast.LENGTH_SHORT).show();
+                    reference.child(uid).child("anime").setValue(
+                            FirebaseUtil.userdataToJSON(),
+                            (error, ref) -> {
+                        if (error == null) {
+                            Toast.makeText(activity, finalMessage, Toast.LENGTH_SHORT).show();
+                        } else {
+                            Log.e("Select", error.getMessage());
+                            Toast.makeText(activity,
+                                    getResources().getString(R.string.network_error),
+                                    Toast.LENGTH_SHORT).show();
                         }
-                        saveButton.setEnabled(true);
-                        loadingIndicator.setVisibility(View.INVISIBLE);
                     });
-
-                });
-                saveDataThread.start();
+                }
             } else {
                 statusLayout.setError("*must select");
-                saveButton.setEnabled(true);
-                loadingIndicator.setVisibility(View.INVISIBLE);
             }
+            saveButton.setEnabled(true);
+            loadingIndicator.setVisibility(View.INVISIBLE);
         });
 
-        //TODO: remove from list
+        //remove from list
         MaterialButton removeButton = view.findViewById(R.id.anime_remove_button);
         removeButton.setOnClickListener(removeView -> {
             removeButton.setEnabled(false);
@@ -374,32 +353,33 @@ public class AnimeSelect extends Fragment {
 
             userData.remove(title_id);
 
-            Thread removeAnimeThread = new Thread(() -> {
-                int userId = sp.getInt(getString(R.string.user_id), 0);
-                Azure.Validity result = Azure.saveAnimeUserData(userId);
+            //upload changes to database
+            String uid = FirebaseAuth.getInstance().getUid();
+            DatabaseReference reference = FirebaseUtil.getDB()
+                    .getReference(FirebaseUtil.USERDATA);
 
-                requireActivity().runOnUiThread(() -> {
-                    switch (result){
-                        case QUERY_FAILED:
-                            Toast.makeText(activity,
-                                    getResources().getString(R.string.network_error),
-                                    Toast.LENGTH_SHORT).show();
-                            break;
-                        case QUERY_SUCCESSFUL:
-                            Toast.makeText(activity, "Saved", Toast.LENGTH_SHORT).show();
+            if (uid != null) {
+                reference.child(uid).child("anime").setValue(
+                        FirebaseUtil.userdataToJSON(),
+                        (error, ref) -> {
+                    if (error == null) {
+                        Toast.makeText(activity, "removed from list", Toast.LENGTH_SHORT).show();
+
+                        dropDownMenu.setText(null);
+                        animeProgressView.setText(null);
+                        animeRatingView.setText(null);
+                        favouriteCheckBoxView.setChecked(false);
+
+                        removeButton.setEnabled(true);
+                        loadingIndicator.setVisibility(View.INVISIBLE);
+                    } else {
+                        Log.e("Firebase", error.getMessage());
+                        Toast.makeText(activity,
+                                getResources().getString(R.string.network_error),
+                                Toast.LENGTH_SHORT).show();
                     }
-
-                    dropDownMenu.setText(null);
-                    animeProgressView.setText(null);
-                    animeRatingView.setText(null);
-                    favouriteCheckBoxView.setChecked(false);
-
-                    removeButton.setEnabled(true);
-                    loadingIndicator.setVisibility(View.INVISIBLE);
                 });
-
-            });
-            removeAnimeThread.start();
+            }
         });
 
         return view;

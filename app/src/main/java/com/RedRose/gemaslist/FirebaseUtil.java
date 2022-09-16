@@ -23,19 +23,25 @@ import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.List;
 import java.util.Objects;
 
 public class FirebaseUtil {
     private static final String URL = "https://gemas-list-1662485803384-default-rtdb" +
             ".asia-southeast1.firebasedatabase.app/";
     public static final long ONE_MEGABYTE = 1024*1024;
-    private static final String USERDATA = "userdata";
-    private static final String ANIME_PATH = "anime_titles";
+    public static final String USERDATA = "userdata";
+    public static final String ANIME_PATH = "anime_titles";
     private static final String TAG = "FirebaseUtil";
+    public static final int WATCHING = 0;
+    public static final int PLANNING = 1;
+    public static final int COMPLETED = 2;
     private static FirebaseDatabase firebaseDatabase;
 
     private FirebaseUtil () {
@@ -79,16 +85,14 @@ public class FirebaseUtil {
         return true;
     }
 
-    //TODO: get anime title
+
     public static void getAnimeTitle(String titleID, Context context, LinearLayoutCompat layout) {
         DatabaseReference titleRef = getDB().getReference(ANIME_PATH);
         DatabaseReference selectedRef = titleRef.child("titles").child(titleID);
-        Log.e("Firebase", "looking for " +selectedRef.getKey());
 
         selectedRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                Log.e("Firebase", "found " +snapshot.getKey());
                 //get image from cloud storage
                 FirebaseStorage storage = FirebaseStorage.getInstance();
                 StorageReference animeRef = storage.getReference()
@@ -108,19 +112,17 @@ public class FirebaseUtil {
                             / Integer.parseInt(Objects.requireNonNull
                             (rating.child("raters").getValue(String.class)));
                 } catch (Exception e) {
-                    //TODO: change value after testing
-                    average = -11.0F;
+                    average = 0.0F;
                 }
 
 
-                AnimeTitle selectedTitle = new AnimeTitle(snapshot.getKey(),
+                @SuppressWarnings("ConstantConditions") AnimeTitle selectedTitle = new AnimeTitle(snapshot.getKey(),
                         snapshot.child("title").getValue(String.class),
                         snapshot.child("description").getValue(String.class),
                         image[0],
                         Math.toIntExact(snapshot.child("episodes").getValue(Long.class)),
                         snapshot.child("romaji").getValue(String.class),
                         average);
-                Log.e("Firebase", "downloaded -> "+snapshot.getKey());
 
                 MainActivity activity = (MainActivity) context;
                 Bundle bundle = new Bundle();
@@ -136,7 +138,6 @@ public class FirebaseUtil {
     }
 
 
-    //TODO: get anime user data
     public static boolean getAnimeUserData() {
         String uid = FirebaseAuth.getInstance().getUid();
         DatabaseReference reference = getDB().getReference(USERDATA);
@@ -145,12 +146,10 @@ public class FirebaseUtil {
         ValueEventListener animeUserDataListener = new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                AnimeUserData currentData = AnimeUserData.getAnimeUserData();
-                AnimeUserData updatedData = snapshot.getValue(AnimeUserData.class);
-                if (updatedData != null){
-                    currentData.setWatchingList(updatedData.getWatchingList());
-                    currentData.setPlanningList(updatedData.getPlanningList());
-                    currentData.setCompletedList(updatedData.getCompletedList());
+                AnimeUserData.clearData();
+                String json = snapshot.getValue(String.class);
+                if (json != null){
+                    JSONStringToUserdata(json);
                 }
             }
 
@@ -161,23 +160,13 @@ public class FirebaseUtil {
         };
 
         if (uid != null) {
-            reference.child("anime").child(uid).addValueEventListener(animeUserDataListener);
+            reference.child(uid).child("anime")
+                    .addListenerForSingleValueEvent(animeUserDataListener);
             return true;
         }
         return false;
     }
 
-    //TODO: save anime user data
-    public static void  saveAnimeUserData() {
-        String uid = FirebaseAuth.getInstance().getUid();
-        DatabaseReference reference = getDB().getReference(USERDATA);
-
-        //get current data
-        if (uid != null) {
-            AnimeUserData userData = AnimeUserData.getAnimeUserData();
-            reference.child("anime").child(uid).setValue(userData);
-        }
-    }
 
 
 
@@ -213,5 +202,111 @@ public class FirebaseUtil {
                 TypedValue.COMPLEX_UNIT_DIP,
                 dip,
                 resources.getDisplayMetrics());
+    }
+
+    public static String userdataToJSON() {
+        AnimeUserData currentData = AnimeUserData.getAnimeUserData();
+        JSONArray dataArray = new JSONArray();
+
+        CustomLinkList watching = currentData.getWatchingList();
+        CustomLinkList planning = currentData.getPlanningList();
+        CustomLinkList completed = currentData.getCompletedList();
+
+        //get all data from watching list
+        for(int i=0; i<watching.size(); i++){
+            JSONObject obj = new JSONObject();
+            try {
+                obj.put("TITLE", watching.getItem(i).title);
+                obj.put("STATUS", watching.getItem(i).status);
+                obj.put("RATING", watching.getItem(i).rating);
+                obj.put("PROGRESS", watching.getItem(i).progress);
+                obj.put("FAVOURITE", watching.getItem(i).favourite);
+                dataArray.put(obj);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+
+        //get all data from planning list
+        for(int i=0; i<planning.size(); i++){
+            JSONObject obj = new JSONObject();
+            try {
+                obj.put("TITLE", planning.getItem(i).title);
+                obj.put("STATUS", planning.getItem(i).status);
+                obj.put("RATING", planning.getItem(i).rating);
+                obj.put("PROGRESS", planning.getItem(i).progress);
+                obj.put("FAVOURITE", planning.getItem(i).favourite);
+                dataArray.put(obj);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+
+        //get all data from completed list
+        for(int i=0; i<completed.size(); i++){
+            JSONObject obj = new JSONObject();
+            try {
+                obj.put("TITLE", completed.getItem(i).title);
+                obj.put("STATUS", completed.getItem(i).status);
+                obj.put("RATING", completed.getItem(i).rating);
+                obj.put("PROGRESS", completed.getItem(i).progress);
+                obj.put("FAVOURITE", completed.getItem(i).favourite);
+                dataArray.put(obj);
+            } catch (JSONException e) {
+                e.printStackTrace();
+                Log.e("Azure", e.getMessage());
+            }
+        }
+
+        JSONObject finalData = new JSONObject();
+        String finalDataString = null;
+        try {
+            finalData.put("DATA", dataArray);
+            finalDataString = finalData.toString();
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        return finalDataString;
+    }
+
+    public static boolean JSONStringToUserdata(String json) {
+        JSONObject retrievedData;
+        JSONArray dataArray;
+        AnimeUserData userData = AnimeUserData.getAnimeUserData();
+        CustomLinkList watching = userData.getWatchingList();
+        CustomLinkList planning = userData.getPlanningList();
+        CustomLinkList completed = userData.getCompletedList();
+
+        try {
+            retrievedData = new JSONObject(json);
+            dataArray = retrievedData.getJSONArray("DATA");
+
+            for (int i = 0; i < dataArray.length(); i++) {
+                JSONObject obj = dataArray.getJSONObject(i);
+                String title = obj.getString("TITLE");
+                int status = obj.getInt("STATUS");
+                int rating = obj.getInt("RATING");
+                int progress = obj.getInt("PROGRESS");
+                boolean favourite = obj.getBoolean("FAVOURITE");
+
+                switch (status) {
+                    case FirebaseUtil.WATCHING:
+                        watching.addItem(new AnimeDataEntry(title, status, progress, rating, favourite));
+                        break;
+                    case FirebaseUtil.PLANNING:
+                        planning.addItem(new AnimeDataEntry(title, status, progress, rating, favourite));
+                        break;
+                    case FirebaseUtil.COMPLETED:
+                        completed.addItem(new AnimeDataEntry(title, status, progress, rating, favourite));
+                        break;
+                }
+            }
+            return true;
+        } catch (JSONException e) {
+            Log.e("Firebase", e.getMessage());
+        }
+        return false;
+
     }
 }

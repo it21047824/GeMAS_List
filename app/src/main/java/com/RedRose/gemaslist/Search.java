@@ -166,7 +166,6 @@ public class Search extends Fragment {
 
             FirebaseUtil.getAnimeTitle(titleIDs[i], context, layout);
 
-            Log.e("Search", "downloaded ");
 
             i++;
         }

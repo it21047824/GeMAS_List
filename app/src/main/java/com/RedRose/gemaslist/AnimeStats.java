@@ -142,7 +142,7 @@ public class AnimeStats extends Fragment {
                 barGraphContainer,
                 barGraphView,
                 ratingData,
-                getResources().getColor(R.color.main_theme),
+                context != null ? context.getColor(R.color.main_theme) : 0,
                 2.3F
         );
 

@@ -77,7 +77,7 @@
     <string name="fill_all_fields">Fill all fields</string>
     <string name="tap_image_to_resize">*tap image to resize</string>
     <string name="error">Error</string>
-    <string name="network_connected">Network Connected\nUser data loaded</string>
+    <string name="network_connected">Network Connected</string>
     <string name="user_data_error">Could not load user data</string>
     <string name="network_disconnected">Network Disconnected</string>
     <string name="image_reselect">There was an error\nReselect the image</string>

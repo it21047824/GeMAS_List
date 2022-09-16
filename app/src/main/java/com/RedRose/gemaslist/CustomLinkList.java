@@ -1,9 +1,6 @@
 package com.RedRose.gemaslist;
 
-import android.os.Parcel;
-import android.os.Parcelable;
-
-public class CustomLinkList implements Parcelable {
+public class CustomLinkList {
     private static final Object LOCK = new Object();
     private AnimeDataEntry first;
 
@@ -96,34 +93,5 @@ public class CustomLinkList implements Parcelable {
             }
             return false;
         }
-    }
-
-
-
-
-    //parcelable implementations
-    protected CustomLinkList(Parcel in) {
-        in.recycle();
-    }
-
-    public static final Creator<CustomLinkList> CREATOR = new Creator<>() {
-        @Override
-        public CustomLinkList createFromParcel(Parcel in) {
-            return new CustomLinkList(in);
-        }
-
-        @Override
-        public CustomLinkList[] newArray(int size) {
-            return new CustomLinkList[size];
-        }
-    };
-
-    @Override
-    public int describeContents() {
-        return 0;
-    }
-
-    @Override
-    public void writeToParcel(Parcel parcel, int i) {
     }
 }

@@ -56,11 +56,9 @@ public class AnimeList extends Fragment {
             a.recycle();
         }
 
-        AnimeUserData userData = AnimeUserData.getAnimeUserData();
-
-        watchingList = AnimeCardList.newInstance(watchingColor, userData.getWatchingList());
-        planningList = AnimeCardList.newInstance(planningColor, userData.getPlanningList());
-        completedList = AnimeCardList.newInstance(completedColor, userData.getCompletedList());
+        watchingList = AnimeCardList.newInstance(watchingColor, FirebaseUtil.WATCHING);
+        planningList = AnimeCardList.newInstance(planningColor, FirebaseUtil.PLANNING);
+        completedList = AnimeCardList.newInstance(completedColor, FirebaseUtil.COMPLETED);
 
     }
 

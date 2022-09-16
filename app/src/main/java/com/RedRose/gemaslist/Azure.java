@@ -31,9 +31,7 @@ public class Azure {
             "hostNameInCertificate=*.database.windows.net;" +
             "loginTimeout=30;" +
             "ssl=require";
-    public static final int WATCHING = 0;
-    public static final int PLANNING = 1;
-    public static final int COMPLETED = 2;
+
     public static Connection conn;
 
     public enum Validity {
@@ -304,13 +302,13 @@ public class Azure {
                         boolean favourite = obj.getBoolean("FAVOURITE");
 
                         switch (status) {
-                            case WATCHING:
+                            case FirebaseUtil.WATCHING:
                                 //watching.addItem(new AnimeDataEntry(title, status, progress, rating, favourite));
                                 break;
-                            case PLANNING:
+                            case FirebaseUtil.PLANNING:
                                 //planning.addItem(new AnimeDataEntry(title, status, progress, rating, favourite));
                                 break;
-                            case COMPLETED:
+                            case FirebaseUtil.COMPLETED:
                                 //completed.addItem(new AnimeDataEntry(title, status, progress, rating, favourite));
                                 break;
                         }
@@ -341,7 +339,6 @@ public class Azure {
         CustomLinkList completed = currentData.getCompletedList();
 
         //get all data from watching list
-
         for(int i=0; i<watching.size(); i++){
             JSONObject obj = new JSONObject();
             try {
@@ -357,7 +354,6 @@ public class Azure {
         }
 
         //get all data from planning list
-
         for(int i=0; i<planning.size(); i++){
             JSONObject obj = new JSONObject();
             try {

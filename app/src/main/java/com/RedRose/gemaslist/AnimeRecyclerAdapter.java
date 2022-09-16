@@ -1,6 +1,7 @@
 package com.RedRose.gemaslist;
 
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.util.TypedValue;
 import android.view.Gravity;
@@ -16,6 +17,13 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.card.MaterialCardView;
 import com.google.android.material.textview.MaterialTextView;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 
 import java.util.ArrayList;
 import java.util.Locale;
@@ -29,7 +37,6 @@ public class AnimeRecyclerAdapter extends RecyclerView.Adapter<AnimeRecyclerAdap
     protected int color;
     protected LinearLayoutCompat.LayoutParams linear;
     protected LinearLayoutCompat.LayoutParams grid;
-    protected AnimeTitle anime;
 
     public AnimeRecyclerAdapter(MainActivity context, ArrayList<AnimeDataEntry> items, int color) {
         this.items = items;
@@ -61,29 +68,54 @@ public class AnimeRecyclerAdapter extends RecyclerView.Adapter<AnimeRecyclerAdap
     @Override
     public synchronized void onBindViewHolder(@NonNull ListViewHolder holder, int position) {
         //set data to cards
-        Thread animeDataThread = new Thread(() ->{
+        //Thread animeDataThread = new Thread(() ->{
 
-            synchronized (lock){
+            //synchronized (lock){
                 //anime = Azure.getAnimeTitle(items.get(position).title);
+                DatabaseReference animeRef = FirebaseUtil.getDB()
+                        .getReference(FirebaseUtil.ANIME_PATH)
+                        .child("titles").child(items.get(position).title);
 
-                context.runOnUiThread(() -> {
-                    int progress = items.get(position).progress;
-                    int rating = items.get(position).rating;
-                    holder.getCard().setCardBackgroundColor(color);
-                    if(anime.getPoster()!= null){
-                        holder.getAnimeImage().setImageBitmap(anime.getPoster());
-                    }
-                    holder.getAnimeTitle().setText(anime.getAnimeTitle());
-                    if(progress != -1){
-                        holder.getProgress().setText(String.format(Locale.US,
-                                "Progress : %d/%s",
-                                progress,
-                                anime.getEpisodes()));
-                    } else if(progress == anime.getEpisodes()){
-                        holder.getProgress().setText(R.string.completed);
-                    } else {
-                        holder.getProgress().setText(R.string.not_started);
-                    }
+                //context.runOnUiThread(() -> {
+
+        int progress = items.get(position).progress;
+        int rating = items.get(position).rating;
+        animeRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                holder.getAnimeTitle().setText(snapshot.child("title").getValue(String.class));
+                @SuppressWarnings("ConstantConditions")
+                long ep = snapshot.child("episodes").getValue(Long.class);
+                if(progress != -1){
+                    holder.getProgress().setText(String.format(Locale.US,
+                            "Progress : %d/%s",
+                            progress,
+                            ep));
+                } else if(progress == ep){
+                    holder.getProgress().setText(R.string.completed);
+                } else {
+                    holder.getProgress().setText(R.string.not_started);
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+
+        holder.getCard().setCardBackgroundColor(color);
+
+        Thread getImage = new Thread(() -> {
+            FirebaseStorage storage = FirebaseStorage.getInstance();
+            StorageReference imageRef = storage.getReference().child("anime_posters")
+                    .child(items.get(position).title);
+            imageRef.getBytes(FirebaseUtil.ONE_MEGABYTE).addOnSuccessListener(bytes -> {
+                Bitmap poster = FirebaseUtil.byteToBitmap(bytes);
+                context.runOnUiThread(() -> holder.getAnimeImage().setImageBitmap(poster));
+            });
+        });
+        getImage.start();
 
                     if(rating != -1){
                         holder.getRating().setText(String.format(Locale.US, "Rating : %d/10", rating));
@@ -103,10 +135,10 @@ public class AnimeRecyclerAdapter extends RecyclerView.Adapter<AnimeRecyclerAdap
                         Navigation.findNavController(context, R.id.nav_host_fragment)
                                 .navigate(R.id.action_animeList_to_animeSelect, bundle);
                     });
-                });
-            }
-        });
-        animeDataThread.start();
+               // });
+            //}
+        //});
+        //animeDataThread.start();
 
         //changes for layout toggle
         switch (AnimeCardList.currentLayoutManagerType){

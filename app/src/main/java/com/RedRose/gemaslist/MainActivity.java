@@ -28,6 +28,7 @@ import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.textview.MaterialTextView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DatabaseReference;
 
 import java.util.Objects;
 import java.util.Stack;
@@ -163,6 +164,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             @Override
             public void onAvailable(@NonNull Network network) {
                 super.onAvailable(network);
+
                 if(!AnimeUserData.dataInitialized()){
                     try {
                          boolean result = FirebaseUtil.getAnimeUserData();
@@ -183,6 +185,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             public void onLost(@NonNull Network network) {
                 super.onLost(network);
                 AnimeUserData.clearData();
+
                 runOnUiThread(()-> Toast.makeText(MainActivity.this,
                         getResources().getString(R.string.network_disconnected),
                         Toast.LENGTH_SHORT).show());
