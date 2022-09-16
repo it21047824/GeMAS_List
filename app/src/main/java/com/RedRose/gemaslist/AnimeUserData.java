@@ -3,9 +3,9 @@ package com.RedRose.gemaslist;
 public class AnimeUserData {
 
     private static AnimeUserData data;
-    private final CustomLinkList watchingList;
-    private final CustomLinkList planningList;
-    private final CustomLinkList completedList;
+    private CustomLinkList watchingList;
+    private CustomLinkList planningList;
+    private CustomLinkList completedList;
 
     private AnimeUserData(){
         watchingList = new CustomLinkList();
@@ -30,7 +30,7 @@ public class AnimeUserData {
         return data;
     }
 
-    public AnimeDataEntry find(int title) {
+    public AnimeDataEntry find(String title) {
         AnimeDataEntry temp = watchingList.find(title);
         if(temp == null) {
             temp = planningList.find(title);
@@ -41,7 +41,7 @@ public class AnimeUserData {
         return temp;
     }
 
-    public boolean remove(int title) {
+    public boolean remove(String title) {
         boolean temp = false;
         if(watchingList.size()>0){
             temp = watchingList.removeItem(title);
@@ -69,5 +69,17 @@ public class AnimeUserData {
 
     public CustomLinkList getCompletedList() {
         return completedList;
+    }
+
+    public void setWatchingList(CustomLinkList watchingList) {
+        this.watchingList = watchingList;
+    }
+
+    public void setPlanningList(CustomLinkList planningList) {
+        this.planningList = planningList;
+    }
+
+    public void setCompletedList(CustomLinkList completedList) {
+        this.completedList = completedList;
     }
 }

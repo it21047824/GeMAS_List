@@ -162,22 +162,21 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         ConnectivityManager.NetworkCallback networkCallback = new ConnectivityManager.NetworkCallback() {
             @Override
             public void onAvailable(@NonNull Network network) {
-//                super.onAvailable(network);
-//                Azure.getConnection();
-//                if(!AnimeUserData.dataInitialized()){
-//                    try {
-//                        Azure.Validity result = Azure.getAnimeUserData(userID);
-//                        if(result == Azure.Validity.QUERY_FAILED){
-//                            runOnUiThread(()-> Toast.makeText(MainActivity.this,
-//                                    getResources().getString(R.string.user_data_error),
-//                                    Toast.LENGTH_SHORT).show());
-//                        } else if (result == Azure.Validity.QUERY_SUCCESSFUL){
-//                            runOnUiThread(()-> Toast.makeText(MainActivity.this,
-//                                    getResources().getString(R.string.network_connected),
-//                                    Toast.LENGTH_SHORT).show());
-//                        }
-//                    } catch (NullPointerException e) {/*ignore*/}
-//                }
+                super.onAvailable(network);
+                if(!AnimeUserData.dataInitialized()){
+                    try {
+                         boolean result = FirebaseUtil.getAnimeUserData();
+                        if(result){
+                            runOnUiThread(()-> Toast.makeText(MainActivity.this,
+                                    getResources().getString(R.string.network_connected),
+                                    Toast.LENGTH_SHORT).show());
+                        } else {
+                            runOnUiThread(()-> Toast.makeText(MainActivity.this,
+                                    getResources().getString(R.string.user_data_error),
+                                    Toast.LENGTH_SHORT).show());
+                        }
+                    } catch (NullPointerException e) {/*ignore*/}
+                }
             }
 
             @Override

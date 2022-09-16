@@ -8,6 +8,7 @@ import androidx.appcompat.widget.LinearLayoutCompat.LayoutParams;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
@@ -88,13 +89,13 @@ public class AddNewTitle extends AppCompatActivity {
 
         //set preview image params
         LayoutParams linear = new LayoutParams(
-                (int) Azure.pxFromDp(context,55),
-                (int) Azure.pxFromDp(context, 77)
+                (int) FirebaseUtil.pxFromDp(context,55),
+                (int) FirebaseUtil.pxFromDp(context, 77)
         );
         linear.setMargins(16,16,16,16);
         LayoutParams grid = new LayoutParams(
-                (int) Azure.pxFromDp(context,115),
-                (int) Azure.pxFromDp(context, 161)
+                (int) FirebaseUtil.pxFromDp(context,115),
+                (int) FirebaseUtil.pxFromDp(context, 161)
         );
         grid.setMargins(16,16,16,16);
 
@@ -256,17 +257,17 @@ public class AddNewTitle extends AppCompatActivity {
             episodes = episodesInput.getText().toString();
         }
         String type = titleType.getText().toString();
-        String romanji = null;
+        String romaji = null;
         if(romanjiInput.getText() != null) {
-            romanji = romanjiInput.getText().toString();
+            romaji = romanjiInput.getText().toString();
         }
         Context context = view.getContext();
 
         String finalEpisodes = episodes;
-        String finalRomanji = romanji;
+        String finalRomaji = romaji;
 
         Thread addAnimeTitleThread = new Thread(() -> {
-            Azure.Validity result = Azure.Validity.QUERY_FAILED;
+            boolean result = false;
 
             switch (type) {
                 case "Game" :
@@ -280,16 +281,16 @@ public class AddNewTitle extends AppCompatActivity {
                     break;
                 case "Anime" : {
                     if(finalEpisodes != null && croppedUri != null){
-                        result = Azure.addNewAnimeTitle(
-                                context,
+                        result = FirebaseUtil.addNewAnimeTitle(
                                 title,
                                 description,
                                 croppedUri,
-                                finalEpisodes,
-                                finalRomanji
+                                Integer.parseInt(finalEpisodes),
+                                finalRomaji,
+                                context
                         );
 
-                        if(result == Azure.Validity.QUERY_SUCCESSFUL){
+                        if(result){
                             SharedPreferences.Editor editor = sp.edit();
                             editor.remove("TYPE");
                             editor.remove("EPISODES");
@@ -304,7 +305,7 @@ public class AddNewTitle extends AppCompatActivity {
                 }
             }
 
-            Azure.Validity finalResult = result;
+            boolean finalResult = result;
             runOnUiThread(() -> {
                 if(finalEpisodes == null){
                     episodeLayout.setError("*required");
@@ -314,27 +315,17 @@ public class AddNewTitle extends AppCompatActivity {
                             getResources().getString(R.string.image_select),
                             Toast.LENGTH_LONG).show();
                 }
-                switch (finalResult) {
-                    case ALREADY_IN_USE:
-                        newTitleLayout.setError("*title already added");
-                        break;
-                    case QUERY_FAILED:
-                        Toast.makeText(context,
-                                getResources().getString(R.string.network_error),
-                                Toast.LENGTH_SHORT).show();
-                        break;
-                    case QUERY_SUCCESSFUL:
-                        episodeLayout.setError(null);
-                        newTitleLayout.setError(null);
-                        Toast.makeText(context, "Successfully Added",
-                                Toast.LENGTH_SHORT).show();
+                if (finalResult) {
+                    episodeLayout.setError(null);
+                    newTitleLayout.setError(null);
 
-                        finish();
-                        break;
-                    default:
-                        //do nothing
-                        break;
+                    finish();
+                } else {
+                    Toast.makeText(context,
+                            getResources().getString(R.string.network_error),
+                            Toast.LENGTH_SHORT).show();
                 }
+
                 progressIndicator.setVisibility(View.INVISIBLE);
                 addTitleButton.setEnabled(true);
             });

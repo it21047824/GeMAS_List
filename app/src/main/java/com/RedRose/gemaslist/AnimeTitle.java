@@ -3,20 +3,20 @@ package com.RedRose.gemaslist;
 import android.graphics.Bitmap;
 
 public class AnimeTitle {
-    private final int animeID;
+    private final String animeID;
     private final String animeTitle;
     private final String description;
     private final Bitmap poster;
     private final int episodes;
-    private final String romanji;
+    private final String romaji;
     private final float rating;
 
-    public AnimeTitle(int animeID,
+    public AnimeTitle(String animeID,
                       String animeTitle,
                       String description,
                       Bitmap poster,
                       int episodes,
-                      String romanji,
+                      String romaji,
                       float rating
     ) {
         this.animeID = animeID;
@@ -24,11 +24,11 @@ public class AnimeTitle {
         this.description = description;
         this.poster = poster;
         this.episodes = episodes;
-        this.romanji = romanji;
+        this.romaji = romaji;
         this.rating = rating;
     }
 
-    public int getAnimeID() {
+    public String getAnimeID() {
         return animeID;
     }
 
@@ -48,8 +48,8 @@ public class AnimeTitle {
         return episodes;
     }
 
-    public String getRomanji() {
-        return romanji;
+    public String getRomaji() {
+        return romaji;
     }
 
     public float getRating() {

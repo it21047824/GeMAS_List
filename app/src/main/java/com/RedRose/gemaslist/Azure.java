@@ -7,20 +7,13 @@ package com.RedRose.gemaslist;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
-import android.content.res.Resources;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.util.Log;
-import android.util.TypedValue;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -228,7 +221,7 @@ public class Azure {
             stmt.setString(1, title);
             stmt.setString(2, description);
 
-            byte[] image = uriToBytes(context, poster);
+            byte[] image = FirebaseUtil.uriToBytes(context, poster);
             stmt.setBytes(3, image);
             stmt.setInt(4, Integer.parseInt(episodes));
             stmt.setString(5, (romanji == null ? "" : romanji));
@@ -259,10 +252,10 @@ public class Azure {
             ResultSet res = stmt.executeQuery();
 
             if (res.next()){
-                return new AnimeTitle(res.getInt(1),
+                return new AnimeTitle(res.getString(1),
                         res.getString(2),
                         res.getString(3),
-                        byteToBitmap(res.getBytes(4)),
+                        FirebaseUtil.byteToBitmap(res.getBytes(4)),
                         res.getInt(5),
                         res.getString(6),
                         (float) 8.8);
@@ -312,13 +305,13 @@ public class Azure {
 
                         switch (status) {
                             case WATCHING:
-                                watching.addItem(new AnimeDataEntry(title, status, progress, rating, favourite));
+                                //watching.addItem(new AnimeDataEntry(title, status, progress, rating, favourite));
                                 break;
                             case PLANNING:
-                                planning.addItem(new AnimeDataEntry(title, status, progress, rating, favourite));
+                                //planning.addItem(new AnimeDataEntry(title, status, progress, rating, favourite));
                                 break;
                             case COMPLETED:
-                                completed.addItem(new AnimeDataEntry(title, status, progress, rating, favourite));
+                                //completed.addItem(new AnimeDataEntry(title, status, progress, rating, favourite));
                                 break;
                         }
                     }
@@ -431,35 +424,5 @@ public class Azure {
 
 
 
-    //util methods
-    //code snippet from
-    //https://colinyeoh.wordpress.com/2012/05/18/android-convert-image-uri-to-byte-array/
-    public static byte[] uriToBytes(Context context, Uri uri) {
-        InputStream inputStream;
-        byte[] data = null;
-        try {
-            inputStream = context.getContentResolver().openInputStream(uri);
-            Bitmap bitmap = BitmapFactory.decodeStream(inputStream);
-            ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, outputStream);
-            data = outputStream.toByteArray();
-            inputStream.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return data;
-    }
-    //end of code snippet
 
-    public static Bitmap byteToBitmap(byte[] bytes) {
-        return BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
-    }
-
-    public static float pxFromDp(Context context, float dip) {
-        Resources resources = context.getResources();
-        return TypedValue.applyDimension(
-                TypedValue.COMPLEX_UNIT_DIP,
-                dip,
-                resources.getDisplayMetrics());
-    }
 }

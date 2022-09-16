@@ -64,10 +64,10 @@ public class CustomLinkList implements Parcelable {
         return null;
     }
 
-    public AnimeDataEntry find(int title) {
+    public AnimeDataEntry find(String title) {
         AnimeDataEntry temp = first;
         while(temp!=null){
-            if(temp.title == title){
+            if(temp.title.equals(title)){
                 return temp;
             }
             temp = temp.next;
@@ -75,11 +75,11 @@ public class CustomLinkList implements Parcelable {
         return null;
     }
 
-    public boolean removeItem(int title) {
+    public boolean removeItem(String title) {
         synchronized (LOCK){
             AnimeDataEntry temp = first;
             while(temp!=null){
-                if(temp.title == title){
+                if(temp.title.equals(title)){
                     if(temp.prev != null){
                         temp.prev.next = temp.next;
                     } else {

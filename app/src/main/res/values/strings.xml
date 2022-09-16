@@ -4,7 +4,7 @@
 
     <!--titles and labels-->
     <string name="app_name">GeMAS List</string>
-    <string name="login">Login</string>
+    <string name="login">Sign in</string>
     <string name="username">Username</string>
     <string name="email">Email</string>
     <string name="user_id">User ID</string>
@@ -47,8 +47,8 @@
     <string name="grid_preview">Grid Preview</string>
     <string name="add_title">Add title</string>
     <string name="episode_count">Episode Count</string>
-    <string name="romanji_name">Romaji name</string>
-    <string name="romanji">Romaji</string>
+    <string name="romaji_name">Romaji name</string>
+    <string name="romaji">Romaji</string>
     <string name="unrated">Unrated</string>
     <string name="not_started">Not Started</string>
 

@@ -47,12 +47,12 @@ public class AnimeRecyclerAdapter extends RecyclerView.Adapter<AnimeRecyclerAdap
         Context context = view.getContext();
 
         linear = new LinearLayoutCompat.LayoutParams(
-                (int) Azure.pxFromDp(context,65),
-                (int) Azure.pxFromDp(context, 91)
+                (int) FirebaseUtil.pxFromDp(context,65),
+                (int) FirebaseUtil.pxFromDp(context, 91)
                 );
         grid = new LinearLayoutCompat.LayoutParams(
-                (int) Azure.pxFromDp(context,115),
-                (int) Azure.pxFromDp(context, 161)
+                (int) FirebaseUtil.pxFromDp(context,115),
+                (int) FirebaseUtil.pxFromDp(context, 161)
         );
 
         return new ListViewHolder(view);
@@ -64,7 +64,7 @@ public class AnimeRecyclerAdapter extends RecyclerView.Adapter<AnimeRecyclerAdap
         Thread animeDataThread = new Thread(() ->{
 
             synchronized (lock){
-                anime = Azure.getAnimeTitle(items.get(position).title);
+                //anime = Azure.getAnimeTitle(items.get(position).title);
 
                 context.runOnUiThread(() -> {
                     int progress = items.get(position).progress;
@@ -76,7 +76,7 @@ public class AnimeRecyclerAdapter extends RecyclerView.Adapter<AnimeRecyclerAdap
                     holder.getAnimeTitle().setText(anime.getAnimeTitle());
                     if(progress != -1){
                         holder.getProgress().setText(String.format(Locale.US,
-                                "Progress : %d/%d",
+                                "Progress : %d/%s",
                                 progress,
                                 anime.getEpisodes()));
                     } else if(progress == anime.getEpisodes()){
@@ -93,7 +93,7 @@ public class AnimeRecyclerAdapter extends RecyclerView.Adapter<AnimeRecyclerAdap
 
                     holder.getCard().setOnClickListener(view -> {
                         Bundle bundle = new Bundle();
-                        bundle.putInt("title_id", items.get(position).title);
+                        bundle.putString("title_id", items.get(position).title);
 
                         context.appBarSubtitleHistory.push((String)
                                 Objects.requireNonNull(context.getSupportActionBar()).getSubtitle());

@@ -3,12 +3,15 @@ package com.RedRose.gemaslist;
 import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,11 +21,19 @@ import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.progressindicator.LinearProgressIndicator;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 import com.google.android.material.textview.MaterialTextView;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -35,7 +46,7 @@ public class AnimeSelect extends Fragment {
     private TextInputEditText animeProgressView, animeRatingView;
     private CheckBox favouriteCheckBoxView;
     private LinearProgressIndicator loadingIndicator;
-    private int title_id;
+    private String title_id;
     private AnimeDataEntry dataEntry;
     private AnimeUserData userData;
     private TextInputLayout progressLayout, ratingLayout, statusLayout;
@@ -65,7 +76,7 @@ public class AnimeSelect extends Fragment {
         favourite = false;
 
         if(getArguments() != null){
-            title_id = getArguments().getInt("title_id");
+            title_id = getArguments().getString("title_id");
             userData = AnimeUserData.getAnimeUserData();
             dataEntry = userData.find(title_id);
             if(dataEntry != null){
@@ -169,16 +180,66 @@ public class AnimeSelect extends Fragment {
 
         Activity activity = getActivity();
 
-        Thread getDataThread = new Thread(() -> {
-            title = Azure.getAnimeTitle(title_id);
+        //display information
+        DatabaseReference selectRef = FirebaseUtil.getDB().getReference("anime_titles/titles")
+                .child(title_id);
+        selectRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                String title = snapshot.child("title").getValue(String.class);
+                Long episodes = snapshot.child("episodes").getValue(Long.class);
+                String description = snapshot.child("description").getValue(String.class);
+                String romaji = snapshot.child("romaji").getValue(String.class);
+                Long raters = snapshot.child("global_rating").child("raters").getValue(Long.class);
+                Long ratings = snapshot.child("global_rating").child("ratings").getValue(Long.class);
+                float average = (float) 0.0;
+                try {
+                    if(raters > 0){
+                        average = (float) ratings / raters;
+                    }
+                } catch (Exception e) {
+                    Log.e("Select", e.getMessage());
+                }
 
+                animeTitleView.setText(title);
+                progressLayout.setSuffixText(String.format(Locale.US,
+                        "/%d", episodes));
+                romanjiView.setText(romaji);
+                averageRatingView.setText(String.format(Locale.US, "%.1f", average));
+                animeDescriptionView.setText(description);
+
+                loadingIndicator.setVisibility(View.INVISIBLE);
+                saveButton.setEnabled(true);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                Toast.makeText(activity,
+                        getResources().getString(R.string.network_error),
+                        Toast.LENGTH_SHORT).show();
+                loadingIndicator.setVisibility(View.INVISIBLE);
+                saveButton.setEnabled(true);
+            }
+        });
+
+
+        //display image
+        FirebaseStorage storage = FirebaseStorage.getInstance();
+        StorageReference imageRef = storage.getReference().child("anime_posters").child(title_id);
+        imageRef.getBytes(FirebaseUtil.ONE_MEGABYTE).addOnSuccessListener(new OnSuccessListener<byte[]>() {
+            @Override
+            public void onSuccess(byte[] bytes) {
+                Bitmap poster = FirebaseUtil.byteToBitmap(bytes);
+                animeImageView.setImageBitmap(poster);
+            }
+        });
+
+        //TODO: get user data
+        Thread getDataThread = new Thread(() -> {
             if (activity != null) {
                 activity.runOnUiThread(() -> {
                     if (title != null) {
-                        animeTitleView.setText(title.getAnimeTitle());
-                        animeImageView.setImageBitmap(title.getPoster());
-                        progressLayout.setSuffixText(String.format(Locale.US,
-                                "/%d", title.getEpisodes()));
+                        //from userdata
                         dropDownMenu.setText(animeStatus, false);
                         if(animeProgress != -1){
                             animeProgressView.setText(String.format(Locale.US,
@@ -188,23 +249,14 @@ public class AnimeSelect extends Fragment {
                             animeRatingView.setText(String.format(Locale.US,
                                     "%d", animeRating));
                         }
-                        romanjiView.setText(title.getRomanji());
                         favouriteCheckBoxView.setChecked(favourite);
-                        animeDescriptionView.setText(title.getDescription());
-                        averageRatingView.setText("8.8");
-                    } else {
-                        Toast.makeText(activity,
-                                getResources().getString(R.string.network_error),
-                                Toast.LENGTH_SHORT).show();
                     }
-
-                    loadingIndicator.setVisibility(View.INVISIBLE);
-                    saveButton.setEnabled(true);
                 });
             }
         });
         getDataThread.start();
 
+        //TODO: save user data
         //save data on button click
         saveButton.setOnClickListener(buttonView -> {
             saveButton.setEnabled(false);
@@ -314,6 +366,7 @@ public class AnimeSelect extends Fragment {
             }
         });
 
+        //TODO: remove from list
         MaterialButton removeButton = view.findViewById(R.id.anime_remove_button);
         removeButton.setOnClickListener(removeView -> {
             removeButton.setEnabled(false);

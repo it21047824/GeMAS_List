@@ -30,8 +30,7 @@
         tools:layout="@layout/fragment_anime_select" >
         <argument
             android:name="title_id"
-            app:argType="integer"
-            android:defaultValue="1000" />
+            app:argType="string" />
     </fragment>
     <action
         android:id="@+id/action_global_dashboard"

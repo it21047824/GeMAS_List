@@ -10,6 +10,7 @@ import androidx.appcompat.widget.LinearLayoutCompat.LayoutParams;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.Navigation;
 
+import android.util.Log;
 import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -26,7 +27,6 @@ import java.util.Objects;
 
 public class Search extends Fragment {
 
-    private static final Object lock = new Object();
     private ArrayList<AnimeTitle> titles;
     private MainActivity activity;
     private Context context;
@@ -59,16 +59,8 @@ public class Search extends Fragment {
         loader.setVisibility(View.VISIBLE);
 
         //create cards
-        Thread thread = new Thread(() -> {
-
-            titles = new ArrayList<>();
-
-            download();
-
-            assert activity != null;
-            activity.runOnUiThread(this::createViews);
-        });
-        thread.start();
+        titles = new ArrayList<>();
+        download();
 
         return view;
     }
@@ -135,8 +127,8 @@ public class Search extends Fragment {
 
         //create image
         LayoutParams imageParams = new LayoutParams(
-                (int) Azure.pxFromDp(context,65),
-                (int) Azure.pxFromDp(context, 91)
+                (int) FirebaseUtil.pxFromDp(context,65),
+                (int) FirebaseUtil.pxFromDp(context, 91)
         );
 
         ImageView imageView = new ImageView(context);
@@ -167,32 +159,16 @@ public class Search extends Fragment {
         linearLayoutCompat.addView(cardView);
     }
 
-    public void createViews(){
-        synchronized (lock){
-            int i = 0;
-
-            while(i<13){
-                Bundle bundle = new Bundle();
-                bundle.putInt("title_id", 1000+i);
-
-                if(titles.get(i) != null){
-                    createAnimeCard(activity, layout, context, titles.get(i).getAnimeTitle(), "12", "5", titles.get(i).getPoster(), bundle);
-                }
-
-                i++;
-            }
-        }
-        loader.setVisibility(View.INVISIBLE);
-    }
+    private final String[] titleIDs= {"-NC4RseeJPBok0Xaz0ng"};
     public void download(){
-        synchronized (lock){
-            int i = 1000;
-            while (i<1013){
+        int i = 0;
+        while (i<1){
 
-                titles.add(Azure.getAnimeTitle(i));
+            FirebaseUtil.getAnimeTitle(titleIDs[i], context, layout);
 
-                i++;
-            }
+            Log.e("Search", "downloaded ");
+
+            i++;
         }
     }
 }
