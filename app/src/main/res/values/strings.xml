@@ -96,10 +96,9 @@
     <string name="RatingValue">9.7</string>
     <string name="statMovie">Movie Statistics</string>
     <string name="statValue">20</string>
-    <string name="Watching">Watching</string>
-    <string name="Planning">Planning</string>
-    <string name="Completed">Completed</string>
     <string name="WatchTime">Watch Time</string>
+    <string name="Text">Search</string>
+    <string name="noResult">No Result</string>
 
 
 </resources>
