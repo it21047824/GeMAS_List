@@ -110,17 +110,16 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="150dp"
+        android:layout_height="100dp"
         android:layout_marginLeft="10dp"
         android:orientation="vertical">
 
         <TextView
             android:id="@+id/textView7"
-            android:layout_width="500dp"
-            android:layout_height="100dp"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
             android:layout_marginLeft="05dp"
-            android:layout_marginTop="30dp"
-            android:layout_marginRight="100dp"
+            android:layout_marginTop="31dp"
             android:layout_weight="1"
             android:text="@string/globalRating"
             android:textAlignment="center"
@@ -129,10 +128,8 @@
         <TextView
             android:id="@+id/textView8"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
             android:layout_marginLeft="200dp"
-            android:layout_marginTop="10dp"
-            android:layout_weight="1"
+            android:layout_weight="3"
             android:text="@string/RatingValue" />
 
     </LinearLayout>
