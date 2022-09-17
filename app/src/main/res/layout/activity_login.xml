@@ -31,7 +31,8 @@
         android:id="@+id/login_progress_indicator"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:indeterminate="true" />
+        android:indeterminate="true"
+        android:visibility="gone"/>
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/login_button"
@@ -39,8 +40,7 @@
         android:layout_height="wrap_content"
         android:text="@string/sign_in"
         android:textAlignment="center"
-        app:icon="@drawable/ic_baseline_login_24"
-        android:visibility="gone"/>
+        app:icon="@drawable/ic_baseline_login_24"/>
 
 
 <!--    <androidx.cardview.widget.CardView-->

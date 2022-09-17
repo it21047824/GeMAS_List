@@ -66,15 +66,9 @@ public class AnimeRecyclerAdapter extends RecyclerView.Adapter<AnimeRecyclerAdap
     @Override
     public synchronized void onBindViewHolder(@NonNull ListViewHolder holder, int position) {
         //set data to cards
-        //Thread animeDataThread = new Thread(() ->{
-
-            //synchronized (lock){
-                //anime = Azure.getAnimeTitle(items.get(position).title);
-                DatabaseReference animeRef = FirebaseUtil.getDB()
-                        .getReference(FirebaseUtil.ANIME_PATH)
-                        .child("titles").child(items.get(position).title);
-
-                //context.runOnUiThread(() -> {
+        DatabaseReference animeRef = FirebaseUtil.getDB()
+                .getReference(FirebaseUtil.ANIME_PATH)
+                .child("titles").child(items.get(position).title);
 
         int progress = items.get(position).progress;
         int rating = items.get(position).rating;
@@ -115,28 +109,24 @@ public class AnimeRecyclerAdapter extends RecyclerView.Adapter<AnimeRecyclerAdap
         });
         getImage.start();
 
-                    if(rating != -1){
-                        holder.getRating().setText(String.format(Locale.US, "Rating : %d/10", rating));
-                    } else {
-                        holder.getRating().setText(R.string.unrated);
-                    }
+        if(rating != -1){
+            holder.getRating().setText(String.format(Locale.US, "Rating : %d/10", rating));
+        } else {
+            holder.getRating().setText(R.string.unrated);
+        }
 
-                    holder.getCard().setOnClickListener(view -> {
-                        Bundle bundle = new Bundle();
-                        bundle.putString("title_id", items.get(position).title);
+        holder.getCard().setOnClickListener(view -> {
+            Bundle bundle = new Bundle();
+            bundle.putString("title_id", items.get(position).title);
 
-                        context.appBarSubtitleHistory.push((String)
-                                Objects.requireNonNull(context.getSupportActionBar()).getSubtitle());
+            context.appBarSubtitleHistory.push((String)
+                    Objects.requireNonNull(context.getSupportActionBar()).getSubtitle());
 
-                        Objects.requireNonNull(context.getSupportActionBar())
-                                .setSubtitle(R.string.select);
-                        Navigation.findNavController(context, R.id.nav_host_fragment)
-                                .navigate(R.id.action_animeList_to_animeSelect, bundle);
-                    });
-               // });
-            //}
-        //});
-        //animeDataThread.start();
+            Objects.requireNonNull(context.getSupportActionBar())
+                    .setSubtitle(R.string.select);
+            Navigation.findNavController(context, R.id.nav_host_fragment)
+                    .navigate(R.id.action_animeList_to_animeSelect, bundle);
+        });
 
         //changes for layout toggle
         switch (AnimeCardList.currentLayoutManagerType){

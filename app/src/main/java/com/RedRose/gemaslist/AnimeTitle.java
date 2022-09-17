@@ -2,6 +2,7 @@ package com.RedRose.gemaslist;
 
 import android.graphics.Bitmap;
 
+//TODO: Remove deprecated class
 public class AnimeTitle {
     private final String animeID;
     private final String animeTitle;
