@@ -60,6 +60,7 @@
     <string name="navigation_drawer_profile_picture">Navigation Drawer Profile Picture</string>
     <string name="profile_banner">Navigation view profile banner</string>
     <string name="search_button">Search Button</string>
+    <string name="MovieName">Beauty and the Beast</string>
 
     <!--button labels-->
     <string name="save">Save</string>
@@ -67,6 +68,7 @@
     <string name="remove">Remove</string>
     <string name="sign_in">Sign in</string>
     <string name="clear_selection">Clear Selection</string>
+    <string name="gotoFile">gotoFile</string>
 
     <!--messages-->
     <string name="invalid_password">Invalid Password</string>
@@ -83,5 +85,19 @@
     <string name="image_reselect">There was an error\nReselect the image</string>
     <string name="image_select">Please select an image</string>
     <string name="signed_in">Signed In as %s</string>
+    <string name="Rating">Rating</string>
+    <string name="ratingValue">8/10</string>
+    <string name="Save">Save</string>
+    <string name="MovieDescription">A French fairy tale about a beautiful and gentle young woman who is taken to live with a man-beast in return for a good deed the Beast did for her father. Beauty is kind to the well-mannered Beast but pines for her family until the Beast allows her to visit them.</string>
+    <string name="Watched">Watched</string>
+    <string name="globalRating">Global Rating</string>
+    <string name="RatingValue">9.7</string>
+    <string name="statMovie">Movie Statistics</string>
+    <string name="statValue">20</string>
+    <string name="Watching">Watching</string>
+    <string name="Planning">Planning</string>
+    <string name="Completed">Completed</string>
+    <string name="WatchTime">Watch Time</string>
+
 
 </resources>
