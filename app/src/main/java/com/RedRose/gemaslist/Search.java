@@ -21,17 +21,23 @@ import android.widget.TextView;
 
 import com.google.android.material.card.MaterialCardView;
 import com.google.android.material.progressindicator.LinearProgressIndicator;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 
 import java.util.ArrayList;
 import java.util.Objects;
 
 public class Search extends Fragment {
 
-    private ArrayList<AnimeTitle> titles;
     private MainActivity activity;
     private Context context;
     private LinearLayoutCompat layout;
     private LinearProgressIndicator loader;
+    private View view;
 
     public Search() {
         // Required empty public constructor
@@ -50,7 +56,7 @@ public class Search extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View view = inflater.inflate(R.layout.fragment_search, container, false);
+        view = inflater.inflate(R.layout.fragment_search, container, false);
         context = getContext();
         activity = (MainActivity) context;
 
@@ -59,21 +65,32 @@ public class Search extends Fragment {
         loader.setVisibility(View.VISIBLE);
 
         //create cards
-        titles = new ArrayList<>();
         download();
 
         return view;
     }
 
+    public static final String[] titleIDs= {
+            "-NC4RseeJPBok0Xaz0ng",
+            "-NC8sUEdaMLIWnKXSkkv",
+            "-NC8tjA86I00zq_LV-Mc",
+            "-NC8zELRqN_N10FkeOf8",
+            "-NC8zvQaFBMHUb2_y2wS",
+            "-NC9-SXWMPRDrSzAWgDt",
+            "-NC9-qTCKdluCO2S-mBp",
+            "-NC90CaPUKfbPhI--bib",
+            "-NC90ZVN2FGUFi_--fel",
+            "-NC90oHQmzlc64Js7ZY3",
+            "-NC9152H1YUVUCamsYNp",
+            "-NC91Mwm9SFwrFgLLFp4",
+            "-NC91sMFqxppaE0KrpGv"
+    };
+
     public static void createAnimeCard(
             MainActivity activity,
             LinearLayoutCompat linearLayoutCompat,
             Context context,
-            String title,
-            String progress,
-            String rating,
-            Bitmap image,
-            Bundle bundle
+            int position
     ) {
         //create card
         LayoutParams cardLayoutParams =
@@ -87,24 +104,12 @@ public class Search extends Fragment {
         cardView.setClickable(true);
         cardView.setFocusable(true);
 
-        //card view on click listener
-        cardView.setOnClickListener((View view) -> {
-            activity.appBarSubtitleHistory.push((String)
-                    Objects.requireNonNull(activity.getSupportActionBar()).getSubtitle());
-
-            Objects.requireNonNull(activity.getSupportActionBar())
-                    .setSubtitle(R.string.select);
-            Navigation.findNavController(activity, R.id.nav_host_fragment)
-                    .navigate(R.id.action_search_to_animeSelect, bundle);
-        });
-
         //create title
         LayoutParams textLayoutParams =
                 new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
 
         TextView titleTextView = new TextView(context);
         titleTextView.setLayoutParams(textLayoutParams);
-        titleTextView.setText(title);
         titleTextView.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 16);
         titleTextView.setGravity(Gravity.CENTER);
         titleTextView.setPadding(20,10,5,20);
@@ -112,7 +117,6 @@ public class Search extends Fragment {
         //create progress text
         TextView progressTextView = new TextView(context);
         progressTextView.setLayoutParams(textLayoutParams);
-        progressTextView.setText(progress);
         progressTextView.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 12);
         progressTextView.setGravity(Gravity.CENTER);
         progressTextView.setPadding(20,5,5,10);
@@ -120,7 +124,6 @@ public class Search extends Fragment {
         //create rating text
         TextView ratingTextView = new TextView(context);
         ratingTextView.setLayoutParams(textLayoutParams);
-        ratingTextView.setText(rating);
         ratingTextView.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 12);
         ratingTextView.setGravity(Gravity.CENTER);
         ratingTextView.setPadding(20,5,5,10);
@@ -132,7 +135,6 @@ public class Search extends Fragment {
         );
 
         ImageView imageView = new ImageView(context);
-        imageView.setImageBitmap(image);
         imageView.setLayoutParams(imageParams);
         imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
 
@@ -157,17 +159,86 @@ public class Search extends Fragment {
         cardView.addView(cardContent);
 
         linearLayoutCompat.addView(cardView);
+
+        DatabaseReference titleRef = FirebaseUtil.getDB().getReference(FirebaseUtil.ANIME_PATH);
+        DatabaseReference selectedRef = titleRef.child("titles").child(titleIDs[position]);
+
+        selectedRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+
+                //calculate global average rating
+                DataSnapshot rating = snapshot.child("global_rating");
+                float average;
+                try {
+                    average = (float) Integer.parseInt(Objects.requireNonNull
+                            (rating.child("ratings").getValue(String.class)))
+                            / Integer.parseInt(Objects.requireNonNull
+                            (rating.child("raters").getValue(String.class)));
+                } catch (Exception e) {
+                    average = 0.0F;
+                }
+
+
+                @SuppressWarnings("ConstantConditions") AnimeTitle selectedTitle = new AnimeTitle(snapshot.getKey(),
+                        snapshot.child("title").getValue(String.class),
+                        snapshot.child("description").getValue(String.class),
+                        Math.toIntExact(snapshot.child("episodes").getValue(Long.class)),
+                        snapshot.child("romaji").getValue(String.class),
+                        average);
+
+                MainActivity activity = (MainActivity) context;
+                Bundle cardBundle = new Bundle();
+                cardBundle.putString("title_id", selectedTitle.getAnimeID());
+
+                //set values
+                titleTextView.setText(selectedTitle.getAnimeTitle());
+                progressTextView.setText("0");
+                ratingTextView.setText("0");
+
+                //card view on click listener
+                cardView.setOnClickListener((View view) -> {
+                    activity.appBarSubtitleHistory.push((String)
+                            Objects.requireNonNull(activity.getSupportActionBar()).getSubtitle());
+
+                    Objects.requireNonNull(activity.getSupportActionBar())
+                            .setSubtitle(R.string.select);
+                    Navigation.findNavController(activity, R.id.nav_host_fragment)
+                            .navigate(R.id.action_search_to_animeSelect, cardBundle);
+                });
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                Log.e("Firebase", error.getMessage());
+            }
+        });
+
+        //get image from cloud storage
+        FirebaseStorage storage = FirebaseStorage.getInstance();
+        StorageReference animeRef = storage.getReference()
+                .child("anime_posters").child(titleIDs[position]);
+
+        animeRef.getBytes(FirebaseUtil.ONE_MEGABYTE).addOnSuccessListener
+                (bytes -> imageView.setImageBitmap(FirebaseUtil.byteToBitmap(bytes)));
+
     }
 
-    private final String[] titleIDs= {"-NC4RseeJPBok0Xaz0ng"};
+
     public void download(){
         int i = 0;
-        while (i<1){
+        while (i<13){
 
-            FirebaseUtil.getAnimeTitle(titleIDs[i], context, layout);
-
+            createAnimeCard(activity, layout, context, i);
 
             i++;
         }
+        loader.setVisibility(View.INVISIBLE);
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        view.requestLayout();
     }
 }

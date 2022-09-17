@@ -1,5 +1,7 @@
 package com.RedRose.gemaslist;
 
+import android.util.Log;
+
 public class CustomLinkList {
     private static final Object LOCK = new Object();
     private AnimeDataEntry first;
@@ -17,10 +19,13 @@ public class CustomLinkList {
                 AnimeDataEntry temp = first;
                 while(true) {
                     if(input.rating > temp.rating){
-                        input.prev = temp.prev;
+                        Log.e("customlink 23", temp.prev==null? "prev is first":"prev is not first");
                         input.next = temp;
                         if(temp.prev != null){
+                            input.prev = temp.prev;
                             temp.prev.next = input;
+                        } else {
+                            first = input;
                         }
                         temp.prev = input;
 

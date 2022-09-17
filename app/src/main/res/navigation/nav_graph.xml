@@ -66,10 +66,6 @@
         android:id="@+id/profile"
         android:name="com.RedRose.gemaslist.Profile"
         tools:layout="@layout/fragment_profile" />
-    <fragment
-        android:id="@+id/logout"
-        android:name="com.RedRose.gemaslist.Logout"
-        tools:layout="@layout/fragment_logout" />
     <action
         android:id="@+id/action_global_games"
         app:destination="@id/games" />
@@ -82,9 +78,6 @@
     <action
         android:id="@+id/action_global_series"
         app:destination="@id/series" />
-    <action
-        android:id="@+id/action_global_logout"
-        app:destination="@id/logout" />
     <action
         android:id="@+id/action_global_Statistics"
         app:destination="@id/statistics"

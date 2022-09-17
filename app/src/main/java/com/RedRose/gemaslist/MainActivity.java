@@ -24,11 +24,11 @@ import android.widget.Toast;
 
 import com.firebase.ui.auth.AuthUI;
 import com.google.android.material.button.MaterialButton;
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.textview.MaterialTextView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.database.DatabaseReference;
 
 import java.util.Objects;
 import java.util.Stack;
@@ -329,24 +329,32 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 break;
             }
             case R.id.navLogout: {
-                //logout
-                SharedPreferences sp = getSharedPreferences(getString(R.string.login), MODE_PRIVATE);
-                SharedPreferences.Editor editor = sp.edit();
-                editor.putBoolean(getString(R.string.login), false);
-                editor.remove(getString(R.string.user_id));
-                editor.remove(getString(R.string.username));
-                editor.remove(getString(R.string.email));
-                editor.apply();
 
-                AuthUI.getInstance().signOut(this)
-                        .addOnCompleteListener(task-> {
-                            if (task.isSuccessful()){
-                                startActivity(new Intent(MainActivity.this, Login.class));
-                            } else {
-                                Log.e("Main", "Failed to sign out", task.getException());
-                            }
+                new MaterialAlertDialogBuilder(MainActivity.this)
+                        .setTitle(getResources().getString(R.string.logout))
+                        .setMessage("sign out and redirect to login page")
+                        .setPositiveButton("Confirm", (dialogInterface, i) -> {
+                            //logout
+                            SharedPreferences sp = getSharedPreferences(getString(R.string.login), MODE_PRIVATE);
+                            SharedPreferences.Editor editor = sp.edit();
+                            editor.putBoolean(getString(R.string.login), false);
+                            editor.remove(getString(R.string.user_id));
+                            editor.remove(getString(R.string.username));
+                            editor.remove(getString(R.string.email));
+                            editor.apply();
 
-                        });
+                            AuthUI.getInstance().signOut(MainActivity.this)
+                                    .addOnCompleteListener(task-> {
+                                        if (task.isSuccessful()){
+                                            startActivity(new Intent(MainActivity.this, Login.class));
+                                        } else {
+                                            Log.e("Main", "Failed to sign out", task.getException());
+                                        }
+
+                                    });
+                        })
+                        .setNeutralButton("Cancel", (dialogInterface, i) -> {/*do nothing*/})
+                        .show();
                 break;
             }
         }

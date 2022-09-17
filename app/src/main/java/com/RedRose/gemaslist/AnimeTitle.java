@@ -14,7 +14,6 @@ public class AnimeTitle {
     public AnimeTitle(String animeID,
                       String animeTitle,
                       String description,
-                      Bitmap poster,
                       int episodes,
                       String romaji,
                       float rating
@@ -22,7 +21,7 @@ public class AnimeTitle {
         this.animeID = animeID;
         this.animeTitle = animeTitle;
         this.description = description;
-        this.poster = poster;
+        this.poster = null;
         this.episodes = episodes;
         this.romaji = romaji;
         this.rating = rating;

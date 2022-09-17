@@ -11,7 +11,6 @@ import android.widget.Toast;
 
 import com.firebase.ui.auth.AuthUI;
 import com.firebase.ui.auth.FirebaseAuthUIActivityResultContract;
-import com.firebase.ui.auth.IdpResponse;
 import com.firebase.ui.auth.data.model.FirebaseAuthUIAuthenticationResult;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.progressindicator.CircularProgressIndicator;
@@ -48,12 +47,14 @@ public class Login extends AppCompatActivity {
                 spEditor.putString(getString(R.string.username), user.getDisplayName());
                 spEditor.putString(getString(R.string.email), user.getEmail());
                 spEditor.apply();
+
+                startActivity(mainActivityIntent);
             }
         } else {
-            progressIndicator.setVisibility(View.GONE);
             loginButton.setVisibility(View.VISIBLE);
             Toast.makeText(this, "Cancelled", Toast.LENGTH_SHORT).show();
         }
+        progressIndicator.setVisibility(View.GONE);
     }
 
     @Override

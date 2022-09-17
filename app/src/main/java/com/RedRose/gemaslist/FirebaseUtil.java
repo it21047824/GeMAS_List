@@ -87,54 +87,7 @@ public class FirebaseUtil {
 
 
     public static void getAnimeTitle(String titleID, Context context, LinearLayoutCompat layout) {
-        DatabaseReference titleRef = getDB().getReference(ANIME_PATH);
-        DatabaseReference selectedRef = titleRef.child("titles").child(titleID);
 
-        selectedRef.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                //get image from cloud storage
-                FirebaseStorage storage = FirebaseStorage.getInstance();
-                StorageReference animeRef = storage.getReference()
-                        .child("anime_posters").child(titleID);
-
-                final Bitmap[] image = new Bitmap[1];
-
-                animeRef.getBytes(ONE_MEGABYTE).addOnSuccessListener
-                        (bytes -> image[0] = byteToBitmap(bytes));
-
-                //calculate global average rating
-                DataSnapshot rating = snapshot.child("global_rating");
-                float average;
-                try {
-                    average = (float) Integer.parseInt(Objects.requireNonNull
-                            (rating.child("ratings").getValue(String.class)))
-                            / Integer.parseInt(Objects.requireNonNull
-                            (rating.child("raters").getValue(String.class)));
-                } catch (Exception e) {
-                    average = 0.0F;
-                }
-
-
-                @SuppressWarnings("ConstantConditions") AnimeTitle selectedTitle = new AnimeTitle(snapshot.getKey(),
-                        snapshot.child("title").getValue(String.class),
-                        snapshot.child("description").getValue(String.class),
-                        image[0],
-                        Math.toIntExact(snapshot.child("episodes").getValue(Long.class)),
-                        snapshot.child("romaji").getValue(String.class),
-                        average);
-
-                MainActivity activity = (MainActivity) context;
-                Bundle bundle = new Bundle();
-                bundle.putString("title_id", selectedTitle.getAnimeID());
-                Search.createAnimeCard(activity, layout, context, selectedTitle.getAnimeTitle(), "12", "5", selectedTitle.getPoster(), bundle);
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-                Log.e("Firebase", error.getMessage());
-            }
-        });
     }
 
 

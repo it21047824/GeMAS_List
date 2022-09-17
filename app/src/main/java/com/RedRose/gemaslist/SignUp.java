@@ -122,41 +122,10 @@ public class SignUp extends AppCompatActivity {
             String password = Objects.requireNonNull(passwordInput.getText()).toString();
             String confirm = Objects.requireNonNull(confirmPassInput.getText()).toString();
 
-            if(!validateUsername(username) || !validateEmail(email) || !validatePassword(password) || !validateConfirmPassword(confirm)) {
-                progressIndicator.setVisibility(View.INVISIBLE);
-                createAccountButton.setEnabled(true);
-            } else {
-                Thread signupThread = new Thread(() -> {
-                    Azure.Validity result = Azure.addUserAccount(username, email, password);
-
-                    runOnUiThread(() -> {
-                        switch (result){
-                            case QUERY_SUCCESSFUL:
-                                SharedPreferences sp = getSharedPreferences(getString(R.string.login), MODE_PRIVATE);
-                                SharedPreferences.Editor spEditor = sp.edit();
-                                spEditor.putString(getString(R.string.email), email);
-                                spEditor.putString(getString(R.string.password), password);
-                                spEditor.apply();
-                                activity.error.setVisibility(View.INVISIBLE);
-                                finish();
-                                break;
-                            case ALREADY_IN_USE:
-                                activity.emailLayout.setError("*this email is taken");
-                                break;
-                            case QUERY_FAILED:
-                                activity.error.setText(R.string.network_error);
-                                activity.error.setVisibility(View.VISIBLE);
-                                break;
-                        }
-                        progressIndicator.setVisibility(View.INVISIBLE);
-                        createAccountButton.setEnabled(true);
-                    });
-                });
-                signupThread.start();
-
-            }
-
+            progressIndicator.setVisibility(View.INVISIBLE);
+            createAccountButton.setEnabled(true);
         });
+
     }
 
     private boolean validateUsername(CharSequence charSequence) {

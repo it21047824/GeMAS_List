@@ -4,27 +4,23 @@ import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Canvas;
 import android.graphics.Color;
-import android.graphics.ColorFilter;
 import android.graphics.Paint;
-import android.graphics.PixelFormat;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffXfermode;
 import android.graphics.RectF;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.appcompat.widget.LinearLayoutCompat;
 import androidx.appcompat.widget.LinearLayoutCompat.LayoutParams;
 import androidx.fragment.app.Fragment;
 
+import android.util.Log;
 import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.google.android.material.textview.MaterialTextView;
@@ -119,16 +115,12 @@ public class AnimeStats extends Fragment {
         completedAnime.setText(String.format(Locale.US,"%d", numCompleted));
 
         //create pie chart
-        PieChartDrawable pieChart = new PieChartDrawable();
-
-        ImageView pieChartImage = new ImageView(context);
+        PieChartDrawable pieChart = new PieChartDrawable(context);
         LayoutParams imageParams = new LayoutParams(500, 500);
 
-        pieChartImage.setLayoutParams(imageParams);
-        pieChartImage.setImageDrawable(pieChart);
-        pieChartImage.setScaleType(ImageView.ScaleType.CENTER_CROP);
+        pieChart.setLayoutParams(imageParams);
 
-        pieChartLayout.addView(pieChartImage);
+        pieChartLayout.addView(pieChart);
 
         LinearLayoutCompat barGraphContainer =
                 view.findViewById(R.id.anime_stats_bar_graph_container);
@@ -156,28 +148,14 @@ public class AnimeStats extends Fragment {
         view.requestLayout();
     }
 
-    class PieChartDrawable extends Drawable {
+    class PieChartDrawable extends View {
 
         private final RectF rect = new RectF(0,0,500,500);
         Paint paintPrimary, paintSecondary, paintTernary, paintBackground, blackPaint;
         private float startAngle = 270.0F;
 
-        public float getAngle(int num) {
-            float angle = ((num/ (float) numTotal)*360);
-            setStartAngle(startAngle+angle);
-            return angle;
-        }
-
-        public void setStartAngle(float startAngle) {
-            this.startAngle = startAngle;
-        }
-
-        public PieChartDrawable() {
-            //constructor
-        }
-
-        @Override
-        public void draw(Canvas canvas) {
+        public PieChartDrawable(Context context) {
+            super(context);
 
             TypedValue typedValue = new TypedValue();
 
@@ -227,8 +205,23 @@ public class AnimeStats extends Fragment {
             blackPaint.setTextAlign(Paint.Align.CENTER);
             blackPaint.setTextSize(30);
 
-            int width = getBounds().width();
-            int height = getBounds().height();
+        }
+
+        public float getAngle(int num) {
+            float angle = ((num/ (float) numTotal)*360);
+            setStartAngle(startAngle+angle);
+            return angle;
+        }
+
+        public void setStartAngle(float startAngle) {
+            this.startAngle = startAngle;
+        }
+
+        @Override
+        public void onDraw(Canvas canvas) {
+
+            int width = getWidth();
+            int height = getHeight();
             float radius = (float) Math.min(width, height) / 3;
 
             canvas.drawArc(rect, startAngle, getAngle(numCompleted), true, paintTernary);
@@ -237,29 +230,6 @@ public class AnimeStats extends Fragment {
             canvas.drawCircle((float)width/2, (float)height/2, radius, paintBackground);
             canvas.drawText("Status Distribution", (float)width/2, (float)height/2, blackPaint);
         }
-
-
-
-        @Override
-        public void setAlpha(int i) {
-            //required method
-        }
-
-        @Override
-        public int getAlpha() {
-            return super.getAlpha();
-        }
-
-        @Override
-        public void setColorFilter(@Nullable ColorFilter colorFilter) {
-            //required method
-        }
-
-        @Override
-        public int getOpacity() {
-            return PixelFormat.OPAQUE;
-        }
-
     }
 
     public static void createBarGraph(
