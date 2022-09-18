@@ -55,12 +55,14 @@
     <string name="MovieDescription">A French fairy tale about a beautiful and gentle young woman who is taken to live with a man-beast in return for a good deed the Beast did for her father. Beauty is kind to the well-mannered Beast but pines for her family until the Beast allows her to visit them.</string>
     <string name="Watched">Watched</string>
     <string name="WatchTime">Watch Time</string>
-    <!--//-->
+
+    <!--series-->
     <string name="series_statistics">Tv Series Review</string>
     <string name="stat_value">10</string>
     <string name="series_name01">My Name</string>
     <string name="series_name02">Peaky Blinders</string>
     <string name="series_name03">Tomorrow</string>
+    <string name="series_name04">Business Proposal</string>
     <string name="Rating">Rating</string>
     <string name="ratingValue">8/10</string>
     <string name="Save">Save</string>
@@ -72,9 +74,7 @@
     <string name="noResult">No Result</string>
     <string name="ratingValue02">7/10</string>
     <string name="rate_value">8.7</string>
-    <string name="edit_prof_pic">Edit Profile Picture</string>
-    <string name="name_user">Name</string>
-    <string name="series_desc">MY NAME is a South Korean series about a young woman seeking revenge for her father\'s death with the help of organized crime. When 17-year-old Yoon Ji-woo (Han So-hee) witnesses her gangster father\'s murder, she\'s determined to find his killer. The police have no leads so she turns to her father\'s best friend, Choi Mu-jin (Hee-soon Park), the head of Dongcheon, Korea\'s biggest drug ring</string>
+    <string name="series_desc">Movie Description</string>
 
 
 
@@ -113,10 +113,16 @@
     <string name="image_reselect">There was an error\nReselect the image</string>
     <string name="image_select">Please select an image</string>
     <string name="signed_in">Signed In as %s</string>
-    <!--//-->
+
+    <!--profile-->
     <string name="update_prof">Edit Profile</string>
     <string name="change_pass">Change My Password</string>
     <string name="deleteAcc">Delete My Account</string>
+    <string name="edit_prof_pic">Edit Profile Picture</string>
+    <string name="name_user">Name</string>
 
+    <!--profile messages-->
+    <string name="delete_acc">Deleted Account Successfully</string>
+    <string name="update_acc">Update Account Successfully</string>
 
 </resources>
