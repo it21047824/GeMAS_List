@@ -77,7 +77,6 @@
     <string name="series_desc">Movie Description</string>
 
 
-
     <!--content descriptions-->
     <string name="logo">App Logo</string>
     <string name="openNavDrawer">Navigation Drawer Open</string>
@@ -124,5 +123,8 @@
     <!--profile messages-->
     <string name="delete_acc">Deleted Account Successfully</string>
     <string name="update_acc">Update Account Successfully</string>
+    <string name="Game">PUBG</string>
+    <string name="rate">9/10</string>
+    <string name="game_des">PUBG MOBILE is the FREE battle royale shooter that chosen by over 1 billion players worldwide. Extreme battles in 10-minute matches, play anytime, anywhere!</string>
 
 </resources>

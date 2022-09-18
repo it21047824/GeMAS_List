@@ -3,13 +3,4 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="600dp"
-    tools:context=".GameStats">
-
-    <!-- TODO: Update blank fragment layout -->
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="?attr/colorPrimary"
-        android:text="@string/hello_blank_fragment" />
-
-</FrameLayout>
+    tools:context=".GameStats"/>
