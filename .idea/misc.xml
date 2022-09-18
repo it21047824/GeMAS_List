@@ -9,7 +9,6 @@
         <entry key="..\:/SLIIT/Y2S2/GeMAS_List/app/src/main/res/layout/fragment_movie_description.xml" value="0.264" />
         <entry key="..\:/SLIIT/Y2S2/GeMAS_List/app/src/main/res/layout/fragment_movie_stats.xml" value="0.4" />
         <entry key="..\:/SLIIT/Y2S2/GeMAS_List/app/src/main/res/layout/fragment_movies_list.xml" value="0.2" />
-        <entry key="..\:/SLIIT/Y2S2/GeMAS_List/app/src/main/res/layout/fragment_search.xml" value="0.25" />
         <entry key="..\:/SLIIT/Y2S2/MAD/GeMAS List/app/src/main/res/drawable/ic_baseline_delete_24.xml" value="0.185" />
         <entry key="..\:/SLIIT/Y2S2/MAD/GeMAS List/app/src/main/res/drawable/ic_baseline_event_available_24.xml" value="0.185" />
         <entry key="..\:/SLIIT/Y2S2/MAD/GeMAS List/app/src/main/res/drawable/ic_baseline_info_24.xml" value="0.108" />
@@ -36,6 +35,7 @@
         <entry key="..\:/SLIIT/Y2S2/MAD/GeMAS List/app/src/main/res/layout/fragment_game_stats.xml" value="0.22826086956521738" />
         <entry key="..\:/SLIIT/Y2S2/MAD/GeMAS List/app/src/main/res/layout/fragment_games_list.xml" value="0.22826086956521738" />
         <entry key="..\:/SLIIT/Y2S2/MAD/GeMAS List/app/src/main/res/layout/fragment_logout.xml" value="0.19895833333333332" />
+        <entry key="..\:/SLIIT/Y2S2/MAD/GeMAS List/app/src/main/res/layout/fragment_movie_description.xml" value="0.1" />
         <entry key="..\:/SLIIT/Y2S2/MAD/GeMAS List/app/src/main/res/layout/fragment_movie_stats.xml" value="0.22826086956521738" />
         <entry key="..\:/SLIIT/Y2S2/MAD/GeMAS List/app/src/main/res/layout/fragment_movies_list.xml" value="0.22826086956521738" />
         <entry key="..\:/SLIIT/Y2S2/MAD/GeMAS List/app/src/main/res/layout/fragment_profile.xml" value="0.22826086956521738" />

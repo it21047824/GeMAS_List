@@ -57,11 +57,19 @@
     <fragment
         android:id="@+id/movies"
         android:name="com.RedRose.gemaslist.MoviesList"
-        tools:layout="@layout/fragment_movies_list" />
+        tools:layout="@layout/fragment_movies_list" >
+        <action
+            android:id="@+id/action_movies_to_movieDescription"
+            app:destination="@id/movieDescription" />
+    </fragment>
     <fragment
         android:id="@+id/series"
         android:name="com.RedRose.gemaslist.SeriesList"
-        tools:layout="@layout/fragment_series_list" />
+        tools:layout="@layout/fragment_series_list" >
+        <action
+            android:id="@+id/action_series_to_series_description"
+            app:destination="@id/series_description" />
+    </fragment>
     <fragment
         android:id="@+id/profile"
         android:name="com.RedRose.gemaslist.Profile"
@@ -104,6 +112,12 @@
             app:exitAnim="@anim/fade_out"
             app:popEnterAnim="@anim/fade_in"
             app:popExitAnim="@anim/slide_out" />
+        <action
+            android:id="@+id/action_search_to_movieDescription"
+            app:destination="@id/movieDescription" />
+        <action
+            android:id="@+id/action_search_to_series_description"
+            app:destination="@id/series_description" />
     </fragment>
     <action
         android:id="@+id/action_global_search"
@@ -112,4 +126,14 @@
         app:exitAnim="@anim/fade_out"
         app:popEnterAnim="@anim/fade_in"
         app:popExitAnim="@anim/slide_up_out" />
+    <fragment
+        android:id="@+id/series_description"
+        android:name="com.RedRose.gemaslist.series_description"
+        android:label="fragment_series_description"
+        tools:layout="@layout/fragment_series_description" />
+    <fragment
+        android:id="@+id/movieDescription"
+        android:name="com.RedRose.gemaslist.MovieDescription"
+        android:label="fragment_movie_description"
+        tools:layout="@layout/fragment_movie_description" />
 </navigation>
