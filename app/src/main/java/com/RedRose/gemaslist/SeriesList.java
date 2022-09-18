@@ -62,6 +62,12 @@ public class SeriesList extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_series_list, container, false);
+        View view = inflater.inflate(R.layout.fragment_series_list, container, false);
+
+        MaterialButton button = view.findViewById(R.id.button5);
+        button.setOnClickListener(v -> Navigation.findNavController(requireActivity(), R.id.nav_host_fragment)
+                .navigate(R.id.action_series_to_series_description));
+
+        return view;
     }
 }
