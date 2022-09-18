@@ -96,7 +96,7 @@
             <Button
                 android:id="@+id/button22"
                 android:layout_width="60dp"
-                android:layout_height="45dp"
+                android:layout_height="48dp"
                 android:layout_marginTop="100dp"
                 app:icon="@drawable/ic_baseline_edit_24" />
         </LinearLayout>
