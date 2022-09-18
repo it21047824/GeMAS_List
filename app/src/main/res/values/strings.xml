@@ -52,7 +52,7 @@
     <string name="unrated">Unrated</string>
     <string name="not_started">Not Started</string>
     <!--//-->
-    <string name="MovieDescription">A French fairy tale about a beautiful and gentle young woman who is taken to live with a man-beast in return for a good deed the Beast did for her father. Beauty is kind to the well-mannered Beast but pines for her family until the Beast allows her to visit them.</string>
+    <string name="MovieDescription">A small description about the movie.</string>
     <string name="Watched">Watched</string>
     <string name="WatchTime">Watch Time</string>
     <!--//-->
@@ -113,10 +113,14 @@
     <string name="image_reselect">There was an error\nReselect the image</string>
     <string name="image_select">Please select an image</string>
     <string name="signed_in">Signed In as %s</string>
+
     <!--//-->
     <string name="update_prof">Edit Profile</string>
     <string name="change_pass">Change My Password</string>
     <string name="deleteAcc">Delete My Account</string>
+
+    <!--//-->
+    <string name="searchMessage">Sorry! Couldnot find</string>
 
 
 </resources>
