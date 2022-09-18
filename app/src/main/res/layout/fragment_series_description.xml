@@ -4,6 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:backgroundTint="@color/black"
+    android:foregroundTint="@color/black"
     tools:context=".series_description">
 
     <!-- TODO: Update blank fragment layout -->
@@ -90,21 +92,17 @@
         android:layout_height="250dp"
         android:orientation="horizontal">
 
-        <TextView
-            android:id="@+id/textView34"
-            android:layout_width="20dp"
-            android:layout_height="20dp"
-            android:layout_marginLeft="210dp"
+        <CheckBox
+            android:id="@+id/checkBox"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="220dp"
             android:layout_marginTop="180dp"
-            android:background="@color/grey_light" />
-
-        <TextView
-            android:id="@+id/textView35"
-            android:layout_width="65dp"
-            android:layout_height="20dp"
-            android:layout_marginLeft="10dp"
-            android:layout_marginTop="180dp"
-            android:text="@string/favourite" />
+            android:layout_marginRight="80dp"
+            android:layout_weight="1"
+            android:text="@string/favourite"
+            android:textColor="@color/black"
+            android:textStyle="bold" />
     </LinearLayout>
 
     <Button
@@ -136,7 +134,7 @@
             android:layout_marginTop="350dp"
             android:text="@string/series_desc"
             android:textColor="#100E0E"
-            android:textStyle="normal" />
+            android:textStyle="bold" />
     </LinearLayout>
 
     <LinearLayout
@@ -171,12 +169,12 @@
 
     <Button
         android:id="@+id/button8"
-        android:layout_width="120dp"
+        android:layout_width="147dp"
         android:layout_height="48dp"
         android:layout_marginTop="680dp"
-        android:background="@color/black"
-        android:foregroundTint="#121111"
         android:text="@string/remove"
-        app:cornerRadius="50dp" />
+        app:cornerRadius="50dp"
+        app:icon="@drawable/ic_baseline_delete_24"
+         />
 
 </FrameLayout>
