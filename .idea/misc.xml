@@ -8,9 +8,11 @@
         <entry key="..\:/SLIIT/Y2S2/GeMAS_List/app/src/main/res/layout/fragment_anime_select.xml" value="0.25" />
         <entry key="..\:/SLIIT/Y2S2/GeMAS_List/app/src/main/res/layout/fragment_anime_stats.xml" value="0.25" />
         <entry key="..\:/SLIIT/Y2S2/GeMAS_List/app/src/main/res/layout/fragment_description.xml" value="0.1" />
-        <entry key="..\:/SLIIT/Y2S2/GeMAS_List/app/src/main/res/layout/fragment_movie_description.xml" value="0.2" />
+        <entry key="..\:/SLIIT/Y2S2/GeMAS_List/app/src/main/res/layout/fragment_game_stats.xml" value="0.25" />
+        <entry key="..\:/SLIIT/Y2S2/GeMAS_List/app/src/main/res/layout/fragment_games_list.xml" value="0.25" />
+        <entry key="..\:/SLIIT/Y2S2/GeMAS_List/app/src/main/res/layout/fragment_movie_description.xml" value="0.536" />
         <entry key="..\:/SLIIT/Y2S2/GeMAS_List/app/src/main/res/layout/fragment_movie_stats.xml" value="0.176" />
-        <entry key="..\:/SLIIT/Y2S2/GeMAS_List/app/src/main/res/layout/fragment_movies_list.xml" value="0.2" />
+        <entry key="..\:/SLIIT/Y2S2/GeMAS_List/app/src/main/res/layout/fragment_movies_list.xml" value="0.176" />
         <entry key="..\:/SLIIT/Y2S2/GeMAS_List/app/src/main/res/layout/fragment_search.xml" value="0.25" />
         <entry key="..\:/SLIIT/Y2S2/MAD/GeMAS List/app/src/main/res/drawable/ic_baseline_delete_24.xml" value="0.185" />
         <entry key="..\:/SLIIT/Y2S2/MAD/GeMAS List/app/src/main/res/drawable/ic_baseline_event_available_24.xml" value="0.185" />
@@ -51,12 +53,6 @@
         <entry key="..\:/SLIIT/Y2S2/MAD/GeMAS List/app/src/main/res/menu/navigation_drawer.xml" value="0.264" />
         <entry key="..\:/SLIIT/Y2S2/MAD/GeMAS List/app/src/main/res/menu/navigation_drawer_header.xml" value="0.27447916666666666" />
         <entry key="..\:/SLIIT/Y2S2/MAD/GeMAS List/app/src/main/res/menu/navigation_header.xml" value="0.2734375" />
-        <entry key="..\:/sliit/Y2S2/MAD/project1/app/src/main/res/layout/fragment_dashboard.xml" value="0.22708333333333333" />
-        <entry key="..\:/sliit/Y2S2/MAD/project1/app/src/main/res/layout/fragment_game_stats.xml" value="0.22708333333333333" />
-        <entry key="..\:/sliit/Y2S2/MAD/project1/app/src/main/res/layout/fragment_games_description.xml" value="0.22708333333333333" />
-        <entry key="..\:/sliit/Y2S2/MAD/project1/app/src/main/res/layout/fragment_games_list.xml" value="0.22708333333333333" />
-        <entry key="..\:/sliit/Y2S2/MAD/project1/app/src/main/res/layout/fragment_movie_description.xml" value="0.22708333333333333" />
-        <entry key="..\:/sliit/Y2S2/MAD/project1/app/src/main/res/layout/fragment_series_description.xml" value="0.22708333333333333" />
       </map>
     </option>
   </component>
