@@ -20,6 +20,7 @@
             android:orientation="horizontal">
 
             <SearchView
+                android:id="@+id/search"
                 android:layout_width="335dp"
                 android:layout_height="40dp"
                 android:layout_marginLeft="20dp"
@@ -36,24 +37,16 @@
         android:layout_marginLeft="10dp"
         android:layout_marginTop="40dp"
         android:layout_weight="1"
-        android:text="@string/games"
+        android:text="@string/movies"
         android:textSize="20sp" />
 
-    <TextView
-        android:id="@+id/textView19"
-        android:layout_width="match_parent"
-        android:layout_height="100dp"
-        android:layout_marginLeft="10dp"
-        android:layout_marginTop="20dp"
-        android:background="@color/grey_light" />
-
-    <TextView
-        android:id="@+id/textView20"
-        android:layout_width="match_parent"
-        android:layout_height="100dp"
-        android:layout_marginLeft="10dp"
-        android:layout_marginTop="20dp"
-        android:background="@color/grey_light" />
+    <ImageView
+        android:id="@+id/imageView6"
+        android:layout_width="wrap_content"
+        android:layout_height="70dp"
+        android:scaleType="centerCrop"
+        android:src="@drawable/beauty"
+        android:visibility="visible" />
 
     <TextView
         android:id="@+id/textView21"
@@ -61,7 +54,7 @@
         android:layout_height="30dp"
         android:layout_marginLeft="10dp"
         android:layout_marginTop="20dp"
-        android:text="@string/movies"
+        android:text="@string/games"
         android:textSize="20sp" />
 
     <View

@@ -21,6 +21,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_marginTop="50dp"
+        android:layout_marginBottom="0dp"
         android:orientation="vertical">
 
         <FrameLayout
@@ -124,34 +125,30 @@
                 android:background="@color/completed_light" />
         </LinearLayout>
 
-    </LinearLayout>
+        <ImageView
+            android:id="@+id/imageView8"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:src="@drawable/moviestat" />
 
-    <TextView
-        android:id="@+id/textView13"
-        android:layout_width="150dp"
-        android:layout_height="150dp"
-        android:layout_marginLeft="125dp"
-        android:layout_marginTop="250dp"
-        android:layout_marginBottom="500dp"
-        android:background="@color/grey_light" />
+    </LinearLayout>
 
     <TextView
         android:id="@+id/textView14"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginLeft="10dp"
-        android:layout_marginTop="450dp"
+        android:layout_marginTop="400dp"
         android:text="@string/WatchTime"
         android:textColor="@color/black"
         android:textSize="20sp" />
 
-    <TextView
-        android:id="@+id/textView15"
-        android:layout_width="200dp"
-        android:layout_height="75dp"
-        android:layout_marginLeft="110dp"
-        android:layout_marginTop="550dp"
-        android:layout_marginRight="100dp"
-        android:background="@color/grey_light" />
+    <ImageView
+        android:id="@+id/imageView11"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="75dp"
+        android:layout_marginTop="500dp"
+        android:src="@drawable/watchtimestat" />
 
 </FrameLayout>

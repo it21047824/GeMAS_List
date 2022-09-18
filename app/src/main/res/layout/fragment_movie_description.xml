@@ -40,11 +40,12 @@
             <Spinner
                 android:id="@+id/spinner2"
                 android:layout_width="match_parent"
-                android:layout_height="30dp"
+                android:layout_height="48dp"
                 android:layout_gravity="right"
                 android:layout_weight="1"
                 android:contentDescription="@string/Watched"
-                android:spinnerMode="dropdown" />
+                android:spinnerMode="dropdown"
+                tools:ignore="TouchTargetSizeCheck" />
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -68,6 +69,11 @@
                     android:inputType="number"
                     android:text="@string/ratingValue" />
             </LinearLayout>
+
+            <CheckBox
+                android:layout_width="100dp"
+                android:layout_height="50dp"
+                android:text="Favourite" />
 
         </LinearLayout>
 
@@ -127,6 +133,7 @@
 
         <TextView
             android:id="@+id/textView8"
+            android:layout_height="100dp"
             android:layout_width="wrap_content"
             android:layout_marginLeft="200dp"
             android:layout_weight="3"
@@ -134,16 +141,14 @@
 
     </LinearLayout>
 
-    <com.google.android.material.button.MaterialButton
-        android:id="@+id/anime_remove_button2"
+    <Button
+        android:id="@+id/button6"
         android:layout_width="wrap_content"
-        android:layout_height="10dp"
+        android:layout_height="wrap_content"
         android:layout_marginLeft="10dp"
-        android:layout_marginTop="125dp"
-        android:layout_marginBottom="10dp"
-        android:layout_weight="1"
+        android:layout_marginTop="100dp"
         android:text="@string/remove"
-        android:theme="@style/custom_button"
+        app:cornerRadius="20dp"
         app:icon="@drawable/ic_baseline_delete_24" />
 
 </LinearLayout>
