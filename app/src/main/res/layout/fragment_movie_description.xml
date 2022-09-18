@@ -145,10 +145,10 @@
         android:id="@+id/button6"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="100dp"
         android:layout_marginLeft="10dp"
+        android:layout_marginTop="100dp"
         android:text="@string/remove"
-        android:theme="@style/custom_button"
+        app:cornerRadius="20dp"
         app:icon="@drawable/ic_baseline_delete_24" />
 
 </LinearLayout>
