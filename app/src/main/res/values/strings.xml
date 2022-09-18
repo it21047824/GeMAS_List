@@ -120,5 +120,9 @@
     <!--//-->
     <string name="delete_acc">Deleted Account Successfully</string>
     <string name="update_acc">Update Account Successfully</string>
+    <string name="stats">Games Statistics</string>
+    <string name="Game">Game</string>
+    <string name="rate">rate</string>
+    <string name="game_des">game_des</string>
 
 </resources>
