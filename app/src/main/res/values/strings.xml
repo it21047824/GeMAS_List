@@ -85,7 +85,7 @@
     <string name="image_reselect">There was an error\nReselect the image</string>
     <string name="image_select">Please select an image</string>
     <string name="signed_in">Signed In as %s</string>
-
+    <string name="searchMessage">Sorry! Could not found.</string>
 
     <string name="Rating">Rating</string>
     <string name="ratingValue">8/10</string>
