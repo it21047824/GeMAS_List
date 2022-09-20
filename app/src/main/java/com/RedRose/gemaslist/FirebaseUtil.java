@@ -6,13 +6,11 @@ import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
-import android.os.Bundle;
 import android.util.Log;
 import android.util.TypedValue;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.widget.LinearLayoutCompat;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
@@ -30,7 +28,6 @@ import org.json.JSONObject;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.Objects;
 
 public class FirebaseUtil {
     private static final String URL = "https://gemas-list-1662485803384-default-rtdb" +
@@ -84,12 +81,6 @@ public class FirebaseUtil {
 
         return true;
     }
-
-
-    public static void getAnimeTitle(String titleID, Context context, LinearLayoutCompat layout) {
-
-    }
-
 
     public static boolean getAnimeUserData() {
         String uid = FirebaseAuth.getInstance().getUid();

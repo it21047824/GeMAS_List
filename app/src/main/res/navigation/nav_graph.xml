@@ -9,7 +9,11 @@
         android:id="@+id/dashboard"
         android:name="com.RedRose.gemaslist.Dashboard"
         android:label="fragment_dashboard"
-        tools:layout="@layout/fragment_dashboard" />
+        tools:layout="@layout/fragment_dashboard" >
+        <action
+            android:id="@+id/action_dashboard_to_animeSelect"
+            app:destination="@id/animeSelect" />
+    </fragment>
     <fragment
         android:id="@+id/animeList"
         android:name="com.RedRose.gemaslist.AnimeList"
@@ -53,7 +57,11 @@
     <fragment
         android:id="@+id/games"
         android:name="com.RedRose.gemaslist.GamesList"
-        tools:layout="@layout/fragment_games_list" />
+        tools:layout="@layout/fragment_games_list" >
+        <action
+            android:id="@+id/action_games_to_games_description"
+            app:destination="@id/games_description" />
+    </fragment>
     <fragment
         android:id="@+id/movies"
         android:name="com.RedRose.gemaslist.MoviesList"
@@ -118,6 +126,9 @@
         <action
             android:id="@+id/action_search_to_series_description"
             app:destination="@id/series_description" />
+        <action
+            android:id="@+id/action_search_to_games_description"
+            app:destination="@id/games_description" />
     </fragment>
     <action
         android:id="@+id/action_global_search"
@@ -136,4 +147,9 @@
         android:name="com.RedRose.gemaslist.MovieDescription"
         android:label="fragment_movie_description"
         tools:layout="@layout/fragment_movie_description" />
+    <fragment
+        android:id="@+id/games_description"
+        android:name="com.RedRose.gemaslist.games_description"
+        android:label="fragment_games_description"
+        tools:layout="@layout/fragment_games_description" />
 </navigation>

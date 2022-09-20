@@ -234,14 +234,33 @@
 
         </RelativeLayout>
 
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/anime_remove_button"
-            android:layout_width="wrap_content"
+        <androidx.appcompat.widget.LinearLayoutCompat
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:text="@string/remove"
-            android:theme="@style/custom_button"
-            app:icon="@drawable/ic_baseline_delete_24" />
+            android:gravity="center_horizontal">
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/anime_remove_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:layout_marginEnd="80dp"
+                android:text="@string/remove"
+                android:theme="@style/custom_button"
+                app:icon="@drawable/ic_baseline_delete_24" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/anime_edit_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:layout_marginBottom="8dp"
+                android:layout_marginStart="80dp"
+                app:icon="@drawable/ic_baseline_edit_24"
+                app:iconSize="25dp"
+                style="@style/Widget.Material3.Button.IconButton"/>
+
+        </androidx.appcompat.widget.LinearLayoutCompat>
 
     </androidx.appcompat.widget.LinearLayoutCompat>
 

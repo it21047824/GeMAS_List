@@ -3,10 +3,13 @@ package com.RedRose.gemaslist;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
+import androidx.navigation.Navigation;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+
+import com.google.android.material.button.MaterialButton;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -59,6 +62,12 @@ public class GamesList extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_games_list, container, false);
+        View view = inflater.inflate(R.layout.fragment_games_list, container, false);
+
+        MaterialButton button = view.findViewById(R.id.button19);
+        button.setOnClickListener(v -> Navigation.findNavController(requireActivity(), R.id.nav_host_fragment)
+                .navigate(R.id.action_games_to_games_description));
+
+        return view;
     }
 }

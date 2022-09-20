@@ -76,8 +76,13 @@ public class AnimeRecyclerAdapter extends RecyclerView.Adapter<AnimeRecyclerAdap
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 holder.getAnimeTitle().setText(snapshot.child("title").getValue(String.class));
-                @SuppressWarnings("ConstantConditions")
-                long ep = snapshot.child("episodes").getValue(Long.class);
+
+                long ep = 0;
+                try {
+                    //noinspection ConstantConditions
+                    ep = snapshot.child("episodes").getValue(Long.class);
+                } catch (Exception e) {/*do nothing*/}
+
                 if(progress != -1){
                     holder.getProgress().setText(String.format(Locale.US,
                             "Progress : %d/%s",

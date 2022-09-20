@@ -285,6 +285,17 @@
                 android:layout_marginBottom="32dp"
                 android:text="@string/add_title" />
 
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/delete_title_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:icon="@drawable/ic_baseline_delete_24"
+                android:layout_marginTop="8dp"
+                android:layout_marginBottom="32dp"
+                android:theme="@style/custom_button"
+                android:text="@string/delete_title"
+                android:visibility="gone"/>
+
         </androidx.appcompat.widget.LinearLayoutCompat>
 
     </androidx.core.widget.NestedScrollView>

@@ -113,12 +113,15 @@
     <string name="image_reselect">There was an error\nReselect the image</string>
     <string name="image_select">Please select an image</string>
     <string name="signed_in">Signed In as %s</string>
-
+    <string name="are_you_sure">Are You Sure?</string>
+    <string name="edit_anime_title">Edit Anime Title</string>
+    <string name="delete_title">Permanently Delete Title</string>
+    <string name="delete_title_warning">WARNING!\nThis will permanently delete this title. All users who have this on their list will be affected.</string>
+    <string name="successful">Successful</string>
     <!--//-->
     <string name="update_prof">Edit Profile</string>
     <string name="change_pass">Change My Password</string>
     <string name="deleteAcc">Delete My Account</string>
-
     <!--//-->
     <string name="searchMessage">Sorry! Couldnot find</string>
     <string name="gameStatistics">Game Statistics</string>
@@ -129,11 +132,12 @@
     <string name="PlayingValue">10</string>
     <string name="PlanningValue">20</string>
     <string name="CompletedValue">30</string>
-
     <string name="stats">Games Statistics</string>
     <string name="Game">Game</string>
     <string name="rate">rate</string>
     <string name="game_des">game_des</string>
+    <string name="series_name04">Business Proposal</string>
+
 
 
 </resources>

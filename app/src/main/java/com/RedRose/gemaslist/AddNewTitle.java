@@ -2,12 +2,14 @@ package com.RedRose.gemaslist;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.LinearLayoutCompat.LayoutParams;
 
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
@@ -17,25 +19,34 @@ import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.google.android.material.button.MaterialButton;
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.progressindicator.LinearProgressIndicator;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.Objects;
 
 public class AddNewTitle extends AppCompatActivity {
 
     protected ImageView linearPreview, gridPreview;
-    protected MaterialButton selectImageButton, addTitleButton, clearButton;
+    protected MaterialButton selectImageButton, addTitleButton, clearButton, deleteButton;
     protected Uri croppedUri;
     protected Uri selectedImage;
-    protected TextInputEditText titleInput, episodesInput, descriptionInput, romanjiInput;
+    protected TextInputEditText titleInput, episodesInput, descriptionInput, romajiInput;
     protected AutoCompleteTextView titleType;
     protected LinearProgressIndicator progressIndicator;
-    protected TextInputLayout episodeLayout, newTitleLayout, romanjiLayout;
+    protected TextInputLayout episodeLayout, newTitleLayout, romajiLayout, titleTypeLayout;
     protected SharedPreferences sp;
+    private String title_ID, editType;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,18 +56,20 @@ public class AddNewTitle extends AppCompatActivity {
 
         //find views
         titleInput = findViewById(R.id.new_title_name);
+        titleTypeLayout = findViewById(R.id.add_title_type_layout);
         episodesInput = findViewById(R.id.new_title_episodes);
         descriptionInput = findViewById(R.id.new_title_description);
         episodeLayout = findViewById(R.id.new_title_episodes_layout);
         newTitleLayout = findViewById(R.id.new_title_layout);
-        romanjiLayout = findViewById(R.id.new_romanji_layout);
-        romanjiInput = findViewById(R.id.new_romanji_name);
+        romajiLayout = findViewById(R.id.new_romanji_layout);
+        romajiInput = findViewById(R.id.new_romanji_name);
         linearPreview = findViewById(R.id.new_image_linear);
         gridPreview = findViewById(R.id.new_image_grid);
         selectImageButton = findViewById(R.id.select_image_button);
         addTitleButton = findViewById(R.id.add_title_button);
         progressIndicator = findViewById(R.id.new_title_progress);
         clearButton = findViewById(R.id.new_anime_clear);
+        deleteButton = findViewById(R.id.delete_title_button);
 
         //dropdown items
         List<String> dropDownItems = new ArrayList<>();
@@ -77,10 +90,10 @@ public class AddNewTitle extends AppCompatActivity {
             } else if (selectedType.equals("Anime")) {
                 episodesInput.setVisibility(View.VISIBLE);
                 episodesInput.setVisibility(View.VISIBLE);
-                romanjiLayout.setVisibility(View.VISIBLE);
+                romajiLayout.setVisibility(View.VISIBLE);
             } else {
                 episodesInput.setVisibility(View.GONE);
-                romanjiLayout.setVisibility(View.GONE);
+                romajiLayout.setVisibility(View.GONE);
             }
         });
 
@@ -112,6 +125,31 @@ public class AddNewTitle extends AppCompatActivity {
 
         //clear everything
         clearButton.setOnClickListener(this::clearSelection);
+
+        deleteButton.setOnClickListener(deleteView -> new MaterialAlertDialogBuilder(this)
+                .setTitle(R.string.are_you_sure)
+                .setMessage(R.string.delete_title_warning)
+                .setPositiveButton("Confirm", (dialogInterface, i) -> {
+
+                    DatabaseReference deleteRef = FirebaseUtil.getDB()
+                            .getReference(FirebaseUtil.ANIME_PATH)
+                            .child("titles").child(title_ID);
+                    deleteRef.removeValue((error, ref) -> {
+                        if(error == null) {
+                            Toast.makeText(context, "Removed Permanently", Toast.LENGTH_SHORT).show();
+                            finish();
+                        } else {
+                            Toast.makeText(context, getString(R.string.error), Toast.LENGTH_SHORT).show();
+                        }
+                    });
+
+                    FirebaseStorage storage = FirebaseStorage.getInstance();
+                    StorageReference imageRef = storage.getReference().child("anime_posters").child(title_ID);
+                    imageRef.delete();
+
+                })
+                .setNeutralButton("Cancel", (dialogInterface, i) -> {/*do nothing*/})
+                .show());
     }
 
     @Override
@@ -128,8 +166,8 @@ public class AddNewTitle extends AppCompatActivity {
         if(titleInput.getText() != null) {
             editor.putString("TITLE", titleInput.getText().toString());
         }
-        if(romanjiInput.getText() != null) {
-            editor.putString("ROMANJI", romanjiInput.getText().toString());
+        if(romajiInput.getText() != null) {
+            editor.putString("ROMANJI", romajiInput.getText().toString());
         }
         if(descriptionInput.getText() != null) {
             editor.putString("DESCRIPTION", descriptionInput.getText().toString());
@@ -141,33 +179,70 @@ public class AddNewTitle extends AppCompatActivity {
     }
 
     public void initializeFromPrevious() {
-        titleType.setText(sp.getString("TYPE", null), false);
-        episodesInput.setText(sp.getString("EPISODES", null));
-        titleInput.setText(sp.getString("TITLE", null));
-        romanjiInput.setText(sp.getString("ROMANJI", null));
-        descriptionInput.setText(sp.getString("DESCRIPTION", null));
-        if(sp.getString("IMAGE", null) != null){
-            croppedUri = Uri.parse(sp.getString("IMAGE", null));
-        }
-        if(croppedUri != null){
-            linearPreview.setImageURI(croppedUri);
-            gridPreview.setImageURI(croppedUri);
-        }
+        Intent editIntent = getIntent();
+        title_ID = editIntent.getStringExtra("title_ID");
+        editType = editIntent.getStringExtra("type");
 
-        switch (titleType.getText().toString()) {
-            case "Series" :
-                episodesInput.setVisibility(View.VISIBLE);
-                episodesInput.setVisibility(View.VISIBLE);
-                break;
-            case "Anime" :
-                episodesInput.setVisibility(View.VISIBLE);
-                episodesInput.setVisibility(View.VISIBLE);
-                romanjiLayout.setVisibility(View.VISIBLE);
-                break;
-            default :
-                episodesInput.setVisibility(View.GONE);
-                romanjiLayout.setVisibility(View.GONE);
-                break;
+        if(title_ID != null && editType.equals("anime")){
+            DatabaseReference animeRef = FirebaseUtil.getDB().getReference(FirebaseUtil.ANIME_PATH)
+                    .child("titles").child(title_ID);
+            animeRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                    addTitleButton.setText(R.string.edit_anime_title);
+                    titleType.setText(getString(R.string.anime), false);
+                    titleTypeLayout.setVisibility(View.INVISIBLE);
+                    episodesInput.setText(String.format(Locale.US, "%d",
+                            snapshot.child("episodes").getValue(Long.class)));
+                    titleInput.setText(snapshot.child("title").getValue(String.class));
+                    romajiLayout.setVisibility(View.VISIBLE);
+                    romajiInput.setText(snapshot.child("romaji").getValue(String.class));
+                    descriptionInput.setText(snapshot.child("description").getValue(String.class));
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError error) {
+
+                }
+            });
+
+            FirebaseStorage storage = FirebaseStorage.getInstance();
+            StorageReference imageRef = storage.getReference().child("anime_posters").child(title_ID);
+            imageRef.getBytes(FirebaseUtil.ONE_MEGABYTE).addOnSuccessListener(bytes -> {
+                Bitmap poster = FirebaseUtil.byteToBitmap(bytes);
+                linearPreview.setImageBitmap(poster);
+                gridPreview.setImageBitmap(poster);
+            });
+            deleteButton.setVisibility(View.VISIBLE);
+        } else {
+            titleType.setText(sp.getString("TYPE", null), false);
+            episodesInput.setText(sp.getString("EPISODES", null));
+            titleInput.setText(sp.getString("TITLE", null));
+            romajiInput.setText(sp.getString("ROMANJI", null));
+            descriptionInput.setText(sp.getString("DESCRIPTION", null));
+            if(sp.getString("IMAGE", null) != null){
+                croppedUri = Uri.parse(sp.getString("IMAGE", null));
+            }
+            if(croppedUri != null){
+                linearPreview.setImageURI(croppedUri);
+                gridPreview.setImageURI(croppedUri);
+            }
+
+            switch (titleType.getText().toString()) {
+                case "Series" :
+                    episodesInput.setVisibility(View.VISIBLE);
+                    episodesInput.setVisibility(View.VISIBLE);
+                    break;
+                case "Anime" :
+                    episodesInput.setVisibility(View.VISIBLE);
+                    episodesInput.setVisibility(View.VISIBLE);
+                    romajiLayout.setVisibility(View.VISIBLE);
+                    break;
+                default :
+                    episodesInput.setVisibility(View.GONE);
+                    romajiLayout.setVisibility(View.GONE);
+                    break;
+            }
         }
     }
 
@@ -257,8 +332,8 @@ public class AddNewTitle extends AppCompatActivity {
         }
         String type = titleType.getText().toString();
         String romaji = null;
-        if(romanjiInput.getText() != null) {
-            romaji = romanjiInput.getText().toString();
+        if(romajiInput.getText() != null) {
+            romaji = romajiInput.getText().toString();
         }
         Context context = view.getContext();
 
@@ -268,39 +343,59 @@ public class AddNewTitle extends AppCompatActivity {
         Thread addAnimeTitleThread = new Thread(() -> {
             boolean result = false;
 
-            switch (type) {
-                case "Game" :
-                    //add a game
-                    break;
-                case "Movie" :
-                    //add a movie
-                    break;
-                case "Series" :
-                    //add a series
-                    break;
-                case "Anime" : {
-                    if(finalEpisodes != null && croppedUri != null){
-                        result = FirebaseUtil.addNewAnimeTitle(
-                                title,
-                                description,
-                                croppedUri,
-                                Integer.parseInt(finalEpisodes),
-                                finalRomaji,
-                                context
-                        );
+            if(title_ID != null && editType.equals("anime")) {
+                DatabaseReference updateRef = FirebaseUtil.getDB()
+                        .getReference(FirebaseUtil.ANIME_PATH).child("titles").child(title_ID);
+                updateRef.child("title").setValue(title);
+                updateRef.child("description").setValue(description);
+                if(finalEpisodes != null) {
+                    updateRef.child("episodes").setValue(Integer.parseInt(finalEpisodes));
+                }
+                updateRef.child("romaji").setValue(finalRomaji);
+                result = true;
 
-                        if(result){
-                            SharedPreferences.Editor editor = sp.edit();
-                            editor.remove("TYPE");
-                            editor.remove("EPISODES");
-                            editor.remove("TITLE");
-                            editor.remove("ROMANJI");
-                            editor.remove("DESCRIPTION");
-                            editor.remove("IMAGE");
-                            editor.apply();
+                if (croppedUri != null) {
+                    FirebaseStorage storage = FirebaseStorage.getInstance();
+                    StorageReference animeRef = storage.getReference().child("anime_posters");
+                    StorageReference uploadRef = animeRef.child(title_ID);
+                    uploadRef.putFile(croppedUri);
+                }
+
+            } else {
+                switch (type) {
+                    case "Game" :
+                        //add a game
+                        break;
+                    case "Movie" :
+                        //add a movie
+                        break;
+                    case "Series" :
+                        //add a series
+                        break;
+                    case "Anime" : {
+                        if(finalEpisodes != null && croppedUri != null){
+                            result = FirebaseUtil.addNewAnimeTitle(
+                                    title,
+                                    description,
+                                    croppedUri,
+                                    Integer.parseInt(finalEpisodes),
+                                    finalRomaji,
+                                    context
+                            );
+
+                            if(result){
+                                SharedPreferences.Editor editor = sp.edit();
+                                editor.remove("TYPE");
+                                editor.remove("EPISODES");
+                                editor.remove("TITLE");
+                                editor.remove("ROMANJI");
+                                editor.remove("DESCRIPTION");
+                                editor.remove("IMAGE");
+                                editor.apply();
+                            }
                         }
+                        break;
                     }
-                    break;
                 }
             }
 
@@ -317,7 +412,9 @@ public class AddNewTitle extends AppCompatActivity {
                 if (finalResult) {
                     episodeLayout.setError(null);
                     newTitleLayout.setError(null);
-
+                    Toast.makeText(context,
+                            getResources().getString(R.string.successful),
+                            Toast.LENGTH_SHORT).show();
                     finish();
                 } else {
                     Toast.makeText(context,
@@ -338,7 +435,7 @@ public class AddNewTitle extends AppCompatActivity {
         titleInput.setText(null);
         episodesInput.setText(null);
         descriptionInput.setText(null);
-        romanjiInput.setText(null);
+        romajiInput.setText(null);
         linearPreview.setImageResource(R.drawable.placeholder_image);
         gridPreview.setImageResource(R.drawable.placeholder_image);
     }
