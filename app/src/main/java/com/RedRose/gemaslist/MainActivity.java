@@ -114,6 +114,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             }
         );
 
+        //
+
         //set custom back button navigation
         setBackPressMethod();
 
