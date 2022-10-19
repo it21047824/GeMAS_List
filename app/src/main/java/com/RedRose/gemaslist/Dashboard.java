@@ -27,6 +27,7 @@ import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
+import java.util.ArrayList;
 import java.util.Objects;
 
 /**
@@ -95,27 +96,30 @@ public class Dashboard extends Fragment {
         loader = view.findViewById(R.id.loader);
         loader.setVisibility(View.INVISIBLE);
 
-        //create cards
-        download();
+        DatabaseReference animeListRef = FirebaseUtil.getDB()
+                .getReference(FirebaseUtil.ANIME_PATH)
+                .child("titles");
+        animeListRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                for(DataSnapshot d : snapshot.getChildren()){
+                    titleIDs.add(d.getKey());
+                    Log.e("dashboard107", d.getKey());
+                }
+                //create cards
+                download();
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
 
         return view;
     }
 
-    public static final String[] titleIDs= {
-            "-NC4RseeJPBok0Xaz0ng",
-            "-NC8sUEdaMLIWnKXSkkv",
-            "-NC8tjA86I00zq_LV-Mc",
-            "-NC8zELRqN_N10FkeOf8",
-            "-NC8zvQaFBMHUb2_y2wS",
-            "-NC9-SXWMPRDrSzAWgDt",
-            "-NC9-qTCKdluCO2S-mBp",
-            "-NC90CaPUKfbPhI--bib",
-            "-NC90ZVN2FGUFi_--fel",
-            "-NC90oHQmzlc64Js7ZY3",
-            "-NC9152H1YUVUCamsYNp",
-            "-NC91Mwm9SFwrFgLLFp4",
-            "-NC91sMFqxppaE0KrpGv"
-    };
+    public static final ArrayList<String> titleIDs = new ArrayList<>();
 
     public static void createAnimeCard(
             MainActivity activity,
@@ -192,7 +196,7 @@ public class Dashboard extends Fragment {
         linearLayoutCompat.addView(cardView);
 
         DatabaseReference titleRef = FirebaseUtil.getDB().getReference(FirebaseUtil.ANIME_PATH);
-        DatabaseReference selectedRef = titleRef.child("titles").child(titleIDs[position]);
+        DatabaseReference selectedRef = titleRef.child("titles").child(titleIDs.get(position));
 
         selectedRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -257,7 +261,7 @@ public class Dashboard extends Fragment {
         //get image from cloud storage
         FirebaseStorage storage = FirebaseStorage.getInstance();
         StorageReference animeRef = storage.getReference()
-                .child("anime_posters").child(titleIDs[position]);
+                .child("anime_posters").child(titleIDs.get(position));
 
         animeRef.getBytes(FirebaseUtil.ONE_MEGABYTE).addOnSuccessListener
                 (bytes -> imageView.setImageBitmap(FirebaseUtil.byteToBitmap(bytes)));
@@ -267,7 +271,7 @@ public class Dashboard extends Fragment {
 
     public void download(){
         int i = 0;
-        while (i < titleIDs.length){
+        while (i < titleIDs.size()){
 
             createAnimeCard(activity, layout, context, i);
 
