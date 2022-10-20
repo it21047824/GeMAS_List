@@ -71,7 +71,7 @@ public class Login extends AppCompatActivity {
 
         //firebase login activity
         List<AuthUI.IdpConfig> providers = Arrays.asList(
-                new AuthUI.IdpConfig.EmailBuilder().build(),
+                new AuthUI.IdpConfig.EmailBuilder().build()//,
                 //new AuthUI.IdpConfig.GoogleBuilder().build()
         );
         signInIntent = AuthUI.getInstance()
