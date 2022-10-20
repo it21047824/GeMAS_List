@@ -41,8 +41,7 @@ public class Login extends AppCompatActivity {
 
             if(user != null){
                 Toast.makeText(this,
-                        /*getResources().getString(R.string.signed_in, user.getEmail()),*/
-                        result.toString(),
+                        getResources().getString(R.string.signed_in, user.getEmail()),
                         Toast.LENGTH_SHORT).show();
                 SharedPreferences.Editor spEditor = sp.edit();
                 spEditor.putString(getString(R.string.user_id), user.getUid());
@@ -73,7 +72,7 @@ public class Login extends AppCompatActivity {
         //firebase login activity
         List<AuthUI.IdpConfig> providers = Arrays.asList(
                 new AuthUI.IdpConfig.EmailBuilder().build(),
-                new AuthUI.IdpConfig.GoogleBuilder().build()
+                //new AuthUI.IdpConfig.GoogleBuilder().build()
         );
         signInIntent = AuthUI.getInstance()
                 .createSignInIntentBuilder()
