@@ -38,9 +38,11 @@ public class Login extends AppCompatActivity {
         if (result.getResultCode() == RESULT_OK){
             FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
 
+
             if(user != null){
                 Toast.makeText(this,
-                        getResources().getString(R.string.signed_in, user.getEmail()),
+                        /*getResources().getString(R.string.signed_in, user.getEmail()),*/
+                        result.toString(),
                         Toast.LENGTH_SHORT).show();
                 SharedPreferences.Editor spEditor = sp.edit();
                 spEditor.putString(getString(R.string.user_id), user.getUid());
