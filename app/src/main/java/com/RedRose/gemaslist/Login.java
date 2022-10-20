@@ -54,7 +54,7 @@ public class Login extends AppCompatActivity {
             }
         } else {
             loginButton.setVisibility(View.VISIBLE);
-            Toast.makeText(this, "Cancelled : code "+result.getResultCode()
+            Toast.makeText(this, "Cancelled : code "+result.toString()
                     , Toast.LENGTH_SHORT).show();
         }
         progressIndicator.setVisibility(View.GONE);
