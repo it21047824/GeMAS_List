@@ -3,6 +3,7 @@ package com.RedRose.gemaslist;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.viewpager2.adapter.FragmentStateAdapter;
 import androidx.viewpager2.widget.ViewPager2;
@@ -16,6 +17,7 @@ import com.google.android.material.tabs.TabLayoutMediator;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class Statistics extends Fragment {
 
@@ -82,5 +84,12 @@ public class Statistics extends Fragment {
         public CharSequence getTitle(int position) {
             return fragmentTitles.get(position);
         }
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        Objects.requireNonNull(((AppCompatActivity) requireActivity()).getSupportActionBar())
+                .setSubtitle(R.string.statistics);
     }
 }

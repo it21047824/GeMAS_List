@@ -4,7 +4,6 @@ import androidx.activity.result.ActivityResultLauncher;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Toast;
@@ -14,6 +13,7 @@ import com.firebase.ui.auth.FirebaseAuthUIActivityResultContract;
 import com.firebase.ui.auth.data.model.FirebaseAuthUIAuthenticationResult;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.progressindicator.CircularProgressIndicator;
+import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
@@ -22,7 +22,6 @@ import java.util.List;
 
 public class Login extends AppCompatActivity {
 
-    private SharedPreferences sp;
     private CircularProgressIndicator progressIndicator;
     private MaterialButton loginButton;
     private Intent mainActivityIntent, signInIntent;
@@ -43,17 +42,12 @@ public class Login extends AppCompatActivity {
                 Toast.makeText(this,
                         getResources().getString(R.string.signed_in, user.getEmail()),
                         Toast.LENGTH_SHORT).show();
-                SharedPreferences.Editor spEditor = sp.edit();
-                spEditor.putString(getString(R.string.user_id), user.getUid());
-                spEditor.putString(getString(R.string.username), user.getDisplayName());
-                spEditor.putString(getString(R.string.email), user.getEmail());
-                spEditor.apply();
 
                 startActivity(mainActivityIntent);
             }
         } else {
             loginButton.setVisibility(View.VISIBLE);
-            Toast.makeText(this, "Cancelled : code "+result
+            Snackbar.make(loginButton, "Cancelled : code "+result
                     , Toast.LENGTH_SHORT).show();
         }
         progressIndicator.setVisibility(View.GONE);
@@ -63,7 +57,6 @@ public class Login extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
-        sp = getSharedPreferences(getString(R.string.login), MODE_PRIVATE);
         progressIndicator = findViewById(R.id.login_progress_indicator);
         loginButton = findViewById(R.id.login_button);
         mainActivityIntent = new Intent(Login.this, MainActivity.class);
@@ -96,6 +89,7 @@ public class Login extends AppCompatActivity {
         FirebaseUser user = mAuth.getCurrentUser();
         if (user != null){
             startActivity(mainActivityIntent);
+            finish();
         }
     }
 }

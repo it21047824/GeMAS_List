@@ -8,10 +8,12 @@ import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.util.Log;
 import android.util.TypedValue;
+import android.view.View;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 
+import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -60,7 +62,8 @@ public class FirebaseUtil {
                                            Uri croppedURI,
                                            int episodes,
                                            String romaji,
-                                           Context context) {
+                                           Context context,
+                                           View contextView) {
         DatabaseReference reference = getDB().getReference(ANIME_PATH);
         DatabaseReference pushRef = reference.child("titles").push();
         pushRef.child("title").setValue(title);
@@ -76,8 +79,8 @@ public class FirebaseUtil {
             StorageReference uploadRef = animeRef.child(pushRef.getKey());
             uploadRef.putFile(croppedURI);
             Activity activity = (Activity) context;
-            activity.runOnUiThread(() -> Toast.makeText(context,
-                    "Successful", Toast.LENGTH_SHORT).show());
+            activity.runOnUiThread(() -> Snackbar.make(contextView,
+                    R.string.successful, Toast.LENGTH_SHORT).show());
         } else {
             return false;
         }
@@ -87,7 +90,8 @@ public class FirebaseUtil {
     public static boolean addNewMovieTitle(String title,
                                            String description,
                                            Uri croppedURI,
-                                           Context context) {
+                                           Context context,
+                                           View contextView) {
         DatabaseReference reference = getDB().getReference(MOVIE_PATH);
         DatabaseReference pushRef = reference.push();
         pushRef.child("title").setValue(title);
@@ -101,8 +105,8 @@ public class FirebaseUtil {
             StorageReference uploadRef = movieRef.child(pushRef.getKey());
             uploadRef.putFile(croppedURI);
             Activity activity = (Activity) context;
-            activity.runOnUiThread(() -> Toast.makeText(context,
-                    "Successful", Toast.LENGTH_SHORT).show());
+            activity.runOnUiThread(() -> Snackbar.make(contextView,
+                    R.string.successful, Toast.LENGTH_SHORT).show());
         } else {
             return false;
         }
@@ -112,7 +116,8 @@ public class FirebaseUtil {
     public static boolean addNewGameTitle(String title,
                                            String description,
                                            Uri croppedURI,
-                                           Context context) {
+                                           Context context,
+                                          View contextView) {
         DatabaseReference reference = getDB().getReference(GAME_PATH);
         DatabaseReference pushRef = reference.push();
         pushRef.child("title").setValue(title);
@@ -126,8 +131,8 @@ public class FirebaseUtil {
             StorageReference uploadRef = animeRef.child(pushRef.getKey());
             uploadRef.putFile(croppedURI);
             Activity activity = (Activity) context;
-            activity.runOnUiThread(() -> Toast.makeText(context,
-                    "Successful", Toast.LENGTH_SHORT).show());
+            activity.runOnUiThread(() -> Snackbar.make(contextView,
+                    R.string.successful, Toast.LENGTH_SHORT).show());
         } else {
             return false;
         }
@@ -138,7 +143,8 @@ public class FirebaseUtil {
                                            String description,
                                            Uri croppedURI,
                                            int episodes,
-                                           Context context) {
+                                           Context context,
+                                           View contextView) {
         DatabaseReference reference = getDB().getReference(SERIES_PATH);
         DatabaseReference pushRef = reference.push();
         pushRef.child("title").setValue(title);
@@ -153,8 +159,8 @@ public class FirebaseUtil {
             StorageReference uploadRef = animeRef.child(pushRef.getKey());
             uploadRef.putFile(croppedURI);
             Activity activity = (Activity) context;
-            activity.runOnUiThread(() -> Toast.makeText(context,
-                    "Successful", Toast.LENGTH_SHORT).show());
+            activity.runOnUiThread(() -> Snackbar.make(contextView,
+                    R.string.successful, Toast.LENGTH_SHORT).show());
         } else {
             return false;
         }

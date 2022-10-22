@@ -23,6 +23,7 @@ import android.widget.Toast;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.progressindicator.LinearProgressIndicator;
+import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 import com.google.android.material.textview.MaterialTextView;
@@ -263,7 +264,7 @@ public class AnimeSelect extends Fragment {
                                 FirebaseUtil.userdataToJSON(),
                                 (error, ref) -> {
                                     if (error == null) {
-                                        Toast.makeText(activity, "removed from list", Toast.LENGTH_SHORT).show();
+                                        Snackbar.make(removeButton, R.string.removed_from_list, Toast.LENGTH_SHORT).show();
 
                                         dropDownMenu.setText(null);
                                         animeProgressView.setText(null);
@@ -274,7 +275,7 @@ public class AnimeSelect extends Fragment {
                                         loadingIndicator.setVisibility(View.INVISIBLE);
                                     } else {
                                         Log.e("Firebase", error.getMessage());
-                                        Toast.makeText(activity,
+                                        Snackbar.make(removeButton,
                                                 getResources().getString(R.string.network_error),
                                                 Toast.LENGTH_SHORT).show();
                                     }
@@ -426,10 +427,10 @@ public class AnimeSelect extends Fragment {
                                 }
                             });
                         }
-                        Toast.makeText(activity, finalMessage, Toast.LENGTH_SHORT).show();
+                        Snackbar.make(saveButton, finalMessage, Toast.LENGTH_SHORT).show();
                     } else {
                         Log.e("Select", error.getMessage());
-                        Toast.makeText(activity,
+                        Snackbar.make(saveButton,
                                 getResources().getString(R.string.network_error),
                                 Toast.LENGTH_SHORT).show();
                     }
@@ -493,7 +494,7 @@ public class AnimeSelect extends Fragment {
 
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
-                Toast.makeText(activity,
+                Snackbar.make(saveButton,
                         getResources().getString(R.string.network_error),
                         Toast.LENGTH_SHORT).show();
                 loadingIndicator.setVisibility(View.INVISIBLE);

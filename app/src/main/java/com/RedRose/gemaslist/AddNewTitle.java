@@ -21,6 +21,7 @@ import android.widget.Toast;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.progressindicator.LinearProgressIndicator;
+import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.database.DataSnapshot;
@@ -135,10 +136,10 @@ public class AddNewTitle extends AppCompatActivity {
                             .child("titles").child(title_ID);
                     deleteRef.removeValue((error, ref) -> {
                         if(error == null) {
-                            Toast.makeText(context, "Removed Permanently", Toast.LENGTH_SHORT).show();
+                            Snackbar.make(deleteButton, "Removed Permanently", Toast.LENGTH_SHORT).show();
                             finish();
                         } else {
-                            Toast.makeText(context, getString(R.string.error), Toast.LENGTH_SHORT).show();
+                            Snackbar.make(deleteButton, getString(R.string.error), Toast.LENGTH_SHORT).show();
                         }
                     });
 
@@ -296,7 +297,7 @@ public class AddNewTitle extends AppCompatActivity {
                 cropImageIntent.putExtra("DATA", selectedImage.toString());
                 cropImageActivity.launch(cropImageIntent);
             } else {
-                Toast.makeText(view.getContext(),
+                Snackbar.make(selectImageButton,
                         getResources().getString(R.string.image_reselect),
                         Toast.LENGTH_LONG).show();
             }
@@ -310,7 +311,7 @@ public class AddNewTitle extends AppCompatActivity {
                 cropImageIntent.putExtra("DATA", selectedImage.toString());
                 cropImageActivity.launch(cropImageIntent);
             } else {
-                Toast.makeText(view.getContext(),
+                Snackbar.make(selectImageButton,
                         getResources().getString(R.string.image_reselect),
                         Toast.LENGTH_LONG).show();
             }
@@ -367,7 +368,8 @@ public class AddNewTitle extends AppCompatActivity {
                                     title,
                                     description,
                                     croppedUri,
-                                    context
+                                    context,
+                                    addTitleButton
                             );
                         }
                         break;
@@ -377,7 +379,8 @@ public class AddNewTitle extends AppCompatActivity {
                                     title,
                                     description,
                                     croppedUri,
-                                    context
+                                    context,
+                                    addTitleButton
                             );
                         }
                         break;
@@ -388,7 +391,8 @@ public class AddNewTitle extends AppCompatActivity {
                                     description,
                                     croppedUri,
                                     Integer.parseInt(finalEpisodes),
-                                    context
+                                    context,
+                                    addTitleButton
                             );
                         }
                         break;
@@ -400,7 +404,8 @@ public class AddNewTitle extends AppCompatActivity {
                                     croppedUri,
                                     Integer.parseInt(finalEpisodes),
                                     finalRomaji,
-                                    context
+                                    context,
+                                    addTitleButton
                             );
                         }
                         break;
@@ -413,19 +418,19 @@ public class AddNewTitle extends AppCompatActivity {
                     episodeLayout.setError("*required");
                 }
                 if(croppedUri == null){
-                    Toast.makeText(context,
+                    Snackbar.make(addTitleButton,
                             getResources().getString(R.string.image_select),
                             Toast.LENGTH_LONG).show();
                 }
                 if (finalResult) {
                     episodeLayout.setError(null);
                     newTitleLayout.setError(null);
-                    Toast.makeText(context,
+                    Snackbar.make(addTitleButton,
                             getResources().getString(R.string.successful),
                             Toast.LENGTH_SHORT).show();
                     finish();
                 } else {
-                    Toast.makeText(context,
+                    Snackbar.make(addTitleButton,
                             getResources().getString(R.string.network_error),
                             Toast.LENGTH_SHORT).show();
                 }

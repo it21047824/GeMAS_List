@@ -4,6 +4,7 @@ import android.content.Context;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.LinearLayoutCompat;
 import androidx.appcompat.widget.LinearLayoutCompat.LayoutParams;
 import androidx.fragment.app.Fragment;
@@ -117,6 +118,13 @@ public class Dashboard extends Fragment {
         });
 
         return view;
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        Objects.requireNonNull(((AppCompatActivity) requireActivity()).getSupportActionBar())
+                .setSubtitle(R.string.dashboard);
     }
 
     public static final ArrayList<String> titleIDs = new ArrayList<>();

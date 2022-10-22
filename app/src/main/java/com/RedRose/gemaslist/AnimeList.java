@@ -4,6 +4,7 @@ import android.content.res.TypedArray;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.viewpager2.adapter.FragmentStateAdapter;
 import androidx.viewpager2.widget.ViewPager2;
@@ -116,5 +117,12 @@ public class AnimeList extends Fragment {
         public CharSequence getTitle(int position) {
             return fragmentTitles.get(position);
         }
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        Objects.requireNonNull(((AppCompatActivity) requireActivity()).getSupportActionBar())
+                .setSubtitle(R.string.animeList);
     }
 }

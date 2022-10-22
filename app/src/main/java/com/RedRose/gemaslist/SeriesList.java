@@ -2,6 +2,7 @@ package com.RedRose.gemaslist;
 
 import android.os.Bundle;
 
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.Navigation;
 
@@ -10,6 +11,8 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.google.android.material.button.MaterialButton;
+
+import java.util.Objects;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -69,5 +72,12 @@ public class SeriesList extends Fragment {
                 .navigate(R.id.action_series_to_series_description));
 
         return view;
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        Objects.requireNonNull(((AppCompatActivity) requireActivity()).getSupportActionBar())
+                .setSubtitle(R.string.seriesList);
     }
 }

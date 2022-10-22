@@ -165,7 +165,7 @@
             android:layout_marginTop="8dp"
             android:textSize="14sp"
             android:textAllCaps="true"
-            android:text="@string/romaji"/>
+            android:text="@string/romaji_name"/>
 
         <com.google.android.material.textview.MaterialTextView
             android:id="@+id/anime_romanji_name"
