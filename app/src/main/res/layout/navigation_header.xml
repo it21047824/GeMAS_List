@@ -23,8 +23,9 @@
         android:layout_marginTop="8dp"
         android:layout_marginBottom="16dp"
         android:layout_gravity="center_vertical"
+        android:scaleType="centerCrop"
         android:contentDescription="@string/navigation_drawer_profile_picture"
-        app:srcCompat="@drawable/profile_avatar"
+        tools:srcCompat="@drawable/profile_avatar"
         tools:ignore="ImageContrastCheck" />
 
     <com.google.android.material.textview.MaterialTextView

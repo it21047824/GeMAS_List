@@ -16,10 +16,12 @@ import android.net.ConnectivityManager;
 import android.net.Network;
 import android.net.NetworkCapabilities;
 import android.net.NetworkRequest;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.firebase.ui.auth.AuthUI;
@@ -29,6 +31,7 @@ import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.textview.MaterialTextView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.squareup.picasso.Picasso;
 
 import java.util.Objects;
 import java.util.Stack;
@@ -39,11 +42,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private DrawerLayout drawerLayout;
     public Stack<String> appBarSubtitleHistory = new Stack<>();
     protected SharedPreferences sp;
-    private String userID;
+    private String userID, userName, userEmail;
     private MaterialButton searchButton;
     private NavigationView navigationView;
     private FirebaseAuth mAuth;
     private FirebaseUser user;
+    private Uri profileUri;
 
 
     @Override
@@ -52,6 +56,14 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         setContentView(R.layout.activity_main);
         mAuth = FirebaseAuth.getInstance();
         user = mAuth.getCurrentUser();
+        if(user!=null){
+            String uriString = user.getPhotoUrl().toString();
+            profileUri = Uri.parse(uriString.replace("=s96-c", "=s400-c"));
+            userName = user.getDisplayName();
+            userEmail = user.getEmail();
+            Log.e("main62", profileUri.toString());
+        }
+
 
         //get shared preferences
         sp = getSharedPreferences(getString(R.string.login), MODE_PRIVATE);
@@ -66,9 +78,18 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         searchButton = findViewById(R.id.appbar_search_button);
         View navDrawerHeader = navigationView.getHeaderView(0);
         MaterialTextView navDrawerUsername = navDrawerHeader.findViewById(R.id.nav_profile_name);
-        navDrawerUsername.setText(
-                sp.getString(getString(R.string.username),
-                        sp.getString(getString(R.string.email), "username")));
+        ImageView navDrawerProfile = navDrawerHeader.findViewById(R.id.nav_profile_image);
+
+        if(userName != null) {
+            navDrawerUsername.setText(userName);
+        } else {
+            navDrawerUsername.setText(userEmail);
+        }
+        if(profileUri != null) {
+            Picasso.get().load(profileUri).into(navDrawerProfile);
+        } else {
+            navDrawerProfile.setImageResource(R.drawable.placeholder_image);
+        }
 
         //set action bar and nav drawer
         ActionBarDrawerToggle actionBarDrawerToggle = new ActionBarDrawerToggle(

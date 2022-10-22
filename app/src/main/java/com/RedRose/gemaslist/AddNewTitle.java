@@ -85,14 +85,13 @@ public class AddNewTitle extends AppCompatActivity {
         titleType.setOnItemClickListener((adapterView, view, position, l) -> {
             String selectedType = arrayAdapter.getItem(position);
             if (selectedType.equals("Series")) {
-                episodesInput.setVisibility(View.VISIBLE);
-                episodesInput.setVisibility(View.VISIBLE);
+                episodeLayout.setVisibility(View.VISIBLE);
+                romajiLayout.setVisibility(View.VISIBLE);
             } else if (selectedType.equals("Anime")) {
-                episodesInput.setVisibility(View.VISIBLE);
-                episodesInput.setVisibility(View.VISIBLE);
+                episodeLayout.setVisibility(View.VISIBLE);
                 romajiLayout.setVisibility(View.VISIBLE);
             } else {
-                episodesInput.setVisibility(View.GONE);
+                episodeLayout.setVisibility(View.GONE);
                 romajiLayout.setVisibility(View.GONE);
             }
         });
@@ -230,16 +229,15 @@ public class AddNewTitle extends AppCompatActivity {
 
             switch (titleType.getText().toString()) {
                 case "Series" :
-                    episodesInput.setVisibility(View.VISIBLE);
-                    episodesInput.setVisibility(View.VISIBLE);
+                    episodeLayout.setVisibility(View.VISIBLE);
+                    romajiLayout.setVisibility(View.GONE);
                     break;
                 case "Anime" :
-                    episodesInput.setVisibility(View.VISIBLE);
-                    episodesInput.setVisibility(View.VISIBLE);
+                    episodeLayout.setVisibility(View.VISIBLE);
                     romajiLayout.setVisibility(View.VISIBLE);
                     break;
                 default :
-                    episodesInput.setVisibility(View.GONE);
+                    episodeLayout.setVisibility(View.GONE);
                     romajiLayout.setVisibility(View.GONE);
                     break;
             }
@@ -364,15 +362,37 @@ public class AddNewTitle extends AppCompatActivity {
             } else {
                 switch (type) {
                     case "Game" :
-                        //add a game
+                        if(croppedUri != null){
+                            result = FirebaseUtil.addNewGameTitle(
+                                    title,
+                                    description,
+                                    croppedUri,
+                                    context
+                            );
+                        }
                         break;
                     case "Movie" :
-                        //add a movie
+                        if(croppedUri != null){
+                            result = FirebaseUtil.addNewMovieTitle(
+                                    title,
+                                    description,
+                                    croppedUri,
+                                    context
+                            );
+                        }
                         break;
                     case "Series" :
-                        //add a series
+                        if(finalEpisodes != null && croppedUri != null){
+                            result = FirebaseUtil.addNewSeriesTitle(
+                                    title,
+                                    description,
+                                    croppedUri,
+                                    Integer.parseInt(finalEpisodes),
+                                    context
+                            );
+                        }
                         break;
-                    case "Anime" : {
+                    case "Anime" :
                         if(finalEpisodes != null && croppedUri != null){
                             result = FirebaseUtil.addNewAnimeTitle(
                                     title,
@@ -382,20 +402,8 @@ public class AddNewTitle extends AppCompatActivity {
                                     finalRomaji,
                                     context
                             );
-
-                            if(result){
-                                SharedPreferences.Editor editor = sp.edit();
-                                editor.remove("TYPE");
-                                editor.remove("EPISODES");
-                                editor.remove("TITLE");
-                                editor.remove("ROMANJI");
-                                editor.remove("DESCRIPTION");
-                                editor.remove("IMAGE");
-                                editor.apply();
-                            }
                         }
                         break;
-                    }
                 }
             }
 

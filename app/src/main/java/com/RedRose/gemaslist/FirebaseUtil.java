@@ -35,6 +35,9 @@ public class FirebaseUtil {
     public static final long ONE_MEGABYTE = 1024*1024;
     public static final String USERDATA = "userdata";
     public static final String ANIME_PATH = "anime_titles";
+    public static final String MOVIE_PATH = "movie_titles";
+    public static final String GAME_PATH = "game_titles";
+    public static final String SERIES_PATH = "series_titles";
     private static final String TAG = "FirebaseUtil";
     public static final int WATCHING = 0;
     public static final int PLANNING = 1;
@@ -78,7 +81,83 @@ public class FirebaseUtil {
         } else {
             return false;
         }
+        return true;
+    }
 
+    public static boolean addNewMovieTitle(String title,
+                                           String description,
+                                           Uri croppedURI,
+                                           Context context) {
+        DatabaseReference reference = getDB().getReference(MOVIE_PATH);
+        DatabaseReference pushRef = reference.push();
+        pushRef.child("title").setValue(title);
+        pushRef.child("description").setValue(description);
+        pushRef.child("global_rating").child("raters").setValue(0);
+        pushRef.child("global_rating").child("ratings").setValue(0);
+
+        if (pushRef.getKey() != null) {
+            FirebaseStorage storage = FirebaseStorage.getInstance();
+            StorageReference movieRef = storage.getReference().child("movie_posters");
+            StorageReference uploadRef = movieRef.child(pushRef.getKey());
+            uploadRef.putFile(croppedURI);
+            Activity activity = (Activity) context;
+            activity.runOnUiThread(() -> Toast.makeText(context,
+                    "Successful", Toast.LENGTH_SHORT).show());
+        } else {
+            return false;
+        }
+        return true;
+    }
+
+    public static boolean addNewGameTitle(String title,
+                                           String description,
+                                           Uri croppedURI,
+                                           Context context) {
+        DatabaseReference reference = getDB().getReference(GAME_PATH);
+        DatabaseReference pushRef = reference.push();
+        pushRef.child("title").setValue(title);
+        pushRef.child("description").setValue(description);
+        pushRef.child("global_rating").child("raters").setValue(0);
+        pushRef.child("global_rating").child("ratings").setValue(0);
+
+        if (pushRef.getKey() != null) {
+            FirebaseStorage storage = FirebaseStorage.getInstance();
+            StorageReference animeRef = storage.getReference().child("game_posters");
+            StorageReference uploadRef = animeRef.child(pushRef.getKey());
+            uploadRef.putFile(croppedURI);
+            Activity activity = (Activity) context;
+            activity.runOnUiThread(() -> Toast.makeText(context,
+                    "Successful", Toast.LENGTH_SHORT).show());
+        } else {
+            return false;
+        }
+        return true;
+    }
+
+    public static boolean addNewSeriesTitle(String title,
+                                           String description,
+                                           Uri croppedURI,
+                                           int episodes,
+                                           Context context) {
+        DatabaseReference reference = getDB().getReference(SERIES_PATH);
+        DatabaseReference pushRef = reference.push();
+        pushRef.child("title").setValue(title);
+        pushRef.child("description").setValue(description);
+        pushRef.child("episodes").setValue(episodes);
+        pushRef.child("global_rating").child("raters").setValue(0);
+        pushRef.child("global_rating").child("ratings").setValue(0);
+
+        if (pushRef.getKey() != null) {
+            FirebaseStorage storage = FirebaseStorage.getInstance();
+            StorageReference animeRef = storage.getReference().child("series_posters");
+            StorageReference uploadRef = animeRef.child(pushRef.getKey());
+            uploadRef.putFile(croppedURI);
+            Activity activity = (Activity) context;
+            activity.runOnUiThread(() -> Toast.makeText(context,
+                    "Successful", Toast.LENGTH_SHORT).show());
+        } else {
+            return false;
+        }
         return true;
     }
 

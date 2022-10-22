@@ -1,7 +1,6 @@
 package com.RedRose.gemaslist;
 
 import android.content.Context;
-import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.util.TypedValue;
 import android.view.Gravity;
@@ -23,6 +22,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
+import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.Locale;
@@ -107,10 +107,8 @@ public class AnimeRecyclerAdapter extends RecyclerView.Adapter<AnimeRecyclerAdap
             FirebaseStorage storage = FirebaseStorage.getInstance();
             StorageReference imageRef = storage.getReference().child("anime_posters")
                     .child(items.get(position).title);
-            imageRef.getBytes(FirebaseUtil.ONE_MEGABYTE).addOnSuccessListener(bytes -> {
-                Bitmap poster = FirebaseUtil.byteToBitmap(bytes);
-                context.runOnUiThread(() -> holder.getAnimeImage().setImageBitmap(poster));
-            });
+            imageRef.getDownloadUrl().addOnSuccessListener(uri ->
+                    Picasso.get().load(uri).into(holder.getAnimeImage()));
         });
         getImage.start();
 
