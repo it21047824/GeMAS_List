@@ -9,6 +9,7 @@ import android.view.View;
 import android.widget.Toast;
 
 import com.firebase.ui.auth.AuthUI;
+import com.firebase.ui.auth.ErrorCodes;
 import com.firebase.ui.auth.FirebaseAuthUIActivityResultContract;
 import com.firebase.ui.auth.IdpResponse;
 import com.firebase.ui.auth.data.model.FirebaseAuthUIAuthenticationResult;
@@ -47,6 +48,11 @@ public class Login extends AppCompatActivity {
         } else {
             loginButton.setVisibility(View.VISIBLE);
             if(response != null){
+//                switch(response.getError().getErrorCode()){
+//                    case ErrorCodes.NO_NETWORK:
+//                        break;
+//                    case Error
+//                }
                 Snackbar.make(loginButton, "Cancelled : code "+response.getError().getErrorCode()
                         , Toast.LENGTH_SHORT).show();
             }
