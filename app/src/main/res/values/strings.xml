@@ -141,6 +141,7 @@
     <string name="game_des">game_des</string>
     <string name="series_name04">Business Proposal</string>
     <string name="removed_from_list">removed from list</string>
+    <string name="enter_title">Enter a title</string>
 
 
 </resources>

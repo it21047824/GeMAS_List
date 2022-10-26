@@ -397,7 +397,7 @@ public class AddNewTitle extends AppCompatActivity {
                         }
                         break;
                     case "Anime" :
-                        if(finalEpisodes != null && croppedUri != null){
+                        if(finalEpisodes != null && !finalEpisodes.equals("") && croppedUri != null){
                             result = FirebaseUtil.addNewAnimeTitle(
                                     title,
                                     description,
@@ -414,18 +414,22 @@ public class AddNewTitle extends AppCompatActivity {
 
             boolean finalResult = result;
             runOnUiThread(() -> {
-                if(finalEpisodes == null){
+                if((type.equals("Anime")||type.equals("Series")) && finalEpisodes == null){
                     episodeLayout.setError("*required");
                 }
                 if(croppedUri == null){
                     Snackbar.make(addTitleButton,
                             getResources().getString(R.string.image_select),
                             Toast.LENGTH_LONG).show();
+                } else if (titleInput.getText() == null){
+                    Snackbar.make(addTitleButton,
+                            getResources().getString(R.string.enter_title),
+                            Toast.LENGTH_SHORT).show();
                 }
-                if (finalResult) {
+                else if (finalResult) {
                     episodeLayout.setError(null);
                     newTitleLayout.setError(null);
-                    Snackbar.make(addTitleButton,
+                    Toast.makeText(context,
                             getResources().getString(R.string.successful),
                             Toast.LENGTH_SHORT).show();
                     finish();
