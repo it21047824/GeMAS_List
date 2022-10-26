@@ -56,7 +56,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             }
             userName = user.getDisplayName();
             userEmail = user.getEmail();
-            Log.e("main62", profileUri.toString());
         }
 
         //actionbar and nav drawer setup

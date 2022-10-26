@@ -87,7 +87,7 @@ public class AddNewTitle extends AppCompatActivity {
             String selectedType = arrayAdapter.getItem(position);
             if (selectedType.equals("Series")) {
                 episodeLayout.setVisibility(View.VISIBLE);
-                romajiLayout.setVisibility(View.VISIBLE);
+                romajiLayout.setVisibility(View.GONE);
             } else if (selectedType.equals("Anime")) {
                 episodeLayout.setVisibility(View.VISIBLE);
                 romajiLayout.setVisibility(View.VISIBLE);

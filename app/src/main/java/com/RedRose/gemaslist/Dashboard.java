@@ -27,6 +27,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
+import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.Objects;
@@ -43,6 +44,10 @@ public class Dashboard extends Fragment {
     private LinearLayoutCompat layout;
     private LinearProgressIndicator loader;
     private View view;
+    private ArrayList<String> animeTitleIDs;
+    private ArrayList<String> movieTitleIDs;
+    private ArrayList<String> gameTitleIDs;
+    private ArrayList<String> seriesTitleIDs;
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -97,15 +102,39 @@ public class Dashboard extends Fragment {
         loader = view.findViewById(R.id.loader);
         loader.setVisibility(View.INVISIBLE);
 
+        animeTitleIDs = new ArrayList<>();
+        movieTitleIDs = new ArrayList<>();
+        gameTitleIDs = new ArrayList<>();
+        seriesTitleIDs = new ArrayList<>();
+
+        initialize();
+
+        return view;
+    }
+
+    private void initialize() {
         DatabaseReference animeListRef = FirebaseUtil.getDB()
-                .getReference(FirebaseUtil.ANIME_PATH)
-                .child("titles");
+                .getReference();
         animeListRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                for(DataSnapshot d : snapshot.getChildren()){
-                    titleIDs.add(d.getKey());
-                    Log.e("dashboard107", d.getKey());
+                DataSnapshot anime = snapshot.child(FirebaseUtil.ANIME_PATH).child("titles");
+                DataSnapshot movies = snapshot.child(FirebaseUtil.MOVIE_PATH);
+                DataSnapshot series = snapshot.child(FirebaseUtil.SERIES_PATH);
+                DataSnapshot games = snapshot.child(FirebaseUtil.GAME_PATH);
+                Log.e("dashboard109", "get titles");
+
+                for(DataSnapshot d : anime.getChildren()){
+                    animeTitleIDs.add(d.getKey());
+                }
+                for(DataSnapshot d : movies.getChildren()){
+                    movieTitleIDs.add(d.getKey());
+                }
+                for(DataSnapshot d : series.getChildren()){
+                    seriesTitleIDs.add(d.getKey());
+                }
+                for(DataSnapshot d : games.getChildren()){
+                    gameTitleIDs.add(d.getKey());
                 }
                 //create cards
                 download();
@@ -116,8 +145,6 @@ public class Dashboard extends Fragment {
 
             }
         });
-
-        return view;
     }
 
     @Override
@@ -127,13 +154,14 @@ public class Dashboard extends Fragment {
                 .setSubtitle(R.string.dashboard);
     }
 
-    public static final ArrayList<String> titleIDs = new ArrayList<>();
-
     public static void createAnimeCard(
             MainActivity activity,
             LinearLayoutCompat linearLayoutCompat,
             Context context,
-            int position
+            int position,
+            DatabaseReference selectedRef,
+            StorageReference storageRef,
+            ArrayList<String> array
     ) {
         //create card
         LayoutParams cardLayoutParams =
@@ -154,7 +182,7 @@ public class Dashboard extends Fragment {
         TextView titleTextView = new TextView(context);
         titleTextView.setLayoutParams(textLayoutParams);
         titleTextView.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 16);
-        titleTextView.setGravity(Gravity.CENTER);
+        titleTextView.setGravity(Gravity.START);
         titleTextView.setPadding(20,10,5,20);
 
         //create progress text
@@ -203,58 +231,19 @@ public class Dashboard extends Fragment {
 
         linearLayoutCompat.addView(cardView);
 
-        DatabaseReference titleRef = FirebaseUtil.getDB().getReference(FirebaseUtil.ANIME_PATH);
-        DatabaseReference selectedRef = titleRef.child("titles").child(titleIDs.get(position));
-
-        selectedRef.addListenerForSingleValueEvent(new ValueEventListener() {
+        selectedRef.child(array.get(position)).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
 
-                //calculate global average rating
-                DataSnapshot rating = snapshot.child("global_rating");
-                float average;
-                try {
-                    average = (float) Integer.parseInt(Objects.requireNonNull
-                            (rating.child("ratings").getValue(String.class)))
-                            / Integer.parseInt(Objects.requireNonNull
-                            (rating.child("raters").getValue(String.class)));
-                } catch (Exception e) {
-                    average = 0.0F;
-                }
-
-                long episodes = 0;
-
-                try {
-                    //noinspection ConstantConditions
-                    episodes = snapshot.child("episodes").getValue(Long.class);
-                } catch (Exception e) {
-                    //do nothing
-                }
-
-
-                AnimeTitle selectedTitle = new AnimeTitle(snapshot.getKey(),
-                        snapshot.child("title").getValue(String.class),
-                        snapshot.child("description").getValue(String.class),
-                        Math.toIntExact(episodes),
-                        snapshot.child("romaji").getValue(String.class),
-                        average);
-
                 MainActivity activity = (MainActivity) context;
                 Bundle cardBundle = new Bundle();
-                cardBundle.putString("title_id", selectedTitle.getAnimeID());
+                cardBundle.putString("title_id", snapshot.getKey());
 
                 //set values
-                titleTextView.setText(selectedTitle.getAnimeTitle());
-                progressTextView.setText("0");
-                ratingTextView.setText("0");
+                titleTextView.setText(snapshot.child("title").getValue(String.class));
 
                 //card view on click listener
                 cardView.setOnClickListener((View view) -> {
-                    activity.appBarSubtitleHistory.push((String)
-                            Objects.requireNonNull(activity.getSupportActionBar()).getSubtitle());
-
-                    Objects.requireNonNull(activity.getSupportActionBar())
-                            .setSubtitle(R.string.select);
                     Navigation.findNavController(activity, R.id.nav_host_fragment)
                             .navigate(R.id.action_dashboard_to_animeSelect, cardBundle);
                 });
@@ -267,22 +256,43 @@ public class Dashboard extends Fragment {
         });
 
         //get image from cloud storage
-        FirebaseStorage storage = FirebaseStorage.getInstance();
-        StorageReference animeRef = storage.getReference()
-                .child("anime_posters").child(titleIDs.get(position));
-
-        animeRef.getBytes(FirebaseUtil.ONE_MEGABYTE).addOnSuccessListener
-                (bytes -> imageView.setImageBitmap(FirebaseUtil.byteToBitmap(bytes)));
+        storageRef.child(array.get(position)).getDownloadUrl().addOnSuccessListener(uri ->
+                Picasso.get().load(uri).into(imageView));
 
     }
 
 
     public void download(){
-        int i = 0;
-        while (i < titleIDs.size()){
+        int i=0;
+        FirebaseStorage st = FirebaseStorage.getInstance();
+        StorageReference anime = st.getReference().child("anime_posters");
+        StorageReference movie = st.getReference().child("movie_posters");
+        StorageReference series = st.getReference().child("series_posters");
+        StorageReference game = st.getReference().child("game_posters");
 
-            createAnimeCard(activity, layout, context, i);
+        DatabaseReference ref = FirebaseUtil.getDB().getReference();
 
+        while (i < animeTitleIDs.size()){
+            createAnimeCard(activity, layout, context, i, ref.child(FirebaseUtil.ANIME_PATH)
+                    .child("titles"), anime, animeTitleIDs);
+            i++;
+        }
+        i=0;
+        while (i < movieTitleIDs.size()){
+            createAnimeCard(activity, layout, context, i, ref.child(FirebaseUtil.MOVIE_PATH),
+                    movie, movieTitleIDs);
+            i++;
+        }
+        i=0;
+        while (i < seriesTitleIDs.size()){
+            createAnimeCard(activity, layout, context, i, ref.child(FirebaseUtil.SERIES_PATH),
+                    series, seriesTitleIDs);
+            i++;
+        }
+        i=0;
+        while (i < gameTitleIDs.size()){
+            createAnimeCard(activity, layout, context, i, ref.child(FirebaseUtil.GAME_PATH),
+                    game, gameTitleIDs);
             i++;
         }
         loader.setVisibility(View.INVISIBLE);
