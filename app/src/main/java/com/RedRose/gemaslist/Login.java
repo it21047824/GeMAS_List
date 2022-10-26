@@ -10,6 +10,7 @@ import android.widget.Toast;
 
 import com.firebase.ui.auth.AuthUI;
 import com.firebase.ui.auth.FirebaseAuthUIActivityResultContract;
+import com.firebase.ui.auth.IdpResponse;
 import com.firebase.ui.auth.data.model.FirebaseAuthUIAuthenticationResult;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.progressindicator.CircularProgressIndicator;
@@ -33,11 +34,9 @@ public class Login extends AppCompatActivity {
 
     private void onSignInResult(FirebaseAuthUIAuthenticationResult result) {
         //handle sign in
-        //IdpResponse response = result.getIdpResponse();
+        IdpResponse response = result.getIdpResponse();
         if (result.getResultCode() == RESULT_OK){
             FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-
-
             if(user != null){
                 Toast.makeText(this,
                         getResources().getString(R.string.signed_in, user.getEmail()),
@@ -47,8 +46,10 @@ public class Login extends AppCompatActivity {
             }
         } else {
             loginButton.setVisibility(View.VISIBLE);
-            Snackbar.make(loginButton, "Cancelled : code "+result
-                    , Toast.LENGTH_SHORT).show();
+            if(response != null){
+                Snackbar.make(loginButton, "Cancelled : code "+response.getError().getErrorCode()
+                        , Toast.LENGTH_SHORT).show();
+            }
         }
         progressIndicator.setVisibility(View.GONE);
     }

@@ -90,7 +90,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 R.string.closeNavDrawer
         );
 
-
         searchButton.setOnClickListener(view -> Navigation
                 .findNavController(this, R.id.nav_host_fragment)
                 .navigate(R.id.action_global_search));
