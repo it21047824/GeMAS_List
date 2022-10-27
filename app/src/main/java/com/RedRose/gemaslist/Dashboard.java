@@ -122,7 +122,6 @@ public class Dashboard extends Fragment {
                 DataSnapshot movies = snapshot.child(FirebaseUtil.MOVIE_PATH);
                 DataSnapshot series = snapshot.child(FirebaseUtil.SERIES_PATH);
                 DataSnapshot games = snapshot.child(FirebaseUtil.GAME_PATH);
-                Log.e("dashboard109", "get titles");
 
                 for(DataSnapshot d : anime.getChildren()){
                     animeTitleIDs.add(d.getKey());
@@ -154,14 +153,15 @@ public class Dashboard extends Fragment {
                 .setSubtitle(R.string.dashboard);
     }
 
-    public static void createAnimeCard(
+    public static void createTitleCard(
             MainActivity activity,
             LinearLayoutCompat linearLayoutCompat,
             Context context,
             int position,
             DatabaseReference selectedRef,
             StorageReference storageRef,
-            ArrayList<String> array
+            ArrayList<String> array,
+            int location
     ) {
         //create card
         LayoutParams cardLayoutParams =
@@ -245,7 +245,7 @@ public class Dashboard extends Fragment {
                 //card view on click listener
                 cardView.setOnClickListener((View view) -> {
                     Navigation.findNavController(activity, R.id.nav_host_fragment)
-                            .navigate(R.id.action_dashboard_to_animeSelect, cardBundle);
+                            .navigate(location, cardBundle);
                 });
             }
 
@@ -273,26 +273,26 @@ public class Dashboard extends Fragment {
         DatabaseReference ref = FirebaseUtil.getDB().getReference();
 
         while (i < animeTitleIDs.size()){
-            createAnimeCard(activity, layout, context, i, ref.child(FirebaseUtil.ANIME_PATH)
-                    .child("titles"), anime, animeTitleIDs);
+            createTitleCard(activity, layout, context, i, ref.child(FirebaseUtil.ANIME_PATH)
+                    .child("titles"), anime, animeTitleIDs, R.id.action_dashboard_to_animeSelect);
             i++;
         }
         i=0;
         while (i < movieTitleIDs.size()){
-            createAnimeCard(activity, layout, context, i, ref.child(FirebaseUtil.MOVIE_PATH),
-                    movie, movieTitleIDs);
+            createTitleCard(activity, layout, context, i, ref.child(FirebaseUtil.MOVIE_PATH),
+                    movie, movieTitleIDs, R.id.action_dashboard_to_movieDescription);
             i++;
         }
         i=0;
         while (i < seriesTitleIDs.size()){
-            createAnimeCard(activity, layout, context, i, ref.child(FirebaseUtil.SERIES_PATH),
-                    series, seriesTitleIDs);
+            createTitleCard(activity, layout, context, i, ref.child(FirebaseUtil.SERIES_PATH),
+                    series, seriesTitleIDs, R.id.action_dashboard_to_series_description);
             i++;
         }
         i=0;
         while (i < gameTitleIDs.size()){
-            createAnimeCard(activity, layout, context, i, ref.child(FirebaseUtil.GAME_PATH),
-                    game, gameTitleIDs);
+            createTitleCard(activity, layout, context, i, ref.child(FirebaseUtil.GAME_PATH),
+                    game, gameTitleIDs, R.id.action_dashboard_to_games_description);
             i++;
         }
         loader.setVisibility(View.INVISIBLE);
