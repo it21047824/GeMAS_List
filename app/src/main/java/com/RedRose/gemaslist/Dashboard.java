@@ -153,117 +153,8 @@ public class Dashboard extends Fragment {
                 .setSubtitle(R.string.dashboard);
     }
 
-    public static void createTitleCard(
-            MainActivity activity,
-            LinearLayoutCompat linearLayoutCompat,
-            Context context,
-            int position,
-            DatabaseReference selectedRef,
-            StorageReference storageRef,
-            ArrayList<String> array,
-            int location
-    ) {
-        //create card
-        LayoutParams cardLayoutParams =
-                new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT);
-        cardLayoutParams.setMargins(8,16,16,8);
-
-        MaterialCardView cardView = new MaterialCardView(context);
-        cardView.setLayoutParams(cardLayoutParams);
-        cardView.setPadding(8,8,8,8);
-        cardView.setElevation(5);
-        cardView.setClickable(true);
-        cardView.setFocusable(true);
-
-        //create title
-        LayoutParams textLayoutParams =
-                new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
-
-        TextView titleTextView = new TextView(context);
-        titleTextView.setLayoutParams(textLayoutParams);
-        titleTextView.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 16);
-        titleTextView.setGravity(Gravity.START);
-        titleTextView.setPadding(20,10,5,20);
-
-        //create progress text
-        TextView progressTextView = new TextView(context);
-        progressTextView.setLayoutParams(textLayoutParams);
-        progressTextView.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 12);
-        progressTextView.setGravity(Gravity.CENTER);
-        progressTextView.setPadding(20,5,5,10);
-
-        //create rating text
-        TextView ratingTextView = new TextView(context);
-        ratingTextView.setLayoutParams(textLayoutParams);
-        ratingTextView.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 12);
-        ratingTextView.setGravity(Gravity.CENTER);
-        ratingTextView.setPadding(20,5,5,10);
-
-        //create image
-        LayoutParams imageParams = new LayoutParams(
-                (int) FirebaseUtil.pxFromDp(context,65),
-                (int) FirebaseUtil.pxFromDp(context, 91)
-        );
-
-        ImageView imageView = new ImageView(context);
-        imageView.setLayoutParams(imageParams);
-        imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
-
-        //create text layout
-        LinearLayoutCompat textLayout = new LinearLayoutCompat(context);
-        textLayout.setLayoutParams(textLayoutParams);
-        textLayout.setOrientation(LinearLayoutCompat.VERTICAL);
-        textLayout.addView(titleTextView);
-        textLayout.addView(progressTextView);
-        textLayout.addView(ratingTextView);
-
-        //create card layout
-        LayoutParams cardContentParams =
-                new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
-
-        LinearLayoutCompat cardContent = new LinearLayoutCompat(context);
-        cardContent.setLayoutParams(cardContentParams);
-
-        cardContent.addView(imageView);
-        cardContent.addView(textLayout);
-
-        cardView.addView(cardContent);
-
-        linearLayoutCompat.addView(cardView);
-
-        selectedRef.child(array.get(position)).addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-
-                MainActivity activity = (MainActivity) context;
-                Bundle cardBundle = new Bundle();
-                cardBundle.putString("title_id", snapshot.getKey());
-
-                //set values
-                titleTextView.setText(snapshot.child("title").getValue(String.class));
-
-                //card view on click listener
-                cardView.setOnClickListener((View view) -> {
-                    Navigation.findNavController(activity, R.id.nav_host_fragment)
-                            .navigate(location, cardBundle);
-                });
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-                Log.e("Firebase", error.getMessage());
-            }
-        });
-
-        //get image from cloud storage
-        storageRef.child(array.get(position)).getDownloadUrl().addOnSuccessListener(uri ->
-                Picasso.get().load(uri).into(imageView));
-
-    }
-
-
     public void download(){
-        int i=0;
+        int iterations=1;
         FirebaseStorage st = FirebaseStorage.getInstance();
         StorageReference anime = st.getReference().child("anime_posters");
         StorageReference movie = st.getReference().child("movie_posters");
@@ -272,28 +163,37 @@ public class Dashboard extends Fragment {
 
         DatabaseReference ref = FirebaseUtil.getDB().getReference();
 
-        while (i < animeTitleIDs.size()){
-            createTitleCard(activity, layout, context, i, ref.child(FirebaseUtil.ANIME_PATH)
-                    .child("titles"), anime, animeTitleIDs, R.id.action_dashboard_to_animeSelect);
-            i++;
+        for (int i=0; i<iterations; i++){
+            FirebaseUtil.createTitleCard(activity,
+                    layout,
+                    context,
+                    (animeTitleIDs.size()-1-i),
+                    ref.child(FirebaseUtil.ANIME_PATH).child("titles"),
+                    anime, animeTitleIDs, R.id.action_dashboard_to_animeSelect);
         }
-        i=0;
-        while (i < movieTitleIDs.size()){
-            createTitleCard(activity, layout, context, i, ref.child(FirebaseUtil.MOVIE_PATH),
+        for (int i=0; i<iterations; i++){
+            FirebaseUtil.createTitleCard(activity,
+                    layout,
+                    context,
+                    (movieTitleIDs.size()-1-i),
+                    ref.child(FirebaseUtil.MOVIE_PATH),
                     movie, movieTitleIDs, R.id.action_dashboard_to_movieDescription);
-            i++;
         }
-        i=0;
-        while (i < seriesTitleIDs.size()){
-            createTitleCard(activity, layout, context, i, ref.child(FirebaseUtil.SERIES_PATH),
+        for (int i=0; i<iterations; i++){
+            FirebaseUtil.createTitleCard(activity,
+                    layout,
+                    context,
+                    (seriesTitleIDs.size()-1-i),
+                    ref.child(FirebaseUtil.SERIES_PATH),
                     series, seriesTitleIDs, R.id.action_dashboard_to_series_description);
-            i++;
         }
-        i=0;
-        while (i < gameTitleIDs.size()){
-            createTitleCard(activity, layout, context, i, ref.child(FirebaseUtil.GAME_PATH),
+        for (int i=0; i<iterations; i++){
+            FirebaseUtil.createTitleCard(activity,
+                    layout,
+                    context,
+                    (gameTitleIDs.size()-1-i),
+                    ref.child(FirebaseUtil.GAME_PATH),
                     game, gameTitleIDs, R.id.action_dashboard_to_games_description);
-            i++;
         }
         loader.setVisibility(View.INVISIBLE);
     }

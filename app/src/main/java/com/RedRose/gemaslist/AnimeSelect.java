@@ -6,6 +6,7 @@ import android.graphics.Bitmap;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 
 import android.text.Editable;
@@ -39,6 +40,7 @@ import com.squareup.picasso.Picasso;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+import java.util.Objects;
 
 public class AnimeSelect extends Fragment {
 
@@ -56,7 +58,7 @@ public class AnimeSelect extends Fragment {
     private boolean favourite;
     private int episodes;
     private AutoCompleteTextView dropDownMenu;
-    private MaterialButton saveButton, removeButton;
+    private MaterialButton saveButton, removeButton, editButton;
 
     public AnimeSelect() {
         // Required empty public constructor
@@ -106,36 +108,8 @@ public class AnimeSelect extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_anime_select, container, false);
 
-        //set dropdown menu items
-        List<String> dropDownItems = new ArrayList<>();
-        dropDownItems.add("Watching");
-        dropDownItems.add("Planning");
-        dropDownItems.add("Completed");
-        ArrayAdapter<String> arrayAdapter =
-                new ArrayAdapter<>(getContext(), R.layout.dropdown_item, dropDownItems);
-        dropDownMenu = view.findViewById(R.id.anime_select_status);
-        dropDownMenu.setAdapter(arrayAdapter);
-
-        animeTitleView = view.findViewById(R.id.anime_select_title);
-        animeImageView = view.findViewById(R.id.anime_select_image);
-        animeProgressView = view.findViewById(R.id.anime_select_progress);
-        animeRatingView = view.findViewById(R.id.anime_select_rating);
-        favouriteCheckBoxView = view.findViewById(R.id.anime_select_favourite);
-        animeDescriptionView = view.findViewById(R.id.anime_select_description);
-        averageRatingView = view.findViewById(R.id.anime_select_average_rating);
-        romanjiView = view.findViewById(R.id.anime_romanji_name);
-        progressLayout = view.findViewById(R.id.anime_progress_layout);
-        ratingLayout = view.findViewById(R.id.anime_rating_layout);
-        statusLayout = view.findViewById(R.id.anime_status_layout);
-        loadingIndicator = view.findViewById(R.id.anime_select_loading_indicator);
-        saveButton = view.findViewById(R.id.anime_save_button);
-        removeButton = view.findViewById(R.id.anime_remove_button);
-        MaterialButton editButton = view.findViewById(R.id.anime_edit_title);
-        loadingIndicator.setVisibility(View.VISIBLE);
-        saveButton.setEnabled(false);
-
-        dropDownMenu.setOnItemClickListener(((adapterView, view1, i, l) -> statusLayout.setError(null)));
-        favouriteCheckBoxView.setOnCheckedChangeListener((compoundButton, b) -> favourite = b);
+        //initialize views
+        initialize(view);
 
         Activity activity = getActivity();
 
@@ -217,6 +191,38 @@ public class AnimeSelect extends Fragment {
         });
 
         return view;
+    }
+
+    private void initialize(View view) {
+        List<String> dropDownItems = new ArrayList<>();
+        dropDownItems.add("Watching");
+        dropDownItems.add("Planning");
+        dropDownItems.add("Completed");
+        ArrayAdapter<String> arrayAdapter =
+                new ArrayAdapter<>(getContext(), R.layout.dropdown_item, dropDownItems);
+        dropDownMenu = view.findViewById(R.id.anime_select_status);
+        dropDownMenu.setAdapter(arrayAdapter);
+
+        animeTitleView = view.findViewById(R.id.anime_select_title);
+        animeImageView = view.findViewById(R.id.anime_select_image);
+        animeProgressView = view.findViewById(R.id.anime_select_progress);
+        animeRatingView = view.findViewById(R.id.anime_select_rating);
+        favouriteCheckBoxView = view.findViewById(R.id.anime_select_favourite);
+        animeDescriptionView = view.findViewById(R.id.anime_select_description);
+        averageRatingView = view.findViewById(R.id.anime_select_average_rating);
+        romanjiView = view.findViewById(R.id.anime_romanji_name);
+        progressLayout = view.findViewById(R.id.anime_progress_layout);
+        ratingLayout = view.findViewById(R.id.anime_rating_layout);
+        statusLayout = view.findViewById(R.id.anime_status_layout);
+        loadingIndicator = view.findViewById(R.id.anime_select_loading_indicator);
+        saveButton = view.findViewById(R.id.anime_save_button);
+        removeButton = view.findViewById(R.id.anime_remove_button);
+        editButton = view.findViewById(R.id.anime_edit_title);
+        loadingIndicator.setVisibility(View.VISIBLE);
+        saveButton.setEnabled(false);
+
+        dropDownMenu.setOnItemClickListener(((adapterView, view1, i, l) -> statusLayout.setError(null)));
+        favouriteCheckBoxView.setOnCheckedChangeListener((compoundButton, b) -> favourite = b);
     }
 
     private void removeAnimeUserData(Activity activity) {
@@ -500,5 +506,12 @@ public class AnimeSelect extends Fragment {
                 saveButton.setEnabled(true);
             }
         });
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        Objects.requireNonNull(((AppCompatActivity) requireActivity()).getSupportActionBar())
+                .setSubtitle(R.string.anime);
     }
 }

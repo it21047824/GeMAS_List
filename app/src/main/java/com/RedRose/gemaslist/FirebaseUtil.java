@@ -6,13 +6,20 @@ import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
+import android.os.Bundle;
 import android.util.Log;
 import android.util.TypedValue;
+import android.view.Gravity;
 import android.view.View;
+import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.widget.LinearLayoutCompat;
+import androidx.navigation.Navigation;
 
+import com.google.android.material.card.MaterialCardView;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
@@ -22,6 +29,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
+import com.squareup.picasso.Picasso;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -30,6 +38,7 @@ import org.json.JSONObject;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
 
 public class FirebaseUtil {
     private static final String URL = "https://gemas-list-1662485803384-default-rtdb" +
@@ -196,6 +205,115 @@ public class FirebaseUtil {
         return false;
     }
 
+    public static void createTitleCard(
+            MainActivity activity,
+            LinearLayoutCompat linearLayoutCompat,
+            Context context,
+            int position,
+            DatabaseReference selectedRef,
+            StorageReference storageRef,
+            ArrayList<String> array,
+            int location
+    ) {
+        //create card
+        LinearLayoutCompat.LayoutParams cardLayoutParams =
+                new LinearLayoutCompat.LayoutParams(LinearLayoutCompat.LayoutParams.MATCH_PARENT, LinearLayoutCompat.LayoutParams.WRAP_CONTENT);
+        cardLayoutParams.setMargins(8,16,16,8);
+
+        MaterialCardView cardView = new MaterialCardView(context);
+        cardView.setLayoutParams(cardLayoutParams);
+        cardView.setPadding(8,8,8,8);
+        cardView.setElevation(5);
+        cardView.setClickable(true);
+        cardView.setFocusable(true);
+
+        //create title
+        LinearLayoutCompat.LayoutParams textLayoutParams =
+                new LinearLayoutCompat.LayoutParams(LinearLayoutCompat.LayoutParams.WRAP_CONTENT, LinearLayoutCompat.LayoutParams.WRAP_CONTENT);
+
+        TextView titleTextView = new TextView(context);
+        titleTextView.setLayoutParams(textLayoutParams);
+        titleTextView.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 16);
+        titleTextView.setGravity(Gravity.START);
+        titleTextView.setPadding(20,10,5,20);
+
+        //create progress text
+        TextView progressTextView = new TextView(context);
+        progressTextView.setLayoutParams(textLayoutParams);
+        progressTextView.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 12);
+        progressTextView.setGravity(Gravity.CENTER);
+        progressTextView.setPadding(20,5,5,10);
+
+        //create rating text
+        TextView ratingTextView = new TextView(context);
+        ratingTextView.setLayoutParams(textLayoutParams);
+        ratingTextView.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 12);
+        ratingTextView.setGravity(Gravity.CENTER);
+        ratingTextView.setPadding(20,5,5,10);
+
+        //create image
+        LinearLayoutCompat.LayoutParams imageParams = new LinearLayoutCompat.LayoutParams(
+                (int) FirebaseUtil.pxFromDp(context,65),
+                (int) FirebaseUtil.pxFromDp(context, 91)
+        );
+
+        ImageView imageView = new ImageView(context);
+        imageView.setLayoutParams(imageParams);
+        imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
+
+        //create text layout
+        LinearLayoutCompat textLayout = new LinearLayoutCompat(context);
+        textLayout.setLayoutParams(textLayoutParams);
+        textLayout.setOrientation(LinearLayoutCompat.VERTICAL);
+        textLayout.addView(titleTextView);
+        textLayout.addView(progressTextView);
+        textLayout.addView(ratingTextView);
+
+        //create card layout
+        LinearLayoutCompat.LayoutParams cardContentParams =
+                new LinearLayoutCompat.LayoutParams(LinearLayoutCompat.LayoutParams.WRAP_CONTENT, LinearLayoutCompat.LayoutParams.WRAP_CONTENT);
+
+        LinearLayoutCompat cardContent = new LinearLayoutCompat(context);
+        cardContent.setLayoutParams(cardContentParams);
+
+        cardContent.addView(imageView);
+        cardContent.addView(textLayout);
+
+        cardView.addView(cardContent);
+
+        linearLayoutCompat.addView(cardView);
+
+        selectedRef.child(array.get(position)).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+
+                MainActivity activity = (MainActivity) context;
+                Bundle cardBundle = new Bundle();
+                cardBundle.putString("title_id", snapshot.getKey());
+
+                //set values
+                titleTextView.setText(snapshot.child("title").getValue(String.class));
+
+                //card view on click listener
+                cardView.setOnClickListener((View view) -> {
+                    Navigation.findNavController(activity, R.id.nav_host_fragment)
+                            .navigate(location, cardBundle);
+                });
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                Log.e("Firebase", error.getMessage());
+            }
+        });
+
+        //get image from cloud storage
+        storageRef.child(array.get(position)).getDownloadUrl().addOnSuccessListener(uri ->
+                Picasso.get().load(uri).into(imageView));
+
+    }
+
+
 
 
 
@@ -333,7 +451,7 @@ public class FirebaseUtil {
             }
             return true;
         } catch (JSONException e) {
-            Log.e("Firebase", e.getMessage());
+            Log.e("FirebaseUtil336", e.getMessage());
         }
         return false;
 
