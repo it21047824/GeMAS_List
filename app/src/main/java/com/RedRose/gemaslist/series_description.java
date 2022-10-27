@@ -7,6 +7,20 @@ import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
+import android.widget.ImageView;
+import android.widget.Spinner;
+import android.widget.TextView;
+
+import com.google.android.material.textview.MaterialTextView;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.squareup.picasso.Picasso;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -14,6 +28,9 @@ import android.view.ViewGroup;
  * create an instance of this fragment.
  */
 public class series_description extends Fragment {
+    private View view;
+    private TextView seriesTitle , seriesDescrip ;
+    private ImageView seriesImageView;
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -49,6 +66,7 @@ public class series_description extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         if (getArguments() != null) {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
@@ -58,7 +76,56 @@ public class series_description extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        view = inflater.inflate(R.layout.fragment_series_description, container, false);
+
+        Spinner dropdown = view.findViewById(R.id.spinner2);
+        String [] items = new String[]{"Watching", "Planning","completed"};
+        ArrayAdapter<String> adapter= new ArrayAdapter<>(requireActivity() , android.R.layout.simple_spinner_dropdown_item, items);
+        dropdown.setAdapter(adapter);
+
+
+        String title_id = getArguments().getString("title_id");
+
+        // Get a reference to our posts
+        final FirebaseDatabase database = FirebaseDatabase.getInstance();
+        DatabaseReference ref = database.getReference(FirebaseUtil.SERIES_PATH).child(title_id);
+
+        ref.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                String description = dataSnapshot.child("description").getValue(String.class);
+                String title = dataSnapshot.child("title").getValue(String.class);
+
+                seriesDescrip = view.findViewById(R.id.textViewSeries);
+                seriesDescrip.setText(description);
+
+                seriesTitle = view.findViewById(R.id.seriestile);
+                seriesTitle.setText(title);
+
+                seriesImageView = view.findViewById(R.id.imageViewSeies);
+
+                FirebaseStorage storage = FirebaseStorage.getInstance();
+                StorageReference imageRef = storage.getReference().child("/series_posters").child(title_id);
+                imageRef.getDownloadUrl().addOnSuccessListener(uri ->
+                        Picasso.get().load(uri).into(seriesImageView));
+
+        }
+
+
+
+
+
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                // ...
+            }
+        });
+
+
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_series_description, container, false);
+        return view;
     }
+
+
 }
