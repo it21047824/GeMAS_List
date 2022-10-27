@@ -9,7 +9,6 @@ import androidx.appcompat.widget.LinearLayoutCompat.LayoutParams;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
@@ -30,6 +29,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
+import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -101,8 +101,8 @@ public class AddNewTitle extends AppCompatActivity {
 
         //set preview image params
         LayoutParams linear = new LayoutParams(
-                (int) FirebaseUtil.pxFromDp(context,55),
-                (int) FirebaseUtil.pxFromDp(context, 77)
+                (int) FirebaseUtil.pxFromDp(context,65),
+                (int) FirebaseUtil.pxFromDp(context, 91)
         );
         linear.setMargins(16,16,16,16);
         LayoutParams grid = new LayoutParams(
@@ -208,10 +208,9 @@ public class AddNewTitle extends AppCompatActivity {
 
             FirebaseStorage storage = FirebaseStorage.getInstance();
             StorageReference imageRef = storage.getReference().child("anime_posters").child(title_ID);
-            imageRef.getBytes(FirebaseUtil.ONE_MEGABYTE).addOnSuccessListener(bytes -> {
-                Bitmap poster = FirebaseUtil.byteToBitmap(bytes);
-                linearPreview.setImageBitmap(poster);
-                gridPreview.setImageBitmap(poster);
+            imageRef.getDownloadUrl().addOnSuccessListener(uri -> {
+                Picasso.get().load(uri).into(linearPreview);
+                Picasso.get().load(uri).into(gridPreview);
             });
             deleteButton.setVisibility(View.VISIBLE);
         } else {

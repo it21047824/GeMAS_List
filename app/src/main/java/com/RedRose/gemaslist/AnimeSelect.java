@@ -2,7 +2,6 @@ package com.RedRose.gemaslist;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.graphics.Bitmap;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -114,7 +113,7 @@ public class AnimeSelect extends Fragment {
         Activity activity = getActivity();
 
         //display information
-        getAnimeData(activity);
+        getAnimeData();
 
         //display image
         getAnimeImage();
@@ -176,7 +175,7 @@ public class AnimeSelect extends Fragment {
         });
 
         //save data on button click
-        saveButton.setOnClickListener(buttonView -> saveAnimeUserData(activity));
+        saveButton.setOnClickListener(buttonView -> saveAnimeUserData());
 
         //remove from list
         removeButton.setOnClickListener(removeView -> removeAnimeUserData(activity));
@@ -295,7 +294,7 @@ public class AnimeSelect extends Fragment {
 
     }
 
-    private void saveAnimeUserData(Activity activity) {
+    private void saveAnimeUserData() {
         saveButton.setEnabled(false);
         loadingIndicator.setVisibility(View.VISIBLE);
 
@@ -460,7 +459,7 @@ public class AnimeSelect extends Fragment {
                 Picasso.get().load(uri).into(animeImageView));
     }
 
-    private void getAnimeData(Activity activity) {
+    private void getAnimeData() {
         DatabaseReference selectRef = FirebaseUtil.getDB().getReference("anime_titles/titles")
                 .child(title_id);
         selectRef.addListenerForSingleValueEvent(new ValueEventListener() {

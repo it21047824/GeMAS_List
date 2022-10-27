@@ -3,8 +3,6 @@ package com.RedRose.gemaslist;
 import android.app.Activity;
 import android.content.Context;
 import android.content.res.Resources;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
@@ -35,9 +33,6 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
 import java.util.ArrayList;
 
 public class FirebaseUtil {
@@ -206,7 +201,6 @@ public class FirebaseUtil {
     }
 
     public static void createTitleCard(
-            MainActivity activity,
             LinearLayoutCompat linearLayoutCompat,
             Context context,
             int position,
@@ -237,20 +231,6 @@ public class FirebaseUtil {
         titleTextView.setGravity(Gravity.START);
         titleTextView.setPadding(20,10,5,20);
 
-        //create progress text
-        TextView progressTextView = new TextView(context);
-        progressTextView.setLayoutParams(textLayoutParams);
-        progressTextView.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 12);
-        progressTextView.setGravity(Gravity.CENTER);
-        progressTextView.setPadding(20,5,5,10);
-
-        //create rating text
-        TextView ratingTextView = new TextView(context);
-        ratingTextView.setLayoutParams(textLayoutParams);
-        ratingTextView.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 12);
-        ratingTextView.setGravity(Gravity.CENTER);
-        ratingTextView.setPadding(20,5,5,10);
-
         //create image
         LinearLayoutCompat.LayoutParams imageParams = new LinearLayoutCompat.LayoutParams(
                 (int) FirebaseUtil.pxFromDp(context,65),
@@ -266,12 +246,11 @@ public class FirebaseUtil {
         textLayout.setLayoutParams(textLayoutParams);
         textLayout.setOrientation(LinearLayoutCompat.VERTICAL);
         textLayout.addView(titleTextView);
-        textLayout.addView(progressTextView);
-        textLayout.addView(ratingTextView);
 
         //create card layout
         LinearLayoutCompat.LayoutParams cardContentParams =
-                new LinearLayoutCompat.LayoutParams(LinearLayoutCompat.LayoutParams.WRAP_CONTENT, LinearLayoutCompat.LayoutParams.WRAP_CONTENT);
+                new LinearLayoutCompat.LayoutParams(LinearLayoutCompat.LayoutParams.WRAP_CONTENT,
+                        LinearLayoutCompat.LayoutParams.WRAP_CONTENT);
 
         LinearLayoutCompat cardContent = new LinearLayoutCompat(context);
         cardContent.setLayoutParams(cardContentParams);
@@ -295,10 +274,8 @@ public class FirebaseUtil {
                 titleTextView.setText(snapshot.child("title").getValue(String.class));
 
                 //card view on click listener
-                cardView.setOnClickListener((View view) -> {
-                    Navigation.findNavController(activity, R.id.nav_host_fragment)
-                            .navigate(location, cardBundle);
-                });
+                cardView.setOnClickListener((View view) -> Navigation.findNavController(activity,
+                                R.id.nav_host_fragment).navigate(location, cardBundle));
             }
 
             @Override
@@ -350,29 +327,6 @@ public class FirebaseUtil {
 
 
     //util methods
-    //code snippet from
-    //https://colinyeoh.wordpress.com/2012/05/18/android-convert-image-uri-to-byte-array/
-    public static byte[] uriToBytes(Context context, Uri uri) {
-        InputStream inputStream;
-        byte[] data = null;
-        try {
-            inputStream = context.getContentResolver().openInputStream(uri);
-            Bitmap bitmap = BitmapFactory.decodeStream(inputStream);
-            ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, outputStream);
-            data = outputStream.toByteArray();
-            inputStream.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return data;
-    }
-    //end of code snippet
-
-    public static Bitmap byteToBitmap(byte[] bytes) {
-        return BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
-    }
-
     public static float pxFromDp(Context context, float dip) {
         Resources resources = context.getResources();
         return TypedValue.applyDimension(
@@ -447,7 +401,7 @@ public class FirebaseUtil {
         return finalDataString;
     }
 
-    public static boolean JSONStringToUserdata(String json) {
+    public static void JSONStringToUserdata(String json) {
         JSONObject retrievedData;
         JSONArray dataArray;
         AnimeUserData userData = AnimeUserData.getAnimeUserData();
@@ -479,11 +433,9 @@ public class FirebaseUtil {
                         break;
                 }
             }
-            return true;
         } catch (JSONException e) {
             Log.e("FirebaseUtil336", e.getMessage());
         }
-        return false;
 
     }
 }
