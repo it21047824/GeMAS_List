@@ -10,11 +10,13 @@ import android.view.View;
 import android.view.ViewGroup;
 //import android.support.v7.app.AppCompatActivity;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.google.android.material.textview.MaterialTextView;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -32,6 +34,7 @@ public class MovieDescription extends Fragment {
     private TextView descriptionView;
     private TextView movieTitle;
     private ImageView movieImageView;
+    private Button saveBtn;
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -77,6 +80,19 @@ public class MovieDescription extends Fragment {
 
         });
 
+        saveBtn = view.findViewById(R.id.Savebutton5);
+
+        saveBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                String uid = FirebaseAuth.getInstance().getUid();
+                DatabaseReference reference = FirebaseUtil.getDB()
+                        .getReference(FirebaseUtil.USERDATA).child(uid).child("movies");
+                reference.setValue(MovieUserData.userdataToJSON());
+
+
+            }
+        });
         return view;
     }
 

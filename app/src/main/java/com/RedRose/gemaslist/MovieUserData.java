@@ -124,4 +124,71 @@ public class MovieUserData {
 
     }
 
+
+    public static String userdataToJSON() {
+        MovieUserData currentData = MovieUserData.getMovieUserData();
+        JSONArray dataArray = new JSONArray();
+
+        CustomLinkList watching = currentData.getWatchingList();
+        CustomLinkList planning = currentData.getPlanningList();
+        CustomLinkList completed = currentData.getCompletedList();
+
+        //get all data from watching list
+        for(int i=0; i<watching.size(); i++){
+            JSONObject obj = new JSONObject();
+            try {
+                obj.put("TITLE", watching.getItem(i).title);
+                obj.put("STATUS", watching.getItem(i).status);
+                obj.put("RATING", watching.getItem(i).rating);
+                obj.put("PROGRESS", watching.getItem(i).progress);
+                obj.put("FAVOURITE", watching.getItem(i).favourite);
+                dataArray.put(obj);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+
+        //get all data from planning list
+        for(int i=0; i<planning.size(); i++){
+            JSONObject obj = new JSONObject();
+            try {
+                obj.put("TITLE", planning.getItem(i).title);
+                obj.put("STATUS", planning.getItem(i).status);
+                obj.put("RATING", planning.getItem(i).rating);
+                obj.put("PROGRESS", planning.getItem(i).progress);
+                obj.put("FAVOURITE", planning.getItem(i).favourite);
+                dataArray.put(obj);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+
+        //get all data from completed list
+        for(int i=0; i<completed.size(); i++){
+            JSONObject obj = new JSONObject();
+            try {
+                obj.put("TITLE", completed.getItem(i).title);
+                obj.put("STATUS", completed.getItem(i).status);
+                obj.put("RATING", completed.getItem(i).rating);
+                obj.put("PROGRESS", completed.getItem(i).progress);
+                obj.put("FAVOURITE", completed.getItem(i).favourite);
+                dataArray.put(obj);
+            } catch (JSONException e) {
+                e.printStackTrace();
+                Log.e("Azure", e.getMessage());
+            }
+        }
+
+        JSONObject finalData = new JSONObject();
+        String finalDataString = null;
+        try {
+            finalData.put("DATA", dataArray);
+            finalDataString = finalData.toString();
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        return finalDataString;
+    }
+
 }
