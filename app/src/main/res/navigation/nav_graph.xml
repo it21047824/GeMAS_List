@@ -12,7 +12,32 @@
         tools:layout="@layout/fragment_dashboard" >
         <action
             android:id="@+id/action_dashboard_to_animeSelect"
-            app:destination="@id/animeSelect" />
+            app:destination="@id/animeSelect"
+            app:enterAnim="@anim/slide_in"
+            app:exitAnim="@anim/fade_out"
+            app:popEnterAnim="@anim/fade_in"
+            app:popExitAnim="@anim/slide_out" />
+        <action
+            android:id="@+id/action_dashboard_to_movieDescription"
+            app:destination="@id/movieDescription"
+            app:enterAnim="@anim/slide_in"
+            app:exitAnim="@anim/fade_out"
+            app:popEnterAnim="@anim/fade_in"
+            app:popExitAnim="@anim/slide_out"  />
+        <action
+            android:id="@+id/action_dashboard_to_series_description"
+            app:destination="@id/series_description"
+            app:enterAnim="@anim/slide_in"
+            app:exitAnim="@anim/fade_out"
+            app:popEnterAnim="@anim/fade_in"
+            app:popExitAnim="@anim/slide_out"  />
+        <action
+            android:id="@+id/action_dashboard_to_games_description"
+            app:destination="@id/games_description"
+            app:enterAnim="@anim/slide_in"
+            app:exitAnim="@anim/fade_out"
+            app:popEnterAnim="@anim/fade_in"
+            app:popExitAnim="@anim/slide_out"  />
     </fragment>
     <fragment
         android:id="@+id/animeList"
