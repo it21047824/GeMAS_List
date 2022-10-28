@@ -5,9 +5,11 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
@@ -27,9 +29,11 @@ public class MovieStats extends Fragment {
     private View view;
     private ArrayList<String> movieIds;
     private ArrayList<String> movieRatings;
-    private int totalMovies = 0;
+    private int allMovies = 0;
     private double movieRatingAvg = 0.0;
     private double totalMovieRating = 0.0;
+    private TextView TotalMovies;
+    private TextView avgRatings;
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -74,10 +78,13 @@ public class MovieStats extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        view = inflater.inflate(R.layout.fragment_movie_stats, container, false);
+        TotalMovies = view.findViewById(R.id.TotalMovies);
+        avgRatings = view.findViewById(R.id.avgRatings);
         movieIds = new ArrayList<>();
         movieRatings = new ArrayList<>();
         // Inflate the layout for this fragment
-        view = inflater.inflate(R.layout.fragment_movie_stats, container, false);
+
         String uid = FirebaseAuth.getInstance().getUid();
         DatabaseReference reference = FirebaseUtil.getDB()
                 .getReference(FirebaseUtil.USERDATA).child(uid).child("movies");
@@ -89,12 +96,21 @@ public class MovieStats extends Fragment {
                     movieIds.add(d.getKey());
                     movieRatings.add(d.child("rating").getValue(String.class));
                 }
-                totalMovies = movieIds.size();
+                allMovies = movieIds.size();
                 for(String s:movieRatings){
-                    totalMovieRating +=Integer.parseInt(s);
+                    try {
+                        totalMovieRating +=Integer.parseInt(s);
+                    }catch (Exception e){
+                        Log.d("MovieStats 104" , e.getMessage());
+                    }
+
                 }
+                TotalMovies.setText(""+allMovies);
+                avgRatings.setText(""+totalMovieRating);
 
             }
+
+
 
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
