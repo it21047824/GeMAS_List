@@ -46,7 +46,7 @@ public class series_description extends Fragment {
         // Required empty public constructor
     }
 
-    public static series_description newInstance(String param1, String param2) {
+    public static series_description newInstance() {
         return new series_description();
     }
 

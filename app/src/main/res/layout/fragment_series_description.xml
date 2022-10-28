@@ -39,7 +39,7 @@
 
         <ImageView
             android:id="@+id/imageViewSeries"
-            android:layout_width="167dp"
+            android:layout_width="168dp"
             android:layout_height="122dp"
             android:scaleType="centerCrop"
             android:contentDescription="@string/series_desc" />
