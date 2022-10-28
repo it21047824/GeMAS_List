@@ -2,11 +2,20 @@ package com.RedRose.gemaslist;
 
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.ValueEventListener;
+
+import java.util.ArrayList;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -16,6 +25,8 @@ import android.view.ViewGroup;
 public class MovieStats extends Fragment {
 
     private View view;
+    private ArrayList<String> movieIds;
+    private ArrayList<String> movieRatings;
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -60,8 +71,27 @@ public class MovieStats extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        movieIds = new ArrayList<>();
         // Inflate the layout for this fragment
         view = inflater.inflate(R.layout.fragment_movie_stats, container, false);
+        String uid = FirebaseAuth.getInstance().getUid();
+        DatabaseReference reference = FirebaseUtil.getDB()
+                .getReference(FirebaseUtil.USERDATA).child(uid).child("movies");
+
+        reference.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                for(DataSnapshot d: snapshot.getChildren()){
+                    movieIds.add(d.getKey());
+                }
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
         return view;
     }
 
