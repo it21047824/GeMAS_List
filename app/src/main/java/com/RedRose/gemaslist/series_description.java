@@ -37,7 +37,7 @@ public class series_description extends Fragment {
     private View view;
     private TextView seriesTitle , seriesDescrip ;
     private ImageView seriesImageView;
-    private Button saveButton;
+    private Button saveButton , removeButton;
     private int status , progress , rating ,MovieRating ;
     private EditText SeriesRatingView;
     private Spinner dropDown;
@@ -94,7 +94,7 @@ public class series_description extends Fragment {
 
         view = inflater.inflate(R.layout.fragment_series_description, container, false);
 
-
+        removeButton = view.findViewById(R.id.RemoveButton);
 
 
         String title_id = getArguments().getString("title_id");
@@ -139,6 +139,16 @@ public class series_description extends Fragment {
                 DatabaseReference reference = FirebaseUtil.getDB()
                         .getReference(FirebaseUtil.USERDATA).child(uid).child("series").child(title_id);
                 reference.setValue(title_id);
+            }
+        });
+
+        removeButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                String uid = FirebaseAuth.getInstance().getUid();
+                DatabaseReference reference = FirebaseUtil.getDB()
+                        .getReference(FirebaseUtil.USERDATA).child(uid).child("series").child(title_id);
+                reference.removeValue();
             }
         });
 
