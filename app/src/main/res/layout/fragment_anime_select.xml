@@ -10,8 +10,8 @@
         android:id="@+id/anime_select_loading_indicator"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:visibility="invisible"
-        android:indeterminate="true" />
+        android:indeterminate="true"
+        android:visibility="invisible" />
 
     <androidx.appcompat.widget.LinearLayoutCompat
         android:layout_width="match_parent"

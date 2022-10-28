@@ -157,11 +157,6 @@ public class MovieStats extends Fragment {
                 TotalMovies.setText(""+allMovies);
                 avgRatings.setText(""+totalMovieRating);
 
-
-
-
-
-                ///////////////////////////////////////////////////
                 createBarGraph(barGraphContainer,barGraphView,ratingFrequencies,R.color.main_theme,1.5f);
             }
 
@@ -170,10 +165,6 @@ public class MovieStats extends Fragment {
 
             }
         });
-
-        //////////////////////////////////////////////////////////////////////////////
-
-    ////////////////////////////////////////////////////////////////////////////////////////////
 
         return view;
     }

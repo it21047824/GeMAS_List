@@ -1,6 +1,9 @@
 package com.RedRose.gemaslist;
 
+import static com.firebase.ui.auth.AuthUI.getApplicationContext;
+
 import android.app.Activity;
+import android.content.Context;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -18,6 +21,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.textfield.TextInputEditText;
@@ -109,6 +113,15 @@ public class MovieDescription extends Fragment {
                 DatabaseReference reference = FirebaseUtil.getDB()
                         .getReference(FirebaseUtil.USERDATA).child(uid).child("movies").child(title_id);
                 reference.setValue(title_id);
+
+                ///////////////////////////////////////////
+                Context context = getActivity(); //The context to use. Usually your Application or Activity object
+                CharSequence message = "Saved";//Display string
+                int duration = Toast.LENGTH_SHORT; //How long the toast message will lasts
+                Toast toast = Toast.makeText(context,message,duration);
+                toast.show();
+                /////////////////////////////////////////////
+
                 String rating = MovieRating.getText().toString();
                 reference.child("rating").setValue(rating);
 
