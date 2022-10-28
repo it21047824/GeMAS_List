@@ -14,6 +14,7 @@ import java.util.UUID;
 public class ImageCropper extends AppCompatActivity {
 
     private Uri uri;
+    private String type;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -23,10 +24,18 @@ public class ImageCropper extends AppCompatActivity {
         readIntentData();
 
         String destinationUri = UUID.randomUUID().toString() + ".jpg";
-        UCrop.of(uri, Uri.fromFile(new File(getCacheDir(),destinationUri)))
-                .withAspectRatio(5,7)
-                .withMaxResultSize(330, 370)
-                .start(ImageCropper.this);
+        if (type != null) {
+            if (type.equals("banner")){
+                UCrop.of(uri, Uri.fromFile(new File(getCacheDir(),destinationUri)))
+                        .withAspectRatio(35,18)
+                        .start(ImageCropper.this);
+            }
+        } else {
+            UCrop.of(uri, Uri.fromFile(new File(getCacheDir(),destinationUri)))
+                    .withAspectRatio(5,7)
+                    .withMaxResultSize(330, 370)
+                    .start(ImageCropper.this);
+        }
     }
 
     private void readIntentData() {
@@ -34,6 +43,7 @@ public class ImageCropper extends AppCompatActivity {
         if(intent.getExtras() != null) {
             String uriString = intent.getStringExtra("DATA");
             uri = Uri.parse(uriString);
+            type = intent.getStringExtra("TYPE");
         }
     }
 

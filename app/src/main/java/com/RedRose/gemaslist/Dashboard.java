@@ -54,7 +54,6 @@ public class Dashboard extends Fragment {
         View view = inflater.inflate(R.layout.fragment_dashboard, container, false);
 
         context = getContext();
-        MainActivity activity = (MainActivity) context;
 
         layout = view.findViewById(R.id.show_anime);
         loader = view.findViewById(R.id.loader);

@@ -30,6 +30,8 @@ import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.textview.MaterialTextView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 import com.squareup.picasso.Picasso;
 
 import java.util.Stack;
@@ -65,9 +67,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         drawerLayout = findViewById(R.id.drawerLayout);
         NavigationView navigationView = findViewById(R.id.navDrawer);
         MaterialButton searchButton = findViewById(R.id.appbar_search_button);
+
+        //get navigation drawer header
         View navDrawerHeader = navigationView.getHeaderView(0);
         MaterialTextView navDrawerUsername = navDrawerHeader.findViewById(R.id.nav_profile_name);
         ImageView navDrawerProfile = navDrawerHeader.findViewById(R.id.nav_profile_image);
+        ImageView navDrawerBanner = navDrawerHeader.findViewById(R.id.nav_banner_image);
 
         if(userName != null) {
             navDrawerUsername.setText(userName);
@@ -79,6 +84,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         } else {
             navDrawerProfile.setImageResource(R.drawable.placeholder_image);
         }
+        StorageReference bannerRef = FirebaseStorage.getInstance().getReference()
+                .child("user_banners").child(user.getUid());
+        bannerRef.getDownloadUrl().addOnSuccessListener(uri ->
+                Picasso.get().load(uri).into(navDrawerBanner));
+
 
         //set action bar and nav drawer
         ActionBarDrawerToggle actionBarDrawerToggle = new ActionBarDrawerToggle(
