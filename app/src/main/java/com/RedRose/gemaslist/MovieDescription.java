@@ -54,9 +54,11 @@ public class MovieDescription extends Fragment {
         final FirebaseDatabase database = FirebaseDatabase.getInstance();
         String title_id = getArguments().getString("title_id");
         DatabaseReference ref = database.getReference(FirebaseUtil.MOVIE_PATH).child(title_id);
+        //get data
         ref.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
+                //get all movies -> snapshot.getChildren()
                 String title = snapshot.child("title").getValue(String.class);
                 String description = snapshot.child("description").getValue(String.class);//return value
 
@@ -87,7 +89,7 @@ public class MovieDescription extends Fragment {
             public void onClick(View view) {
                 String uid = FirebaseAuth.getInstance().getUid();
                 DatabaseReference reference = FirebaseUtil.getDB()
-                        .getReference(FirebaseUtil.USERDATA).child(uid).child("movies");
+                        .getReference(FirebaseUtil.USERDATA).child(uid).child("movies").child(title_id);
                 reference.setValue(title_id);
 
 
