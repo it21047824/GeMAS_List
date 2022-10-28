@@ -50,6 +50,9 @@ public class MovieDescription extends Fragment {
         view = inflater.inflate(R.layout.fragment_movie_description, container, false);
         MovieRating = view.findViewById(R.id.editRating);
         removeButton = view.findViewById(R.id.removeBtn);
+        descriptionView = view.findViewById(R.id.movieDescriptiontextView);
+        movieTitle = view.findViewById(R.id.MovieTitletextView);
+        movieImageView = view.findViewById(R.id.MovieimageView2);
 
         final FirebaseDatabase database = FirebaseDatabase.getInstance();
         String title_id = getArguments().getString("title_id");
@@ -62,10 +65,6 @@ public class MovieDescription extends Fragment {
                 String title = snapshot.child("title").getValue(String.class);
                 String description = snapshot.child("description").getValue(String.class);//return value
 
-                descriptionView = view.findViewById(R.id.movieDescriptiontextView);
-                movieTitle = view.findViewById(R.id.MovieTitletextView);
-                movieImageView = view.findViewById(R.id.MovieimageView2);
-
                 descriptionView.setText(description);
                 movieTitle.setText(title);
 
@@ -75,6 +74,7 @@ public class MovieDescription extends Fragment {
                         Picasso.get().load(uri).into(movieImageView));
             }
 
+
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
 
@@ -82,6 +82,21 @@ public class MovieDescription extends Fragment {
 
         });
 
+        String uid = FirebaseAuth.getInstance().getUid();
+        DatabaseReference reference = FirebaseUtil.getDB()
+                .getReference(FirebaseUtil.USERDATA).child(uid).child("movies").child(title_id);
+        reference.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                String rating = snapshot.child("rating").getValue(String.class);
+                MovieRating.setText(rating);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
         saveBtn = view.findViewById(R.id.Savebutton5);
 
         saveBtn.setOnClickListener(new View.OnClickListener() {
@@ -91,8 +106,20 @@ public class MovieDescription extends Fragment {
                 DatabaseReference reference = FirebaseUtil.getDB()
                         .getReference(FirebaseUtil.USERDATA).child(uid).child("movies").child(title_id);
                 reference.setValue(title_id);
+                String rating = MovieRating.getText().toString();
+                reference.child("rating").setValue(rating);
 
 
+            }
+        });
+
+        removeButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                String uid = FirebaseAuth.getInstance().getUid();
+                DatabaseReference reference = FirebaseUtil.getDB()
+                        .getReference(FirebaseUtil.USERDATA).child(uid).child("movies").child(title_id);
+                reference.removeValue();
             }
         });
 
