@@ -2,11 +2,23 @@ package com.RedRose.gemaslist;
 
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
+
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.ValueEventListener;
+
+import java.util.ArrayList;
+
 
 /**
  * A simple {@link Fragment} subclass.
@@ -15,6 +27,13 @@ import android.view.ViewGroup;
  */
 public class SeriesStats extends Fragment {
     private View view;
+    private ArrayList<String> seriesId;
+    private  ArrayList <String> seriesRatings;
+    private int allSeries;
+    private double seriesratingAvg =  0.0;
+    private double totalSereisRating = 0.0;
+    private TextView TotalSeries, AvgSeries;
+
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -61,6 +80,45 @@ public class SeriesStats extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         view = inflater.inflate(R.layout.fragment_series_stats, container, false);
+
+        TotalSeries = view.findViewById(R.id.SeriesTotal);
+        AvgSeries = view.findViewById(R.id.SeriesAVG);
+        seriesId = new ArrayList<>();
+        seriesRatings = new ArrayList<>();
+        //Inflate the layout for this fragment
+
+        String uid = FirebaseAuth.getInstance().getUid();
+        DatabaseReference reference = FirebaseUtil.getDB()
+                .getReference(FirebaseUtil.USERDATA).child(uid).child("sseries");
+        reference.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+
+                for (DataSnapshot d: snapshot.getChildren()){
+                    seriesId.add(d.getKey());
+                    seriesRatings.add(d.child("rating").getValue(String.class));
+
+                }
+                allSeries = seriesId.size();
+                for (String s : seriesRatings){
+                    try {
+                        totalSereisRating += Integer.parseInt(s);
+                    }catch (Exception e){
+                        Log.d("Movie Stats Not Found" , e.getMessage());
+                    }
+                }
+
+                TotalSeries.setText(""+ allSeries);
+                AvgSeries.setText(""+totalSereisRating);
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+
         return view;
     }
 
