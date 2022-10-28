@@ -99,19 +99,9 @@ public class SeriesList extends Fragment {
 //        MaterialButton button = view.findViewById(R.id.button5);
 //        button.setOnClickListener(v -> Navigation.findNavController(requireActivity(), R.id.nav_host_fragment)
 //                .navigate(R.id.action_series_to_series_description));
-
-        view = inflater.inflate(R.layout.fragment_series_description, container, false);
-
-
-
-
-        String title_id = getArguments().getString("title_id");
-
         // Get a reference to our posts
         //final FirebaseDatabase database = FirebaseDatabase.getInstance();
         //DatabaseReference ref = database.getReference(FirebaseUtil.SERIES_PATH).child(title_id);
-
-        View finalView = view;
         reference.addListenerForSingleValueEvent(new ValueEventListener () {
             @Override
             public void onDataChange(DataSnapshot snapshot) {
@@ -121,8 +111,18 @@ public class SeriesList extends Fragment {
                 }
                 for (String s :seriesIds ){
                     View listItem = inflater.inflate(R.layout.serieslistone,null);
-                    ImageView seriesListimg = listItem.findViewById(R.id.loopimage);
-                    TextView seriestextview = listItem.findViewById(R.id.looptext);
+                    listItem.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            Bundle cardBundle = new Bundle();
+                            cardBundle.putString("title_id", s);
+
+                            Navigation.findNavController(requireActivity(), R.id.nav_host_fragment)
+                                    .navigate(R.id.action_series_to_series_description, cardBundle);
+                        }
+                    });
+                    ImageView seriesListImg = listItem.findViewById(R.id.loopimage);
+                    TextView seriesTextView = listItem.findViewById(R.id.looptext);
 
 
                     DatabaseReference ref = FirebaseUtil.getDB().getReference(FirebaseUtil.SERIES_PATH).child(s);
@@ -133,12 +133,12 @@ public class SeriesList extends Fragment {
                             //get all series
                             String title = snapshot.child("title").getValue(String.class);
 
-                            seriestextview.setText(title);
+                            seriesTextView.setText(title);
 
                             FirebaseStorage storage = FirebaseStorage.getInstance();
                             StorageReference imageRef = storage.getReference().child("series_posters").child(s);
                             imageRef.getDownloadUrl().addOnSuccessListener(uri ->
-                                    Picasso.get().load(uri).into(seriesListimg));
+                                    Picasso.get().load(uri).into(seriesListImg));
                             serieslayout.addView(listItem);
                         }
 

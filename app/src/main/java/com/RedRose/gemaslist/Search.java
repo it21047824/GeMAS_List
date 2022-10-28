@@ -89,14 +89,16 @@ public class Search extends Fragment {
         seriesLayout.removeAllViews();
         gameLayout.removeAllViews();
 
+        animeTitleIDs.clear();
+        movieTitleIDs.clear();
+        seriesTitleIDs.clear();
+        gameTitleIDs.clear();
+
         if(input.length()>0){
             searchProgress.setVisibility(View.VISIBLE);
             String search = input.toString().toLowerCase(Locale.US);
 
-            animeTitleIDs.clear();
-            movieTitleIDs.clear();
-            seriesTitleIDs.clear();
-            gameTitleIDs.clear();
+
 
             //get results
             DatabaseReference animeListRef = FirebaseUtil.getDB()
