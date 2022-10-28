@@ -1,18 +1,24 @@
 package com.RedRose.gemaslist;
 
+import android.app.Activity;
+import android.app.MediaRouteButton;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.google.android.material.textview.MaterialTextView;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -31,6 +37,15 @@ public class series_description extends Fragment {
     private View view;
     private TextView seriesTitle , seriesDescrip ;
     private ImageView seriesImageView;
+    private Button saveButton;
+    private int status , progress , rating ,MovieRating ;
+    private EditText SeriesRatingView;
+    private Spinner dropDown;
+    private  AnimeDataEntry dataEntry;
+    private boolean favourite;
+    private AnimeUserData userData;
+    private String title_id;
+
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -76,12 +91,10 @@ public class series_description extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+
         view = inflater.inflate(R.layout.fragment_series_description, container, false);
 
-        Spinner dropdown = view.findViewById(R.id.spinner2);
-        String [] items = new String[]{"Watching", "Planning","completed"};
-        ArrayAdapter<String> adapter= new ArrayAdapter<>(requireActivity() , android.R.layout.simple_spinner_dropdown_item, items);
-        dropdown.setAdapter(adapter);
+
 
 
         String title_id = getArguments().getString("title_id");
@@ -122,10 +135,20 @@ public class series_description extends Fragment {
             }
         });
 
+        saveButton = view.findViewById(R.id.savebuttonseries);
+        saveButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                String uid = FirebaseAuth.getInstance().getUid();
+                DatabaseReference reference = FirebaseUtil.getDB()
+                        .getReference(FirebaseUtil.USERDATA).child(uid).child("series").child(title_id);
+                reference.setValue(title_id);
+            }
+        });
+
 
         // Inflate the layout for this fragment
-        return view;
-    }
+        return view;}
 
 
 }

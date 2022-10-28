@@ -71,6 +71,9 @@ public class SeriesList extends Fragment {
         button.setOnClickListener(v -> Navigation.findNavController(requireActivity(), R.id.nav_host_fragment)
                 .navigate(R.id.action_series_to_series_description));
 
+
+
+
         return view;
     }
 
