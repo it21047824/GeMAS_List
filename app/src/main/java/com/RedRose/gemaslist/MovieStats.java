@@ -27,6 +27,9 @@ public class MovieStats extends Fragment {
     private View view;
     private ArrayList<String> movieIds;
     private ArrayList<String> movieRatings;
+    private int totalMovies = 0;
+    private double movieRatingAvg = 0.0;
+    private double totalMovieRating = 0.0;
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -72,6 +75,7 @@ public class MovieStats extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         movieIds = new ArrayList<>();
+        movieRatings = new ArrayList<>();
         // Inflate the layout for this fragment
         view = inflater.inflate(R.layout.fragment_movie_stats, container, false);
         String uid = FirebaseAuth.getInstance().getUid();
@@ -83,6 +87,11 @@ public class MovieStats extends Fragment {
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 for(DataSnapshot d: snapshot.getChildren()){
                     movieIds.add(d.getKey());
+                    movieRatings.add(d.child("rating").getValue(String.class));
+                }
+                totalMovies = movieIds.size();
+                for(String s:movieRatings){
+                    totalMovieRating +=Integer.parseInt(s);
                 }
 
             }
