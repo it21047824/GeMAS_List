@@ -39,31 +39,17 @@ public class MovieDescription extends Fragment {
     private TextView descriptionView;
     private TextView movieTitle;
     private ImageView movieImageView;
-    private Button saveBtn,removeButton;
+    private Button saveBtn, removeButton;
     private EditText MovieRating;
-    private Spinner dropDownMenu;
-    private AnimeDataEntry dataEntry;
-    private MovieUserData userData;
     private boolean favourite;
     private String title_id;
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        view =  inflater.inflate(R.layout.fragment_movie_description, container, false);
-        dropDownMenu = view.findViewById(R.id.spinner2);
+        view = inflater.inflate(R.layout.fragment_movie_description, container, false);
         MovieRating = view.findViewById(R.id.editRating);
         removeButton = view.findViewById(R.id.removeBtn);
-
-        //get the spinner from the xml.
-        Spinner dropdown = view.findViewById(R.id.spinner2);
-        //create a list of items for the spinner.
-        String[] items = new String[]{"Planing", "Completed", "Watching"};
-        //create an adapter to describe how the items are displayed, adapters are used in several places in android.
-        //There are multiple variations of this, but this is the basic variant.
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(requireActivity(), android.R.layout.simple_spinner_dropdown_item, items);
-        //set the spinners adapter to the previously created one.
-        dropdown.setAdapter(adapter);
 
         final FirebaseDatabase database = FirebaseDatabase.getInstance();
         String title_id = getArguments().getString("title_id");
@@ -72,7 +58,7 @@ public class MovieDescription extends Fragment {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 String title = snapshot.child("title").getValue(String.class);
-                String description =  snapshot.child("description").getValue(String.class);//return value
+                String description = snapshot.child("description").getValue(String.class);//return value
 
                 descriptionView = view.findViewById(R.id.movieDescriptiontextView);
                 movieTitle = view.findViewById(R.id.MovieTitletextView);
@@ -102,9 +88,7 @@ public class MovieDescription extends Fragment {
                 String uid = FirebaseAuth.getInstance().getUid();
                 DatabaseReference reference = FirebaseUtil.getDB()
                         .getReference(FirebaseUtil.USERDATA).child(uid).child("movies");
-                reference.setValue(MovieUserData.userdataToJSON());
-
-
+                reference.setValue(title_id);
 
 
             }
@@ -112,67 +96,8 @@ public class MovieDescription extends Fragment {
 
         return view;
     }
-    private void saveAnimeUserData(Activity activity) {
+}
 
-        saveBtn.setEnabled(false);
-
-        int status = -1;
-        //int rating = MovieRating;
-
-
-        String statusInput = dropDownMenu.getSelectedItem().toString();
-        switch(statusInput){
-            case "Watching":
-                status = FirebaseUtil.WATCHING;
-                break;
-            case "Planning":
-                status = FirebaseUtil.PLANNING;
-                break;
-            case "Completed":
-                status = FirebaseUtil.COMPLETED;
-                break;
-        }
-        if(status != dataEntry.status
-                || favourite != dataEntry.favourite)
-        {
-            if(favourite != dataEntry.favourite){
-                dataEntry.favourite = favourite;
-            }
-            dataEntry.status = status;
-
-            //remove entry from current list
-            boolean removeRes = userData.remove(title_id);
-
-            //add to correct place
-            String message=null;
-            if(removeRes){
-                message = "Saved";
-            } else {
-                message = "Added to list";
-            }
-
-            switch(status) {
-                case FirebaseUtil.WATCHING:
-                    userData.getWatchingList().addItem(dataEntry);
-                    break;
-                case FirebaseUtil.PLANNING:
-                    userData.getPlanningList().addItem(dataEntry);
-                    break;
-                case FirebaseUtil.COMPLETED:
-                    userData.getCompletedList().addItem(dataEntry);
-                    break;
-            }
-        }
-
-        //upload changes to database
-        String uid = FirebaseAuth.getInstance().getUid();
-        DatabaseReference reference = FirebaseUtil.getDB()
-                .getReference(FirebaseUtil.USERDATA);
-
-
-        }
-
-    }
 
 
 

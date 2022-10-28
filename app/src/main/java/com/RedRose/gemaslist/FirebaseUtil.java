@@ -290,42 +290,6 @@ public class FirebaseUtil {
 
     }
 
-
-
-    public static boolean getMovieUserData() {
-        String uid = FirebaseAuth.getInstance().getUid();
-        DatabaseReference reference = getDB().getReference(USERDATA);
-
-
-        ValueEventListener animeUserDataListener = new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                AnimeUserData.clearData();
-                String json = snapshot.getValue(String.class);
-                if (json != null){
-                    MovieUserData.JSONStringToUserdata(json);
-                }
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-                Log.w(TAG, error.getMessage());
-            }
-        };
-
-        if (uid != null) {
-            reference.child(uid).child("movie")
-                    .addListenerForSingleValueEvent(animeUserDataListener);
-            return true;
-        }
-        return false;
-    }
-
-
-
-
-
-
     //util methods
     public static float pxFromDp(Context context, float dip) {
         Resources resources = context.getResources();
