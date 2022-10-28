@@ -1,20 +1,25 @@
 package com.RedRose.gemaslist;
 
+import android.app.Activity;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 //import android.support.v7.app.AppCompatActivity;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
 
+import com.google.android.material.button.MaterialButton;
+import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textview.MaterialTextView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
@@ -34,12 +39,21 @@ public class MovieDescription extends Fragment {
     private TextView descriptionView;
     private TextView movieTitle;
     private ImageView movieImageView;
-    private Button saveBtn;
+    private Button saveBtn,removeButton;
+    private EditText MovieRating;
+    private Spinner dropDownMenu;
+    private AnimeDataEntry dataEntry;
+    private MovieUserData userData;
+    private boolean favourite;
+    private String title_id;
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         view =  inflater.inflate(R.layout.fragment_movie_description, container, false);
+        dropDownMenu = view.findViewById(R.id.spinner2);
+        MovieRating = view.findViewById(R.id.editRating);
+        removeButton = view.findViewById(R.id.removeBtn);
 
         //get the spinner from the xml.
         Spinner dropdown = view.findViewById(R.id.spinner2);
@@ -91,10 +105,76 @@ public class MovieDescription extends Fragment {
                 reference.setValue(MovieUserData.userdataToJSON());
 
 
+
+
             }
         });
+
         return view;
+    }
+    private void saveAnimeUserData(Activity activity) {
+
+        saveBtn.setEnabled(false);
+
+        int status = -1;
+        //int rating = MovieRating;
+
+
+        String statusInput = dropDownMenu.getSelectedItem().toString();
+        switch(statusInput){
+            case "Watching":
+                status = FirebaseUtil.WATCHING;
+                break;
+            case "Planning":
+                status = FirebaseUtil.PLANNING;
+                break;
+            case "Completed":
+                status = FirebaseUtil.COMPLETED;
+                break;
+        }
+        if(status != dataEntry.status
+                || favourite != dataEntry.favourite)
+        {
+            if(favourite != dataEntry.favourite){
+                dataEntry.favourite = favourite;
+            }
+            dataEntry.status = status;
+
+            //remove entry from current list
+            boolean removeRes = userData.remove(title_id);
+
+            //add to correct place
+            String message=null;
+            if(removeRes){
+                message = "Saved";
+            } else {
+                message = "Added to list";
+            }
+
+            switch(status) {
+                case FirebaseUtil.WATCHING:
+                    userData.getWatchingList().addItem(dataEntry);
+                    break;
+                case FirebaseUtil.PLANNING:
+                    userData.getPlanningList().addItem(dataEntry);
+                    break;
+                case FirebaseUtil.COMPLETED:
+                    userData.getCompletedList().addItem(dataEntry);
+                    break;
+            }
+        }
+
+        //upload changes to database
+        String uid = FirebaseAuth.getInstance().getUid();
+        DatabaseReference reference = FirebaseUtil.getDB()
+                .getReference(FirebaseUtil.USERDATA);
+
+
+        }
+
     }
 
 
-}
+
+
+
