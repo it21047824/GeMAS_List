@@ -39,14 +39,15 @@ public class series_description extends Fragment {
     private View view;
     private TextView seriesTitle , seriesDescrip ;
     private ImageView seriesImageView;
-    private Button saveButton;
+    private Button saveButton , DeleteButtton;
     private String title_id;
+    private EditText SeriesRating;
 
     public series_description() {
         // Required empty public constructor
     }
 
-    public static series_description newInstance(String param1, String param2) {
+    public static series_description newInstance() {
         return new series_description();
     }
 
@@ -60,9 +61,13 @@ public class series_description extends Fragment {
                              Bundle savedInstanceState) {
 
         view = inflater.inflate(R.layout.fragment_series_description, container, false);
+
+
+        DeleteButtton =  view.findViewById(R.id.RemoveButton);
         seriesImageView = view.findViewById(R.id.imageViewSeries);
         seriesDescrip = view.findViewById(R.id.series_description_text);
         seriesTitle = view.findViewById(R.id.seriestile);
+        SeriesRating = view.findViewById(R.id.editseriesrate);
 
         title_id = getArguments().getString("title_id");
 
@@ -85,7 +90,7 @@ public class series_description extends Fragment {
                     Log.e("SeriesDesc83", uri.toString());
                     Picasso.get().load(uri).into(seriesImageView);
                 });
-        }
+            }
 
 
             @Override
@@ -93,6 +98,25 @@ public class series_description extends Fragment {
                 // ...
             }
         });
+
+        //rating
+
+        String uid = FirebaseAuth.getInstance().getUid();
+        DatabaseReference reference = FirebaseUtil.getDB()
+                .getReference(FirebaseUtil.USERDATA).child(uid).child("series").child(title_id);
+        reference.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                String rating = snapshot.child("rating").getValue(String.class);
+                SeriesRating.setText(rating);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+
 
         saveButton = view.findViewById(R.id.savebuttonseries);
         saveButton.setOnClickListener(new View.OnClickListener() {
@@ -102,12 +126,33 @@ public class series_description extends Fragment {
                 DatabaseReference reference = FirebaseUtil.getDB()
                         .getReference(FirebaseUtil.USERDATA).child(uid).child("series").child(title_id);
                 reference.setValue(title_id);
+
+                String Srating = SeriesRating.getText().toString();
+                reference.child("rating").setValue(Srating);
+            }
+        });
+
+        DeleteButtton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                String uid = FirebaseAuth.getInstance().getUid();
+                DatabaseReference reference = FirebaseUtil.getDB()
+                        .getReference(FirebaseUtil.USERDATA).child(uid).child("series").child(title_id);
+                reference.removeValue();
+
             }
         });
 
 
+
+
+
         // Inflate the layout for this fragment
         return view;}
+
+
+
 
     @Override
     public void onStart() {
