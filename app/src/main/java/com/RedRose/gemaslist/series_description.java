@@ -125,10 +125,6 @@ public class series_description extends Fragment {
         }
 
 
-
-
-
-
             @Override
             public void onCancelled(DatabaseError databaseError) {
                 // ...

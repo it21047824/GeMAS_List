@@ -2,6 +2,7 @@ package com.RedRose.gemaslist;
 
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.Navigation;
@@ -9,9 +10,22 @@ import androidx.navigation.Navigation;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import com.google.android.material.button.MaterialButton;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.squareup.picasso.Picasso;
 
+import java.util.ArrayList;
 import java.util.Objects;
 
 /**
@@ -21,8 +35,13 @@ import java.util.Objects;
  */
 public class SeriesList extends Fragment {
 
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
+    private TextView seriesTitle , seriesDescrip ;
+    private ImageView seriesImageView;
+    private View view;
+    private ArrayList<String> seriesIds;
+
+
+
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
 
@@ -64,14 +83,81 @@ public class SeriesList extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+
+
+        seriesIds = new ArrayList<>();
         // Inflate the layout for this fragment
-        View view = inflater.inflate(R.layout.fragment_series_list, container, false);
+        view = inflater.inflate(R.layout.fragment_series_list, container, false);
 
-        MaterialButton button = view.findViewById(R.id.button5);
-        button.setOnClickListener(v -> Navigation.findNavController(requireActivity(), R.id.nav_host_fragment)
-                .navigate(R.id.action_series_to_series_description));
+        LinearLayout serieslayout = view.findViewById(R.id.SeriesListItems);
+
+        String uid = FirebaseAuth.getInstance().getUid();
+        DatabaseReference reference = FirebaseUtil.getDB()
+                .getReference(FirebaseUtil.USERDATA).child(uid).child("series");
 
 
+//        MaterialButton button = view.findViewById(R.id.button5);
+//        button.setOnClickListener(v -> Navigation.findNavController(requireActivity(), R.id.nav_host_fragment)
+//                .navigate(R.id.action_series_to_series_description));
+
+        view = inflater.inflate(R.layout.fragment_series_description, container, false);
+
+
+
+
+        String title_id = getArguments().getString("title_id");
+
+        // Get a reference to our posts
+        //final FirebaseDatabase database = FirebaseDatabase.getInstance();
+        //DatabaseReference ref = database.getReference(FirebaseUtil.SERIES_PATH).child(title_id);
+
+        View finalView = view;
+        reference.addListenerForSingleValueEvent(new ValueEventListener () {
+            @Override
+            public void onDataChange(DataSnapshot snapshot) {
+
+                for (DataSnapshot d: snapshot.getChildren()){
+                    seriesIds.add(d.getKey());
+                }
+                for (String s :seriesIds ){
+                    View listItem = inflater.inflate(R.layout.serieslistone,null);
+                    ImageView seriesListimg = listItem.findViewById(R.id.loopimage);
+                    TextView seriestextview = listItem.findViewById(R.id.looptext);
+
+
+                    DatabaseReference ref = FirebaseUtil.getDB().getReference(FirebaseUtil.SERIES_PATH).child(s);
+                    //get data
+                    ref.addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot snapshot) {
+                            //get all series
+                            String title = snapshot.child("title").getValue(String.class);
+
+                            seriestextview.setText(title);
+
+                            FirebaseStorage storage = FirebaseStorage.getInstance();
+                            StorageReference imageRef = storage.getReference().child("series_posters").child(s);
+                            imageRef.getDownloadUrl().addOnSuccessListener(uri ->
+                                    Picasso.get().load(uri).into(seriesListimg));
+                            serieslayout.addView(listItem);
+                        }
+
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError error) {
+
+                        }
+                    });
+                }
+
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+
+        });
 
 
         return view;
@@ -83,4 +169,4 @@ public class SeriesList extends Fragment {
         Objects.requireNonNull(((AppCompatActivity) requireActivity()).getSupportActionBar())
                 .setSubtitle(R.string.seriesList);
     }
-}
+    }
