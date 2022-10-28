@@ -104,6 +104,17 @@ public class MoviesList extends Fragment {
                     ImageView movieListImg = listItem.findViewById(R.id.movieListImage);
                     TextView movieListTxt = listItem.findViewById(R.id.movieListTitle);
 
+                    listItem.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            Bundle cardBundle = new Bundle();
+                            cardBundle.putString("title_id", s);
+
+                            Navigation.findNavController(requireActivity(), R.id.nav_host_fragment)
+                                    .navigate(R.id.action_movies_to_movieDescription, cardBundle);
+                        }
+                    });
+
                     DatabaseReference ref = FirebaseUtil.getDB().getReference(FirebaseUtil.MOVIE_PATH).child(s);
                     //get data
                     ref.addListenerForSingleValueEvent(new ValueEventListener() {
