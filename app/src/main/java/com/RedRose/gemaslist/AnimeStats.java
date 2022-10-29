@@ -15,7 +15,6 @@ import androidx.appcompat.widget.LinearLayoutCompat;
 import androidx.appcompat.widget.LinearLayoutCompat.LayoutParams;
 import androidx.fragment.app.Fragment;
 
-import android.util.Log;
 import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.LayoutInflater;

@@ -175,11 +175,6 @@ public class FirebaseUtil {
         String uid = FirebaseAuth.getInstance().getUid();
         DatabaseReference reference = getDB().getReference(USERDATA);
 
-
-
-
-
-
         ValueEventListener animeUserDataListener = new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
