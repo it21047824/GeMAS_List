@@ -50,6 +50,7 @@ public class MovieDescription extends Fragment {
     private EditText MovieRating;
     private boolean favourite;
     private String title_id;
+    private String rating;
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -81,7 +82,6 @@ public class MovieDescription extends Fragment {
                         Picasso.get().load(uri).into(movieImageView));
             }
 
-
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
 
@@ -109,23 +109,28 @@ public class MovieDescription extends Fragment {
         saveBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                String uid = FirebaseAuth.getInstance().getUid();
-                DatabaseReference reference = FirebaseUtil.getDB()
-                        .getReference(FirebaseUtil.USERDATA).child(uid).child("movies").child(title_id);
-                reference.setValue(title_id);
+                rating = MovieRating.getText().toString();
+                try{
+                    int ratingInt = Integer.parseInt(rating);
+                    boolean validate = validateInfo(ratingInt);
+                    if(validate){
+                        String uid = FirebaseAuth.getInstance().getUid();
+                        DatabaseReference reference = FirebaseUtil.getDB()
+                                .getReference(FirebaseUtil.USERDATA).child(uid).child("movies").child(title_id);
+                        reference.setValue(title_id);
+                        Context context = getActivity(); //The context to use. Usually your Application or Activity object
+                        CharSequence message = "Saved";//Display string
+                        int duration = Toast.LENGTH_SHORT; //How long the toast message will lasts
+                        Toast toast = Toast.makeText(context,message,duration);
+                        toast.show();
+                        reference.child("rating").setValue(rating);
+                    }
+                    else{
+                        Toast.makeText(getActivity(),"Enter 0 to 10 value",Toast.LENGTH_LONG).show();
+                    }
+                }catch(Exception e){
 
-                ///////////////////////////////////////////
-                Context context = getActivity(); //The context to use. Usually your Application or Activity object
-                CharSequence message = "Saved";//Display string
-                int duration = Toast.LENGTH_SHORT; //How long the toast message will lasts
-                Toast toast = Toast.makeText(context,message,duration);
-                toast.show();
-                /////////////////////////////////////////////
-
-                String rating = MovieRating.getText().toString();
-                reference.child("rating").setValue(rating);
-
-
+                }
             }
         });
 
@@ -136,10 +141,26 @@ public class MovieDescription extends Fragment {
                 DatabaseReference reference = FirebaseUtil.getDB()
                         .getReference(FirebaseUtil.USERDATA).child(uid).child("movies").child(title_id);
                 reference.removeValue();
+
+                Context context = getActivity(); //The context to use. Usually your Application or Activity object
+                CharSequence message = "Deleted";//Display string
+                int duration = Toast.LENGTH_SHORT; //How long the toast message will lasts
+                Toast toast = Toast.makeText(context,message,duration);
+                toast.show();
+
             }
         });
 
         return view;
+    }
+    boolean validateInfo(int movieRating) {
+        if(movieRating<0 || movieRating>10){
+            return false;
+        }
+        else{
+
+            return true;
+        }
     }
 
     @Override
@@ -149,9 +170,3 @@ public class MovieDescription extends Fragment {
                 .setSubtitle(R.string.movies);
     }
 }
-
-
-
-
-
-
