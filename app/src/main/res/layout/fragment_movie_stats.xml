@@ -33,7 +33,7 @@
             android:layout_marginRight="10dp">
 
             <TextView
-                android:id="@+id/Totalgames"
+                android:id="@+id/TotalMovies"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="80dp"
