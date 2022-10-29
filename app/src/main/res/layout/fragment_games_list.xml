@@ -3,103 +3,23 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:layout_marginTop="30dp"
-    android:visibility="visible"
+    android:layout_height="wrap_content"
+    android:layout_marginLeft="10dp"
+    android:layout_marginTop="20dp"
     tools:context=".GamesList">
 
+
     <LinearLayout
+        android:id="@+id/gameListItems"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical">
+        android:layout_marginTop="20dp"
+        android:orientation="vertical"
+        tools:context=".moviePage1">
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="180dp"
-            android:orientation="horizontal">
 
-            <ImageView
-                android:id="@+id/imageView21"
-                android:layout_width="280dp"
-                android:layout_height="180dp"
-                android:src="@drawable/wp2462450" />
 
-            <Button
-                android:id="@+id/button19"
-                android:layout_width="62dp"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="50dp"
-                android:layout_marginTop="100dp"
-                app:icon="@drawable/ic_baseline_edit_24"
-                tools:ignore="SpeakableTextPresentCheck" />
-
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="180dp"
-            android:orientation="horizontal">
-
-            <ImageView
-                android:id="@+id/imageView22"
-                android:layout_width="wrap_content"
-                android:layout_height="147dp"
-                android:layout_marginRight="45dp"
-                android:layout_weight="1"
-                android:src="@drawable/_1duogx58cl_1" />
-
-            <Button
-                android:id="@+id/button20"
-                android:layout_width="62dp"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="90dp"
-                android:layout_marginRight="20dp"
-                app:icon="@drawable/ic_baseline_edit_24"
-                tools:ignore="SpeakableTextPresentCheck" />
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="180dp"
-            android:orientation="horizontal">
-
-            <ImageView
-                android:id="@+id/imageView23"
-                android:layout_width="286dp"
-                android:layout_height="wrap_content"
-                android:layout_marginRight="45dp"
-                android:src="@drawable/_23" />
-
-            <Button
-                android:id="@+id/button21"
-                android:layout_width="100dp"
-                android:layout_height="50dp"
-                android:layout_marginTop="110dp"
-                android:layout_marginRight="20dp"
-                android:layout_weight="1"
-                app:icon="@drawable/ic_baseline_edit_24"
-                tools:ignore="SpeakableTextPresentCheck" />
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="horizontal">
-
-            <ImageView
-                android:id="@+id/imageView24"
-                android:layout_width="280dp"
-                android:layout_height="150dp"
-                android:layout_marginRight="50dp"
-                android:src="@drawable/_01245" />
-
-            <Button
-                android:id="@+id/button22"
-                android:layout_width="60dp"
-                android:layout_height="48dp"
-                android:layout_marginTop="100dp"
-                app:icon="@drawable/ic_baseline_edit_24" />
-        </LinearLayout>
     </LinearLayout>
+
 
 </FrameLayout>

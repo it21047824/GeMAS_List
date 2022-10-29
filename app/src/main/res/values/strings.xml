@@ -146,5 +146,7 @@
     <string name="latest_entries">Latest Entries</string>
     <string name="edit_banner">Edit Banner</string>
 
+    <string name="statsGames">Games Stats</string>
+
 
 </resources>

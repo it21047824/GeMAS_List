@@ -2,6 +2,7 @@ package com.RedRose.gemaslist;
 
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.Navigation;
@@ -9,10 +10,25 @@ import androidx.navigation.Navigation;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import com.google.android.material.button.MaterialButton;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.squareup.picasso.Picasso;
+import com.google.firebase.database.DataSnapshot;
 
+import org.w3c.dom.Text;
+
+import java.util.ArrayList;
 import java.util.Objects;
+
 
 /**
  * A simple {@link Fragment} subclass.
@@ -29,6 +45,12 @@ public class GamesList extends Fragment {
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
+    private TextView descriptionView;
+    private TextView gameTitle;
+    private ImageView gameImageView;
+    private View view;
+    private ArrayList<String> gameIds;
+
 
     public GamesList() {
         // Required empty public constructor
@@ -64,13 +86,69 @@ public class GamesList extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        gameIds = new ArrayList<>();
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_games_list, container, false);
+        LinearLayout gameLayout = view.findViewById(R.id.gameListItems);
 
-        MaterialButton button = view.findViewById(R.id.button19);
-        button.setOnClickListener(v -> Navigation.findNavController(requireActivity(), R.id.nav_host_fragment)
-                .navigate(R.id.action_games_to_games_description));
+        String uid = FirebaseAuth.getInstance().getUid();
+        DatabaseReference reference = FirebaseUtil.getDB()
+                .getReference(FirebaseUtil.USERDATA).child(uid).child("game");
 
+        reference.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                for(DataSnapshot d: snapshot.getChildren()){
+                    gameIds.add(d.getKey());
+                }
+                for(String s: gameIds){
+                    View listItem = inflater.inflate(R.layout.new_games_list,null);
+                    ImageView gameListImg = listItem.findViewById(R.id.gameListImage);
+                    TextView gameListTxt = listItem.findViewById(R.id.gameListTitle);
+
+                    listItem.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            Bundle cardBundle = new Bundle();
+                            cardBundle.putString("title_id", s);
+
+                            Navigation.findNavController(requireActivity(), R.id.nav_host_fragment)
+                                    .navigate(R.id.action_games_to_games_description, cardBundle);
+                        }
+                    });
+
+                    DatabaseReference ref = FirebaseUtil.getDB().getReference(FirebaseUtil.GAME_PATH).child(s);
+                    //get data
+                    ref.addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot snapshot) {
+                            //get all movies -> snapshot.getChildren()
+                            String title = snapshot.child("title").getValue(String.class);
+
+                            gameListTxt.setText(title);
+
+                            FirebaseStorage storage = FirebaseStorage.getInstance();
+                            StorageReference imageRef = storage.getReference().child("game_posters").child(s);
+                            imageRef.getDownloadUrl().addOnSuccessListener(uri ->
+                                    Picasso.get().load(uri).into(gameListImg));
+                            gameLayout.addView(listItem);
+                        }
+
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError error) {
+
+                        }
+
+                    });
+
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
         return view;
     }
 
