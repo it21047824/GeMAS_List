@@ -122,13 +122,26 @@ public class series_description extends Fragment {
         saveButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                String uid = FirebaseAuth.getInstance().getUid();
-                DatabaseReference reference = FirebaseUtil.getDB()
-                        .getReference(FirebaseUtil.USERDATA).child(uid).child("series").child(title_id);
-                reference.setValue(title_id);
-
                 String Srating = SeriesRating.getText().toString();
-                reference.child("rating").setValue(Srating);
+                try {
+                    int ratingInt = Integer.parseInt(Srating);
+                    boolean validate = validateInformatin(ratingInt);
+                    if (validate){
+                        String uid = FirebaseAuth.getInstance().getUid();
+                        DatabaseReference reference = FirebaseUtil.getDB()
+                                .getReference(FirebaseUtil.USERDATA).child(uid).child("series").child(title_id);
+                        reference.setValue(title_id);
+
+
+                        reference.child("rating").setValue(Srating);
+
+                    }
+
+                }
+                catch (Exception e){
+
+                }
+
             }
         });
 
@@ -150,6 +163,16 @@ public class series_description extends Fragment {
 
         // Inflate the layout for this fragment
         return view;}
+
+
+    boolean validateInformatin (int seriesRating){
+        if (seriesRating <0 || seriesRating > 10){
+            return  false;
+        }
+        else {
+            return true;
+        }
+    }
 
 
 
