@@ -120,7 +120,7 @@ public class GameStats extends Fragment {
         LinearLayoutCompat barGraphContainer =
                 view.findViewById(R.id.game_stats_bar_graph_container);
         LinearLayoutCompat barGraphView = view.findViewById(R.id.movie_stats_bar_graph);
-        Totalgame = view.findViewById(R.id.Totalgames);
+        //Totalgame = view.findViewById(R.id.Totalgames);
         avgRatings = view.findViewById(R.id.avgRatings);
         gameIds = new ArrayList<>();
         gameRatings = new ArrayList<>();
@@ -182,10 +182,10 @@ public class GameStats extends Fragment {
                     }
 
                 }
-                Totalgame.setText(""+allgame);
-                avgRatings.setText(""+totalgameRating);
+                //Totalgame.setText(""+allgame);
+                //avgRatings.setText(""+totalgameRating);
 
-                createBarGraph(barGraphContainer,barGraphView,ratingFrequencies,R.color.main_theme,1.5f);
+                //AnimeStats.createBarGraph(barGraphContainer,barGraphView,ratingFrequencies,R.color.main_theme,1.5f);
             }
 
             @Override

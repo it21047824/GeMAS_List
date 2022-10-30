@@ -19,7 +19,6 @@ public class CustomLinkList {
                 AnimeDataEntry temp = first;
                 while(true) {
                     if(input.rating > temp.rating){
-                        Log.e("customlink 23", temp.prev==null? "prev is first":"prev is not first");
                         input.next = temp;
                         if(temp.prev != null){
                             input.prev = temp.prev;

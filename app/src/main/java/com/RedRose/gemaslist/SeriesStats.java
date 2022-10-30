@@ -164,7 +164,7 @@ public class SeriesStats extends Fragment {
 
                 //create bar graph method call
 
-                createBarGraph(barGraphContainer,barGraphView,ratingFrequency,R.color.main_theme,1.5f);
+                AnimeStats.createBarGraph(barGraphContainer,barGraphView,ratingFrequency,R.color.main_theme,1.5f);
 
 
 
@@ -177,104 +177,6 @@ public class SeriesStats extends Fragment {
         });
 
         return view;
-    }
-
-    public static void createBarGraph(
-            LinearLayoutCompat container,
-            @NonNull LinearLayoutCompat layout,
-            int[] data,
-            int barColor,
-            float scale
-    ) {
-
-        layout.post( () -> {
-            //get info
-            int width = layout.getWidth();
-            int height = layout.getHeight();
-
-            int bars = data.length;
-            int totalFrequency = 0;
-
-            for (int frequency : data){
-                totalFrequency += frequency;
-            }
-
-            //width of a single bar
-            float barWidth = (float) (width-bars-(10*bars))/bars;
-
-            //list of bar heights
-            List<Float> barHeightList = new ArrayList<>();
-            for (int frequency : data) {
-                barHeightList.add(((float)frequency/totalFrequency)*height*scale);
-            }
-
-            //create a layout to put the graph
-            LinearLayoutCompat barGraphLayout = new LinearLayoutCompat(layout.getContext());
-
-            LinearLayoutCompat.LayoutParams graphLayoutParams =
-                    new LinearLayoutCompat.LayoutParams(LinearLayoutCompat.LayoutParams.MATCH_PARENT, LinearLayoutCompat.LayoutParams.MATCH_PARENT);
-            barGraphLayout.setLayoutParams(graphLayoutParams);
-            barGraphLayout.setPadding(8,8,8,0);
-            barGraphLayout.setOrientation(LinearLayoutCompat.HORIZONTAL);
-            barGraphLayout.setGravity(Gravity.BOTTOM);
-
-            //create a layout for graph legend
-            LinearLayoutCompat barGraphLegend = new LinearLayoutCompat(container.getContext());
-
-            LinearLayoutCompat.LayoutParams graphLegendParams =
-                    new LinearLayoutCompat.LayoutParams(LinearLayoutCompat.LayoutParams.MATCH_PARENT, LinearLayoutCompat.LayoutParams.WRAP_CONTENT);
-            barGraphLegend.setLayoutParams(graphLegendParams);
-            barGraphLegend.setPadding(8,0,8,0);
-            barGraphLegend.setOrientation(LinearLayoutCompat.HORIZONTAL);
-            barGraphLegend.setGravity(Gravity.CENTER);
-
-            //add bars to created layout
-            int index = 0;
-            for (float barHeight : barHeightList) {
-                LinearLayoutCompat bar = new LinearLayoutCompat(layout.getContext());
-                TextView legend = new TextView(container.getContext());
-
-                LinearLayoutCompat.LayoutParams barLayout = new LinearLayoutCompat.LayoutParams((int) barWidth, (int) barHeight);
-                barLayout.setMargins(5,0,5,0);
-                LinearLayoutCompat.LayoutParams legendLayout = new LinearLayoutCompat.LayoutParams((int) barWidth, LinearLayoutCompat.LayoutParams.WRAP_CONTENT);
-                legendLayout.setMargins(5,0,5,0);
-
-                bar.setLayoutParams(barLayout);
-                bar.setBackgroundColor(barColor);
-
-                legend.setLayoutParams(legendLayout);
-                legend.setText(String.format(Locale.US, "%d", index));
-                legend.setTextSize(12);
-                legend.setGravity(Gravity.CENTER);
-
-                barGraphLayout.addView(bar);
-                barGraphLegend.addView(legend);
-
-                index++;
-            }
-
-            //create divider
-            LinearLayoutCompat divider = new LinearLayoutCompat(layout.getContext());
-            LinearLayoutCompat.LayoutParams dividerLayoutParams =
-                    new LinearLayoutCompat.LayoutParams(LinearLayoutCompat.LayoutParams.MATCH_PARENT, 1);
-            divider.setLayoutParams(dividerLayoutParams);
-
-            TypedValue typedValue = new TypedValue();
-            TypedArray a = layout.getContext().obtainStyledAttributes(typedValue.data,
-                    new int[]{R.attr.customColor1});
-            int dividerColor = a.getColor(0,0);
-            a.recycle();
-
-            divider.setBackgroundColor(dividerColor);
-
-            //add graph to given layout
-            layout.addView(barGraphLayout);
-            container.addView(divider);
-            container.addView(barGraphLegend);
-
-        });
-
-
     }
 
     @Override
